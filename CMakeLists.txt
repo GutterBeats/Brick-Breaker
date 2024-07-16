@@ -7,6 +7,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(Brick_Breaker main.c)
 
+add_custom_target(CopyResources
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
+)
+add_dependencies(Brick_Breaker CopyResources)
+
 # Variables storing SDL Framework locations
 set(SDL2
         /Library/Frameworks/SDL2.framework)
