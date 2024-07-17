@@ -12,7 +12,7 @@ void InitEndingScreen(void)
 
 }
 
-void UpdateEndingScreen(void)
+void UpdateEndingScreen(float deltaTime)
 {
 
 }

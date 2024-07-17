@@ -12,7 +12,7 @@ void InitTitleScreen(void)
 
 }
 
-void UpdateTitleScreen(void)
+void UpdateTitleScreen(float deltaTime)
 {
 
 }

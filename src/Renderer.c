@@ -53,6 +53,19 @@ void FinishDrawing(void)
     SDL_RenderPresent(renderer);
 }
 
+void GetScreenDimensions(int* width, int* height)
+{
+    SDL_Window* window = SDL_RenderGetWindow(renderer);
+    if (window == NULL) return;
+
+    SDL_GetWindowSize(window, width, height);
+}
+
+void DrawTexture(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect* dest)
+{
+    SDL_RenderCopyF(renderer, texture, source, dest);
+}
+
 SDL_Texture* LoadTexture(const char* filePath)
 {
     if ((IMG_Init(0) & flags) != flags)

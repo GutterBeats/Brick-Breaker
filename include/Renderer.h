@@ -12,4 +12,6 @@ void BeginDrawing(void);
 void FinishDrawing(void);
 void DestroyRenderer(void);
 
+void GetScreenDimensions(int* width, int* height);
+void DrawTexture(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect* dest);
 SDL_Texture* LoadTexture(const char* filePath);

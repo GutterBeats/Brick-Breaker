@@ -12,7 +12,7 @@ void InitOptionsScreen(void)
 
 }
 
-void UpdateOptionsScreen(void)
+void UpdateOptionsScreen(float deltaTime)
 {
 
 }
