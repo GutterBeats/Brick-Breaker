@@ -13,12 +13,13 @@ add_executable(Brick_Breaker main.c
         src/Gameplay.c
         include/Renderer.h
         src/Renderer.c
-        include/Ball.h
-        include/Player.h
+        include/Entity.h
         include/BrickManager.h
         src/Title.c
         src/Options.c
-        src/Ending.c)
+        src/Ending.c
+        src/Entity.c
+)
 
 add_custom_target(CopyResources
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
