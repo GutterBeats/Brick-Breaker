@@ -5,7 +5,20 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(Brick_Breaker main.c)
+add_executable(Brick_Breaker main.c
+        include/Types.h
+        include/Keyboard.h
+        src/Keyboard.c
+        include/Screens.h
+        src/Gameplay.c
+        include/Renderer.h
+        src/Renderer.c
+        include/Ball.h
+        include/Player.h
+        include/BrickManager.h
+        src/Title.c
+        src/Options.c
+        src/Ending.c)
 
 add_custom_target(CopyResources
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
