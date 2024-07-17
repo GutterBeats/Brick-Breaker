@@ -16,7 +16,7 @@
 static void InitializeSystems(void);
 static void QuitGame(void);
 static void PauseGame(void);
-static void UpdateGame(void);
+static void UpdateGame(float deltaTime);
 static void ChangeToScreen(GameScreen screen);
 
 GameScreen currentScreen = GAMEPLAY;
@@ -35,8 +35,13 @@ int main(int argc, char* argv[])
     InitializeSystems();
     ChangeToScreen(GAMEPLAY);
 
+    u64 lastFrame = SDL_GetTicks64();
+
     while (isRunning)
     {
+        u64 current = SDL_GetTicks64();
+        float deltaTime = ((float)current - (float)lastFrame) / 1000.f;
+
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -55,7 +60,9 @@ int main(int argc, char* argv[])
             KBD_HandleEvent(&event);
         }
 
-        UpdateGame();
+        UpdateGame(deltaTime);
+
+        lastFrame = current;
     }
 
     QuitGame();
@@ -88,7 +95,7 @@ void InitializeSystems(void)
 
     KBD_InitializeKeymap();
 
-    isRunning = SDL_TRUE;
+    isRunning = true;
 }
 
 void QuitGame(void)
@@ -143,13 +150,13 @@ void PauseGame(void)
  * Add Main Menu
  * Add Options
  * */
-void UpdateGame(void)
+void UpdateGame(float deltaTime)
 {
     switch (currentScreen)
     {
         case GAMEPLAY:
         {
-            UpdateGameplayScreen();
+            UpdateGameplayScreen(deltaTime);
 
             if (FinishGameplayScreen())
             {
@@ -161,7 +168,7 @@ void UpdateGame(void)
         case UNKNOWN:
             break;
         case TITLE:
-            UpdateTitleScreen();
+            UpdateTitleScreen(deltaTime);
 
             if (FinishTitleScreen())
             {
@@ -169,7 +176,7 @@ void UpdateGame(void)
             }
             break;
         case OPTIONS:
-            UpdateOptionsScreen();
+            UpdateOptionsScreen(deltaTime);
 
             if (FinishOptionsScreen())
             {
@@ -177,7 +184,7 @@ void UpdateGame(void)
             }
             break;
         case ENDING:
-            UpdateEndingScreen();
+            UpdateEndingScreen(deltaTime);
 
             if (FinishEndingScreen())
             {
@@ -211,6 +218,8 @@ void UpdateGame(void)
 
 void ChangeToScreen(GameScreen screen)
 {
+    if (currentScreen == screen) return;
+
     // Unload current screen
     switch (currentScreen)
     {

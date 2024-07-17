@@ -35,7 +35,7 @@ extern "C" {            // Prevents name mangling of functions
 // Title Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitTitleScreen(void);
-void UpdateTitleScreen(void);
+void UpdateTitleScreen(float deltaTime);
 void DrawTitleScreen(void);
 void UnloadTitleScreen(void);
 bool FinishTitleScreen(void);
@@ -44,7 +44,7 @@ bool FinishTitleScreen(void);
 // Options Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitOptionsScreen(void);
-void UpdateOptionsScreen(void);
+void UpdateOptionsScreen(float deltaTime);
 void DrawOptionsScreen(void);
 void UnloadOptionsScreen(void);
 bool FinishOptionsScreen(void);
@@ -53,7 +53,7 @@ bool FinishOptionsScreen(void);
 // Gameplay Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitGameplayScreen(void);
-void UpdateGameplayScreen(void);
+void UpdateGameplayScreen(float deltaTime);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 bool FinishGameplayScreen(void);
@@ -62,7 +62,7 @@ bool FinishGameplayScreen(void);
 // Ending Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitEndingScreen(void);
-void UpdateEndingScreen(void);
+void UpdateEndingScreen(float deltaTime);
 void DrawEndingScreen(void);
 void UnloadEndingScreen(void);
 bool FinishEndingScreen(void);
