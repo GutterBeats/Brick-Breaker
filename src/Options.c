@@ -29,5 +29,10 @@ void UnloadOptionsScreen(void)
 
 bool FinishOptionsScreen(void)
 {
-    return true;
+    return false;
+}
+
+void OptionsEnterKeyPressed(void)
+{
+
 }

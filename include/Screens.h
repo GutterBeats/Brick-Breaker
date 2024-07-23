@@ -39,6 +39,7 @@ void UpdateTitleScreen(float deltaTime);
 void DrawTitleScreen(void);
 void UnloadTitleScreen(void);
 bool FinishTitleScreen(void);
+void TitleEnterKeyPressed(void);
 
 //----------------------------------------------------------------------------------
 // Options Screen Functions Declaration
@@ -48,6 +49,7 @@ void UpdateOptionsScreen(float deltaTime);
 void DrawOptionsScreen(void);
 void UnloadOptionsScreen(void);
 bool FinishOptionsScreen(void);
+void OptionsEnterKeyPressed(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Declaration
@@ -57,6 +59,7 @@ void UpdateGameplayScreen(float deltaTime);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 bool FinishGameplayScreen(void);
+void GameplayEnterKeyPressed(void);
 
 //----------------------------------------------------------------------------------
 // Ending Screen Functions Declaration
@@ -66,6 +69,7 @@ void UpdateEndingScreen(float deltaTime);
 void DrawEndingScreen(void);
 void UnloadEndingScreen(void);
 bool FinishEndingScreen(void);
+void EndingEnterKeyPressed(void);
 
 #ifdef __cplusplus
 }

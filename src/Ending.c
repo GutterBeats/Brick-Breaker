@@ -31,3 +31,8 @@ bool FinishEndingScreen(void)
 {
     return true;
 }
+
+void EndingEnterKeyPressed(void)
+{
+
+}

@@ -6,25 +6,22 @@
 
 #include <SDL.h>
 
+#include "Game.h"
 #include "Keyboard.h"
 #include "Screens.h"
 #include "Renderer.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 720
+#define WINDOW_HEIGHT 1280
 
-static void InitializeSystems(void);
 static void QuitGame(void);
-static void PauseGame(void);
-static void UpdateGame(float deltaTime);
+static void UpdateGame();
 static void ChangeToScreen(GameScreen screen);
+static void HandlePause(void);
+static void HandleEnter(void);
 
-GameScreen currentScreen = GAMEPLAY;
-static enum GameScreen previousScreen = UNKNOWN;
-
-static SDL_Window* window;
-static bool isRunning = false;
-static bool isPaused = false;
+GameScreen currentScreen = UNKNOWN;
+static GameScreen previousScreen = UNKNOWN;
 
 #ifdef __cplusplus
 extern "C"
@@ -32,70 +29,46 @@ extern "C"
 
 int main(int argc, char* argv[])
 {
-    InitializeSystems();
+    InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
     ChangeToScreen(GAMEPLAY);
 
-    u64 lastFrame = SDL_GetTicks64();
-
-    while (isRunning)
+    while (GetIsGameRunning())
     {
-        u64 current = SDL_GetTicks64();
-        float deltaTime = ((float)current - (float)lastFrame) / 1000.f;
+        StartFrame();
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
-                isRunning = SDL_FALSE;
+                SetIsGameRunning(false);
                 break;
             }
 
             if (event.type == SDL_USEREVENT)
             {
-                PauseGame();
+                if (event.user.code == PAUSE)
+                {
+                    HandlePause();
+                }
+                else if (event.user.code == ENTER)
+                {
+                    HandleEnter();
+                }
+
                 continue;
             }
 
             KBD_HandleEvent(&event);
         }
 
-        UpdateGame(deltaTime);
-
-        lastFrame = current;
+        UpdateGame();
+        EndFrame();
     }
 
     QuitGame();
 
     return 0;
-}
-
-void InitializeSystems(void)
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING))
-    {
-        SDL_Log("Could not initialize SDL!: %s", SDL_GetError());
-        return;
-    }
-
-    window = SDL_CreateWindow("Brick Breaker",
-                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              WINDOW_WIDTH, WINDOW_HEIGHT,
-                              SDL_WINDOW_SHOWN | SDL_WINDOW_METAL);
-    if (window == NULL)
-    {
-        SDL_Log("Unable to create a window!: %s", SDL_GetError());
-        return;
-    }
-
-    if (!InitializeRenderer(window))
-    {
-        return;
-    }
-
-    KBD_InitializeKeymap();
-
-    isRunning = true;
 }
 
 void QuitGame(void)
@@ -118,18 +91,7 @@ void QuitGame(void)
             break;
     }
 
-    DestroyRenderer();
-
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
-void PauseGame(void)
-{
-    if (isPaused) return;
-
-    isPaused = true;
-    ChangeToScreen(OPTIONS);
+   ShutdownGameSystems();
 }
 
 /*
@@ -150,8 +112,10 @@ void PauseGame(void)
  * Add Main Menu
  * Add Options
  * */
-void UpdateGame(float deltaTime)
+void UpdateGame()
 {
+    const float deltaTime = GetDeltaSeconds();
+
     switch (currentScreen)
     {
         case GAMEPLAY:
@@ -213,10 +177,11 @@ void UpdateGame(float deltaTime)
             break;
     }
 
+    DrawFPS(10, 10);
     FinishDrawing();
 }
 
-void ChangeToScreen(GameScreen screen)
+void ChangeToScreen(const GameScreen screen)
 {
     if (currentScreen == screen) return;
 
@@ -243,4 +208,33 @@ void ChangeToScreen(GameScreen screen)
 
     previousScreen = currentScreen;
     currentScreen = screen;
+}
+
+void HandlePause(void)
+{
+    if (GetIsPaused()) return;
+
+    PauseGame();
+    ChangeToScreen(OPTIONS);
+}
+
+void HandleEnter(void)
+{
+    switch (currentScreen)
+    {
+        case UNKNOWN:
+            break;
+        case TITLE:
+            TitleEnterKeyPressed();
+            break;
+        case OPTIONS:
+            OptionsEnterKeyPressed();
+            break;
+        case GAMEPLAY:
+            GameplayEnterKeyPressed();
+            break;
+        case ENDING:
+            EndingEnterKeyPressed();
+            break;
+    }
 }

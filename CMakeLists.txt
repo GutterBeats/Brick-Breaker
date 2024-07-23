@@ -19,7 +19,13 @@ add_executable(Brick_Breaker main.c
         src/Options.c
         src/Ending.c
         src/Entity.c
-        include/MathUtils.h
+        include/Utils.h
+        src/Utils.c
+        include/Game.h
+        src/Game.c
+        src/BrickManager.c
+        include/Text.h
+        src/Text.c
 )
 
 add_custom_target(CopyResources

@@ -5,7 +5,12 @@
 #include "Types.h"
 
 //----------------------------------------------------------------------------------
-// Title Screen Functions Declaration
+// Title Screen Variables
+//----------------------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------------------
+// Title Screen Function Declaration
 //----------------------------------------------------------------------------------
 void InitTitleScreen(void)
 {
@@ -30,4 +35,9 @@ void UnloadTitleScreen(void)
 bool FinishTitleScreen(void)
 {
     return true;
+}
+
+void TitleEnterKeyPressed(void)
+{
+
 }

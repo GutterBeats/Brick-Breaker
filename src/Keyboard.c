@@ -14,9 +14,14 @@ void KBD_InitializeKeymap()
     s_KeyMap.Left = SDL_SCANCODE_A;
     s_KeyMap.Right = SDL_SCANCODE_D;
     s_KeyMap.Pause = SDL_SCANCODE_ESCAPE;
+    s_KeyMap.Up = SDL_SCANCODE_UP;
+    s_KeyMap.Down = SDL_SCANCODE_DOWN;
+    s_KeyMap.Enter = SDL_SCANCODE_SPACE;
 
     s_KeyState.Left = KEY_STATE_UP;
     s_KeyState.Right = KEY_STATE_UP;
+    s_KeyState.Up = KEY_STATE_UP;
+    s_KeyState.Down = KEY_STATE_UP;
 }
 
 void KBD_HandleEvent(const SDL_Event* event)
@@ -27,36 +32,24 @@ void KBD_HandleEvent(const SDL_Event* event)
             HandleRealtimeKeys(event->key.keysym.scancode, KEY_STATE_DOWN);
             break;
         case SDL_KEYUP:
-        {
             HandleRealtimeKeys(event->key.keysym.scancode, KEY_STATE_UP);
-
-            if (event->key.keysym.scancode == s_KeyMap.Pause)
-            {
-                SDL_Event pause;
-                pause.type = SDL_USEREVENT;
-
-                SDL_PushEvent(&pause);
-
-                return;
-            }
-        }
             break;
         default:
             break;
     }
 }
 
-SDL_bool KBD_IsLeftKeyDown()
+bool KBD_IsLeftKeyDown()
 {
     return s_KeyState.Left == KEY_STATE_DOWN;
 }
 
-SDL_bool KBD_IsRightKeyDown()
+bool KBD_IsRightKeyDown()
 {
     return s_KeyState.Right == KEY_STATE_DOWN;
 }
 
-static void HandleRealtimeKeys(SDL_Scancode scancode, enum KBD_KEY_STATE state)
+static void HandleRealtimeKeys(const SDL_Scancode scancode, const enum KBD_KEY_STATE state)
 {
     if (s_KeyMap.Left == scancode)
     {
@@ -65,5 +58,24 @@ static void HandleRealtimeKeys(SDL_Scancode scancode, enum KBD_KEY_STATE state)
     else if (s_KeyMap.Right == scancode)
     {
         s_KeyState.Right = state;
+    }
+
+    if (s_KeyMap.Up == scancode)
+    {
+        s_KeyState.Up = state;
+    }
+    else if (s_KeyMap.Down == scancode)
+    {
+        s_KeyState.Down = state;
+    }
+
+    if (s_KeyMap.Pause == scancode
+        || s_KeyMap.Enter == scancode)
+    {
+        SDL_Event user;
+        user.type = SDL_USEREVENT;
+        user.user.code = s_KeyMap.Pause == scancode ? PAUSE : ENTER;
+
+        SDL_PushEvent(&user);
     }
 }

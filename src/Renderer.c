@@ -53,17 +53,20 @@ void FinishDrawing(void)
     SDL_RenderPresent(renderer);
 }
 
-void GetScreenDimensions(int* width, int* height)
+void DrawTexture(SDL_Texture* texture, const SDL_Rect* source, const SDL_Rect* dest)
 {
-    SDL_Window* window = SDL_RenderGetWindow(renderer);
-    if (window == NULL) return;
-
-    SDL_GetWindowSize(window, width, height);
+    if (SDL_RenderCopy(renderer, texture, source, dest))
+    {
+        SDL_Log("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
+    }
 }
 
-void DrawTexture(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect* dest)
+void DrawTextureF(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect* dest)
 {
-    SDL_RenderCopyF(renderer, texture, source, dest);
+    if (SDL_RenderCopyF(renderer, texture, source, dest))
+    {
+        SDL_Log("DrawTextureF: There was an error copy the texture: %s", SDL_GetError());
+    }
 }
 
 SDL_Texture* LoadTexture(const char* filePath)
@@ -81,4 +84,9 @@ SDL_Texture* LoadTexture(const char* filePath)
     }
 
     return texture;
+}
+
+SDL_Texture* LoadTextureFromSurface(SDL_Surface* surface)
+{
+    return SDL_CreateTextureFromSurface(renderer, surface);
 }

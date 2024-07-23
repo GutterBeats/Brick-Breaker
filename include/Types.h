@@ -6,10 +6,10 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <SDL_rect.h>
+#include <SDL.h>
 
 //----------------------------------------------------------------------------------
-// Type Definitions
+// Types and Structures Definitions
 //----------------------------------------------------------------------------------
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -24,9 +24,6 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-//----------------------------------------------------------------------------------
-// Types and Structures Definition
-//----------------------------------------------------------------------------------
 typedef enum GameScreen
 {
     UNKNOWN = -1,
@@ -36,11 +33,19 @@ typedef enum GameScreen
     ENDING
 } GameScreen;
 
-typedef struct VectorF2D
+typedef struct vector2D
 {
-    f32 X;
-    f32 Y;
-} VectorF2D;
+    int X;
+    int Y;
+} Vector2D;
+
+typedef struct vectors
+{
+    const Vector2D Up;
+    const Vector2D Down;
+    const Vector2D Left;
+    const Vector2D Right;
+} Vectors;
 
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)

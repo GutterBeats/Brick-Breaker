@@ -9,13 +9,16 @@
 
 typedef struct entity
 {
-    VectorF2D Position;
-    VectorF2D Size;
+    SDL_FRect Bounds;
 
     SDL_Texture* Texture;
+
+    bool IsEnabled;
 } Entity;
 
-Entity* CreateEntity(VectorF2D position, VectorF2D size, const char* texturePath);
+Entity* CreateEntity(float x, float y, const char* texturePath);
+
+void DrawEntity(const Entity* entity, const SDL_Rect* source);
 void DestroyEntity(Entity* entity);
 
-SDL_FRect GetEntityRectangle(Entity* entity);
+bool HasTopCollision(const Entity* first, const Entity* second);

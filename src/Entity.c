@@ -4,8 +4,9 @@
 
 #include "Entity.h"
 #include "Renderer.h"
+#include "Utils.h"
 
-Entity* CreateEntity(VectorF2D position, VectorF2D size, const char* texturePath)
+Entity* CreateEntity(const float x, const float y, const char* texturePath)
 {
     Entity* entity = malloc(sizeof(Entity));
     if (entity == NULL)
@@ -20,10 +21,30 @@ Entity* CreateEntity(VectorF2D position, VectorF2D size, const char* texturePath
         return NULL;
     }
 
-    entity->Position = position;
-    entity->Size = size;
+    int width, height;
+    if (SDL_QueryTexture(entity->Texture, NULL, NULL, &width, &height))
+    {
+        SDL_Log("Unable to query texture for width and height!: %s", SDL_GetError());
+        return NULL;
+    }
+
+    entity->Bounds = (SDL_FRect){
+        .x = x,
+        .y = y,
+        .w = (float)width,
+        .h = (float)height
+    };
+
+    entity->IsEnabled = false;
 
     return entity;
+}
+
+void DrawEntity(const Entity* entity, const SDL_Rect* source)
+{
+    if (!entity->IsEnabled) return;
+
+    DrawTextureF(entity->Texture, source, &entity->Bounds);
 }
 
 void DestroyEntity(Entity* entity)
@@ -38,12 +59,9 @@ void DestroyEntity(Entity* entity)
     free(entity);
 }
 
-SDL_FRect GetEntityRectangle(Entity* entity)
+bool HasTopCollision(const Entity* first, const Entity* second)
 {
-    return (SDL_FRect){
-      .x = entity->Position.X,
-      .y = entity->Position.Y,
-      .w = entity->Size.X,
-      .h = entity->Size.Y
-    };
+    return UTL_Between(second->Bounds.x, second->Bounds.x + second->Bounds.w, first->Bounds.x)
+        // Checking with just > instead of >= here prevents stuttering of ball against paddle
+        && first->Bounds.y + first->Bounds.w > second->Bounds.y;
 }
