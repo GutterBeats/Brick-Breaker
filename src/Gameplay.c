@@ -8,10 +8,10 @@
 #include "Keyboard.h"
 #include "Entity.h"
 #include "Game.h"
+#include "Resources.h"
 #include "Utils.h"
 
-#define PLAYER_TEXTURE "resources/Textures/paddleBlue.png"
-#define BALL_TEXTURE "resources/Textures/ballBlue.png"
+#define DEFAULT_BALL_SPEED 200.f
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -49,11 +49,11 @@ void InitGameplayScreen(void)
 
     player = CreateEntity(
             windowWidth / 2.f, windowHeight,
-            PLAYER_TEXTURE);
+            PLAYER_RED_TEXTURE);
 
     ball = CreateEntity(
             windowWidth / 2.f, windowHeight / 2.f,
-            BALL_TEXTURE);
+            BALL_BLUE_TEXTURE);
 
     ASSERT_NOTNULL(player, "Player")
     ASSERT_NOTNULL(ball, "Ball")

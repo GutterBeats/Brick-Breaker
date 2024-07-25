@@ -5,9 +5,10 @@
 #include "BrickManager.h"
 
 #include "Game.h"
+#include "Renderer.h"
 #include "Utils.h"
+#include "Resources.h"
 
-#define BRICK_TEXTURE "resources/Textures/element_blue_rectangle_glossy.png"
 #define BRICK_PADDING 15
 
 static Brick* CreateBrick(float x, float y, int health, const char* texture);

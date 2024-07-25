@@ -5,11 +5,8 @@
 #include <SDL_ttf.h>
 
 #include "Text.h"
-
 #include "Renderer.h"
-
-#define FONT_PATH "resources/Fonts/Kenney Pixel Square.ttf"
-#define FONT_SIZE 16
+#include "Resources.h"
 
 static TTF_Font* s_Font;
 
@@ -21,7 +18,7 @@ bool InitializeText(void)
         return false;
     }
 
-    s_Font = TTF_OpenFont(FONT_PATH, FONT_SIZE);
+    s_Font = TTF_OpenFont(DEFAULT_FONT, DEFAULT_FONT_SIZE);
     if (s_Font == NULL)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
