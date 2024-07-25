@@ -69,7 +69,7 @@ void DrawTextureF(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect*
     }
 }
 
-SDL_Texture* LoadTexture(const char* filePath)
+SDL_Texture* LoadTexture(const char* filePath, int* textureWidth, int* textureHeight)
 {
     if ((IMG_Init(0) & flags) != flags)
     {
@@ -81,6 +81,13 @@ SDL_Texture* LoadTexture(const char* filePath)
     if (texture == NULL)
     {
         SDL_Log("Unable to load image (%s): %s", filePath, IMG_GetError());
+        return NULL;
+    }
+
+    if (SDL_QueryTexture(texture, NULL, NULL, textureWidth, textureHeight))
+    {
+        SDL_Log("Unable to query texture for width and height!: %s", SDL_GetError());
+        return NULL;
     }
 
     return texture;
@@ -89,4 +96,9 @@ SDL_Texture* LoadTexture(const char* filePath)
 SDL_Texture* LoadTextureFromSurface(SDL_Surface* surface)
 {
     return SDL_CreateTextureFromSurface(renderer, surface);
+}
+
+void FreeTexture(SDL_Texture* texture)
+{
+    SDL_DestroyTexture(texture);
 }

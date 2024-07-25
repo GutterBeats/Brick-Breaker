@@ -15,16 +15,11 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
         return NULL;
     }
 
-    entity->Texture = LoadTexture(texturePath);
+    int width, height;
+    entity->Texture = LoadTexture(texturePath, &width, &height);
+
     if (entity->Texture == NULL)
     {
-        return NULL;
-    }
-
-    int width, height;
-    if (SDL_QueryTexture(entity->Texture, NULL, NULL, &width, &height))
-    {
-        SDL_Log("Unable to query texture for width and height!: %s", SDL_GetError());
         return NULL;
     }
 
