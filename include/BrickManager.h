@@ -6,7 +6,7 @@
 
 #include "Entity.h"
 
-// TODO: Use flywheel pattern to reuse texture for bricks that share texture.
+// IMPR: Use flywheel pattern to reuse texture for bricks that share texture.
 typedef struct brick
 {
     int Health;
