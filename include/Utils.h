@@ -104,14 +104,14 @@ int UTL_GetRandom(int lower, int upper);
 static Vector2D GetUpVector(void)
 {
     return (Vector2D){
-        .X = 0, .Y = 1
+        .X = 0, .Y = -1
     };
 }
 
 static Vector2D GetDownVector(void)
 {
     return (Vector2D){
-        .X = 0, .Y = -1
+        .X = 0, .Y = 1
     };
 }
 
