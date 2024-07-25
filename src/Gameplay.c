@@ -23,18 +23,16 @@ static float playerMovementSpeed = 350.f;
 static float ballSpeedX = 200.f;
 static float ballSpeedY = 200.f;
 static float destinationX;
-static size_t brickCount;
 
 static Entity* player;
 static Entity* ball;
-static Brick** bricks;
+static BrickManager* brickManager;
 
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
 static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
-static void DrawBricks(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions
@@ -55,10 +53,11 @@ void InitGameplayScreen(void)
             windowWidth / 2.f, windowHeight / 2.f,
             BALL_BLUE_TEXTURE);
 
+    brickManager = CreateBricks(50, 50, windowWidth - 50, windowHeight - 200);
+
     ASSERT_NOTNULL(player, "Player")
     ASSERT_NOTNULL(ball, "Ball")
-
-    bricks = CreateBricks(50, 50, windowWidth - 50, windowHeight - 200, &brickCount);
+    ASSERT_NOTNULL(brickManager, "Brick Manager")
 
     const float playerWidth = player->Bounds.w;
     destinationX = windowWidth / 2.f - playerWidth / 2.f;
@@ -78,14 +77,14 @@ void DrawGameplayScreen(void)
 {
     DrawEntity(ball, NULL);
     DrawEntity(player, NULL);
-    DrawBricks();
+    DrawBricks(brickManager);
 }
 
 void UnloadGameplayScreen(void)
 {
     DestroyEntity(player);
     DestroyEntity(ball);
-    DestroyBricks(bricks, brickCount);
+    DestroyManager(brickManager);
 }
 
 bool FinishGameplayScreen(void)
@@ -95,15 +94,17 @@ bool FinishGameplayScreen(void)
 
 void GameplayEnterKeyPressed(void)
 {
-    ball->IsEnabled = true;
-}
+    if (ball->IsEnabled) return;
 
-static void DrawBricks(void)
-{
-    for (int i = 0; i < brickCount; ++i)
-    {
-        DrawEntity(bricks[i]->Entity, NULL);
-    }
+    ball->Bounds.x = player->Bounds.x + player->Bounds.w / 2;
+    ball->Bounds.y = player->Bounds.y - player->Bounds.h;
+
+    const Vector2D up = GetUpVector();
+
+    ballSpeedY = up.Y * DEFAULT_BALL_SPEED;
+    ballSpeedX = DEFAULT_BALL_SPEED;
+
+    ball->IsEnabled = true;
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
@@ -144,8 +145,6 @@ static void UpdateBallPosition(const float deltaTime)
     {
         ballSpeedY *= -1;
     }
-
-
 
     ball->Bounds.x += ballSpeedX * deltaTime;
     ball->Bounds.x = UTL_FClamp(0, windowWidth - ballDiameter, ball->Bounds.x);

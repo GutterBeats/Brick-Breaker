@@ -11,11 +11,21 @@ typedef struct brick
 {
     int Health;
 
-    Entity* Entity;
+    SDL_FRect Bounds;
+    SDL_Texture* Texture;
+
+    bool IsEnabled;
 } Brick;
 
-Brick** CreateBricks(float x, float y, float w, float h, size_t* count);
+typedef struct brick_manager
+{
+    int BrickCount;
 
-void DestroyBricks(Brick** bricks, size_t brickCount);
+    Brick** Bricks;
+} BrickManager;
 
-void CheckBrickCollision(Brick** bricks, size_t brickCount, float otherX, float otherY, Brick* collision);
+BrickManager* CreateBricks(float x, float y, float w, float h);
+void DrawBricks(const BrickManager* manager);
+void CheckBrickCollision(const BrickManager* manager, float otherX, float otherY, Brick* collision);
+
+void DestroyManager(BrickManager* manager);

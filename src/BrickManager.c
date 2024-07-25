@@ -11,27 +11,42 @@
 
 #define BRICK_PADDING 15
 
-static Brick* CreateBrick(float x, float y, int health, const char* texture);
+static Brick* CreateBrick(float x, float y, int health);
+static const char* GetTextureForHealth(int health);
 
-Brick** CreateBricks(float x, float y, const float w, const float h, size_t* count)
+BrickManager* CreateBricks(float x, float y, const float w, const float h)
 {
-    Entity* initial = CreateEntity(x, y, BRICK_TEXTURE);
-    if (initial == NULL) return NULL;
+    int brickWidth, brickHeight;
+    SDL_Texture* brickTexture = LoadTexture(GREEN_BRICK_TEXTURE, &brickWidth, &brickHeight);
+    if (brickTexture == NULL)
+    {
+        brickWidth = 64;
+        brickHeight = 32;
 
-    const float brickWidth = initial->Bounds.w;
-    const float brickHeight = initial->Bounds.h;
+        SDL_Log(
+            "Unable to load brick width and height from texture. Using default size: w=%d, h=%d",
+            brickWidth, brickHeight);
+    }
 
-    DestroyEntity(initial);
+    FreeTexture(brickTexture);
 
     const int cols = w / (brickWidth + BRICK_PADDING);
     const int rows = h / (brickHeight + BRICK_PADDING);
 
-    Brick** bricks = calloc(rows * cols, sizeof(Brick*));
-    if (bricks == NULL) return NULL;
+    BrickManager* manager = malloc(sizeof(BrickManager));
+    if (manager == NULL) return NULL;
 
-    int i = 0;
+    manager->Bricks = calloc(rows * cols, sizeof(Brick*));
+    if (manager->Bricks == NULL)
+    {
+        free(manager);
+        return NULL;
+    }
+
     x -= BRICK_PADDING;
     y -= BRICK_PADDING;
+
+    manager->BrickCount = 0;
 
     for (int r = 0; r < rows; ++r)
     {
@@ -39,74 +54,95 @@ Brick** CreateBricks(float x, float y, const float w, const float h, size_t* cou
             15 * (rows - r) * 0.5,
             30 * (rows - r) * 0.5);
 
-        SDL_Log("Row %d Health: %d", r, rowHealth);
-
         for (int c = 0; c < cols; ++c)
         {
-            const float xPos = x + (brickWidth + BRICK_PADDING) * c;
-            const float yPos = y + (brickHeight + BRICK_PADDING) * r;
-
-            Brick* brick = CreateBrick(xPos, yPos, rowHealth, BRICK_TEXTURE);
+            Brick* brick = CreateBrick(
+                    x + (brickWidth + BRICK_PADDING) * c,
+                    y + (brickHeight + BRICK_PADDING) * r,
+                    rowHealth);
 
             if (brick == NULL)
             {
-                free(bricks);
+                DestroyManager(manager);
                 free(brick);
 
                 return NULL;
             }
 
-            bricks[i++] = brick;
+            manager->Bricks[manager->BrickCount++] = brick;
         }
     }
 
-    if (count != NULL)
-    {
-        *count = i;
-    }
-
-    return bricks;
+    return manager;
 }
 
-void DestroyBricks(Brick** bricks, const size_t brickCount)
+void DrawBricks(const BrickManager* manager)
 {
-    for (int i = 0; i < brickCount; ++i)
+    for (size_t i = 0; i < manager->BrickCount; ++i)
     {
-        DestroyEntity(bricks[i]->Entity);
-        free(bricks[i]);
+        const Brick* current = manager->Bricks[i];
+        if (!current->IsEnabled) continue;
+
+        DrawTextureF(current->Texture, NULL, &current->Bounds);
     }
 }
 
-static Brick* CreateBrick(const float x, const float y, const int health, const char* texture)
+void CheckBrickCollision(const BrickManager* manager, float otherX, float otherY, Brick* collision)
+{
+    for (size_t i = 0; i < manager->BrickCount; ++i)
+    {
+        const Brick* current = manager->Bricks[i];
+        if (!current->IsEnabled) continue;
+
+
+    }
+}
+
+void DestroyManager(BrickManager* manager)
+{
+    if (manager == NULL) return;
+
+    for (int i = 0; i < manager->BrickCount; ++i)
+    {
+        // ReSharper disable once CppDFANullDereference
+        Brick* brick = manager->Bricks[i];
+        if (brick == NULL) break;
+
+        FreeTexture(brick->Texture);
+        free(brick);
+    }
+
+    free(manager);
+}
+
+static Brick* CreateBrick(const float x, const float y, const int health)
 {
     Brick* brick = malloc(sizeof(Brick));
-    if (brick == NULL)
-    {
-        return NULL;
-    }
+    if (brick == NULL) return NULL;
 
-    brick->Entity = CreateEntity(x, y, texture);
-    if (brick->Entity == NULL)
+    const char* texture = GetTextureForHealth(health);
+    int width, height;
+
+    brick->Texture = LoadTexture(texture, &width, &height);
+    if (brick->Texture == NULL)
     {
         free(brick);
         return NULL;
     }
 
+    brick->Bounds = (SDL_FRect){
+        .x = x,
+        .y = y,
+        .w = (float)width,
+        .h = (float)height
+    };
     brick->Health = health;
-    brick->Entity->IsEnabled = true;
+    brick->IsEnabled = true;
 
     return brick;
 }
 
-void CheckBrickCollision(Brick** bricks, const size_t brickCount, const float otherX, const float otherY, Brick* collision)
+static const char* GetTextureForHealth(int health)
 {
-    if (brickCount == 0) return;
-
-    for (size_t i = 0; i < brickCount; ++i)
-    {
-        const Brick* current = bricks[i];
-        if (!current->Entity->IsEnabled) continue;
-
-        
-    }
+    return GREEN_BRICK_TEXTURE;
 }
