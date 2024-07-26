@@ -8,15 +8,26 @@
 
 #include "Types.h"
 
+typedef struct texture
+{
+    int Width;
+    int Height;
+
+    SDL_Texture* Data;
+} Texture;
+
 u8 InitializeRenderer(SDL_Window* window);
 
 void BeginDrawing(void);
 void FinishDrawing(void);
 void DestroyRenderer(void);
 
-void DrawTexture(SDL_Texture* texture, const SDL_Rect* source, const SDL_Rect* dest);
-void DrawTextureF(SDL_Texture* texture, const SDL_Rect* source, const SDL_FRect* dest);
+void DrawTexture(const Texture* texture, int x, int y);
+void DrawTexture_Alpha(const Texture* texture, int x, int y, float alpha);
 
-SDL_Texture* LoadTexture(const char* filePath, int* textureWidth, int* textureHeight);
-SDL_Texture* LoadTextureFromSurface(SDL_Surface* surface);
-void FreeTexture(SDL_Texture* texture);
+void DrawTextureF(const Texture* texture, float x, float y);
+void DrawTextureF_Alpha(const Texture* texture, float x, float y, float alpha);
+
+Texture* LoadTexture(const char* filePath);
+Texture* LoadTextureFromSurface(SDL_Surface* surface);
+void FreeTexture(Texture* texture);

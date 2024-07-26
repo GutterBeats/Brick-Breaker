@@ -75,8 +75,8 @@ void UpdateGameplayScreen(const float deltaTime)
 
 void DrawGameplayScreen(void)
 {
-    DrawEntity(ball, NULL);
-    DrawEntity(player, NULL);
+    DrawEntity(ball);
+    DrawEntity(player);
     DrawBricks(brickManager);
 }
 

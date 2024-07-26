@@ -5,7 +5,8 @@
 #pragma once
 
 #include <SDL.h>
-#include "Types.h"
+
+#include "Renderer.h"
 
 typedef struct entity
 {
@@ -14,14 +15,14 @@ typedef struct entity
 
     SDL_FRect Bounds;
 
-    SDL_Texture* Texture;
+    Texture* Texture;
 
     bool IsEnabled;
 } Entity;
 
 Entity* CreateEntity(float x, float y, const char* texturePath);
 
-void DrawEntity(const Entity* entity, const SDL_Rect* source);
+void DrawEntity(const Entity* entity);
 void DestroyEntity(Entity* entity);
 
 bool HasTopCollision(const Entity* first, const Entity* second);

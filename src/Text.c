@@ -63,7 +63,7 @@ void DrawText(const char* text, const int x, const int y)
         return;
     }
 
-    SDL_Texture* texture = LoadTextureFromSurface(textSurface);
+    Texture* texture = LoadTextureFromSurface(textSurface);
     if (texture == NULL)
     {
         SDL_Log("Could not create texture from text surface: %s", TTF_GetError());
@@ -74,10 +74,11 @@ void DrawText(const char* text, const int x, const int y)
     int w, h;
     TTF_SizeText(s_Font, text, &w, &h);
 
-    const SDL_Rect rect = { x, y, w, h };
+    texture->Width = w;
+    texture->Height = h;
 
-    DrawTexture(texture, NULL, &rect);
+    DrawTexture(texture, x, y);
 
-    SDL_DestroyTexture(texture);
+    FreeTexture(texture);
     SDL_FreeSurface(textSurface);
 }

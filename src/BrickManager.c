@@ -12,7 +12,7 @@
 #define MAX_ROW_COUNT 10
 
 static Entity* CreateBrick(float x, float y, int health);
-static const char* GetTextureForHealth(int health);
+static const char* GetTexturePathForHealth(int health);
 
 // TODO: Refactor this to load level layouts from a file. Or center it in the window.
 BrickManager* CreateBricks(float x, float y, const float w, const float h, const float padding)
@@ -20,8 +20,13 @@ BrickManager* CreateBricks(float x, float y, const float w, const float h, const
     int brickWidth, brickHeight;
 
     // Making the assumption that all brick textures are the same size. And they are in this instance.
-    SDL_Texture* brickTexture = LoadTexture(GREEN_BRICK_TEXTURE, &brickWidth, &brickHeight);
-    if (brickTexture == NULL)
+    Texture* brickTexture = LoadTexture(GREEN_BRICK_TEXTURE);
+    if (brickTexture != NULL)
+    {
+        brickWidth = brickTexture->Width;
+        brickHeight = brickTexture->Height;
+    }
+    else
     {
         brickWidth = 64;
         brickHeight = 32;
@@ -31,10 +36,10 @@ BrickManager* CreateBricks(float x, float y, const float w, const float h, const
             brickWidth, brickHeight);
     }
 
-    FreeTexture(brickTexture);
-
     const int cols = w / (brickWidth + padding);
     const int rows = UTL_Clamp(MIN_ROW_COUNT, MAX_ROW_COUNT, h / (brickHeight + padding));
+
+    FreeTexture(brickTexture);
 
     BrickManager* manager = malloc(sizeof(BrickManager));
     if (manager == NULL) return NULL;
@@ -86,7 +91,7 @@ void DrawBricks(const BrickManager* manager)
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        DrawTextureF(current->Texture, NULL, &current->Bounds);
+        DrawTextureF(current->Texture, current->Bounds.x, current->Bounds.y);
     }
 }
 
@@ -131,10 +136,9 @@ static Entity* CreateBrick(const float x, const float y, const int health)
     Entity* brick = malloc(sizeof(Entity));
     if (brick == NULL) return NULL;
 
-    const char* texture = GetTextureForHealth(health);
-    int width, height;
+    brick->Texture = LoadTexture(
+        GetTexturePathForHealth(health));
 
-    brick->Texture = LoadTexture(texture, &width, &height);
     if (brick->Texture == NULL)
     {
         free(brick);
@@ -144,16 +148,17 @@ static Entity* CreateBrick(const float x, const float y, const int health)
     brick->Bounds = (SDL_FRect){
         .x = x,
         .y = y,
-        .w = (float)width,
-        .h = (float)height
+        .w = brick->Texture->Width,
+        .h = brick->Texture->Height
     };
+
     brick->Health = health;
     brick->IsEnabled = true;
 
     return brick;
 }
 
-static const char* GetTextureForHealth(int health)
+static const char* GetTexturePathForHealth(int health)
 {
     return GREEN_BRICK_TEXTURE;
 }

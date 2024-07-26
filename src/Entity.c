@@ -15,9 +15,7 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
         return NULL;
     }
 
-    int width, height;
-    entity->Texture = LoadTexture(texturePath, &width, &height);
-
+    entity->Texture = LoadTexture(texturePath);
     if (entity->Texture == NULL)
     {
         return NULL;
@@ -26,8 +24,8 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
     entity->Bounds = (SDL_FRect){
         .x = x,
         .y = y,
-        .w = (float)width,
-        .h = (float)height
+        .w = entity->Texture->Width,
+        .h = entity->Texture->Height
     };
 
     entity->Health = 0;
@@ -37,22 +35,18 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
     return entity;
 }
 
-void DrawEntity(const Entity* entity, const SDL_Rect* source)
+void DrawEntity(const Entity* entity)
 {
     if (!entity->IsEnabled) return;
 
-    DrawTextureF(entity->Texture, source, &entity->Bounds);
+    DrawTextureF(entity->Texture, entity->Bounds.x, entity->Bounds.y);
 }
 
 void DestroyEntity(Entity* entity)
 {
     if (entity == NULL) return;
 
-    if (entity->Texture != NULL)
-    {
-        SDL_DestroyTexture(entity->Texture);
-    }
-
+    FreeTexture(entity->Texture);
     free(entity);
 }
 
