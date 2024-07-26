@@ -23,6 +23,12 @@
 #define BALL_GREY_TEXTURE "resources/Textures/ballGrey.png"
 
 //
+// Images
+//
+#define COMPANY_IMAGE "resources/Images/PeeperGames.jpeg"
+#define ENGINE_IMAGE "resources/Images/LazloEngine.jpeg"
+
+//
 // Fonts
 //
 #define DEFAULT_FONT "resources/Fonts/Kenney Pixel Square.ttf"

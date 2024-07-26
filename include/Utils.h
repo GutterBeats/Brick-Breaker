@@ -75,6 +75,16 @@ static bool UTL_Between(const float min, const float max, const float value)
     return value >= min && value <= max;
 }
 
+static int UTL_Min(const int a, const int b)
+{
+    return a > b ? b : a;
+}
+
+static int UTL_Max(const int a, const int b)
+{
+    return a > b ? a : b;
+}
+
 #pragma endregion
 
 #pragma region Random Value Utility Functions

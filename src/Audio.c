@@ -65,6 +65,8 @@ void PlayMusic(const char* filepath)
 {
     if (music != NULL)
     {
+        SDL_Log("Unloading music (%s)", Mix_GetMusicTitle(music));
+
         if (Mix_PlayingMusic())
         {
             Mix_FadeOutMusic(1500);
@@ -72,6 +74,8 @@ void PlayMusic(const char* filepath)
 
         Mix_FreeMusic(music);
     }
+
+    SDL_Log("Loading music at path: %s", filepath);
 
     music = Mix_LoadMUS(filepath);
     if (music == NULL)
