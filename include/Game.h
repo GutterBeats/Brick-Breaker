@@ -34,7 +34,7 @@ void UnpauseGame(void);
 void StartFrame();
 void EndFrame();
 void SetTimeScale(float scale);
-void SetTimeScaleForFrames(float scale, int frameCount);
+void SetTimeScaleForSeconds(float scale, float seconds);
 float GetDeltaSeconds();
 float GetFPS();
 void DrawFPS(const int x, const int y);

@@ -10,8 +10,6 @@
 #include "Text.h"
 #include "Utils.h"
 
-#define MAX_FRAME_AVG 120
-
 #if __APPLE__
 #define MENU_BAR_HEIGHT 80
 #else
@@ -22,7 +20,7 @@ static Game game;
 static SDL_Window* window;
 static float lastFrame = 0;
 static float currentFrame = 0;
-static int scaledFrameCount = 0;
+static float scaledFrameSeconds = 0.f;
 
 void InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight)
 {
@@ -146,25 +144,25 @@ void StartFrame()
     currentFrame = SDL_GetTicks64();
     game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
 
-    if (scaledFrameCount > 0)
+    if (scaledFrameSeconds > 0)
     {
-        SDL_Log("Scaled for %d frames", scaledFrameCount);
+        SDL_Log("Scaled for %.2f seconds", scaledFrameSeconds);
 
-        if (--scaledFrameCount == 0)
+        scaledFrameSeconds -= game.DeltaSeconds;
+        if (scaledFrameSeconds <= 0)
         {
             SDL_Log("Resetting scaled frame time.");
-            SetTimeScaleForFrames(1.f, 0);
+            SetTimeScaleForSeconds(1.f, 0);
         }
     }
 
     static int frameCount = 0;
     static float total = 0;
-    static float time = 0;
 
-    if (frameCount++ < MAX_FRAME_AVG && time <= 1.f)
+    if (total <= 1.1f)
     {
         total += game.DeltaSeconds;
-        time += game.DeltaSeconds;
+        ++frameCount;
 
         return;
     }
@@ -172,7 +170,6 @@ void StartFrame()
     const float average = total / (float)frameCount;
 
     frameCount = 0;
-    time = 0.f;
     total = 0.f;
 
     game.FPS = 1000.f / (average * 1000.f);
@@ -186,14 +183,14 @@ void EndFrame()
 
 void SetTimeScale(const float scale)
 {
-    game.TimeScale = UTL_FClamp(0.1f, 3.f, scale);
+    game.TimeScale = UTL_FClamp(0.1f, 5.f, scale);
 }
 
-void SetTimeScaleForFrames(const float scale, const int frameCount)
+void SetTimeScaleForSeconds(const float scale, const float seconds)
 {
-    SDL_Log("Setting time scale to %.2f for %d frames.", scale, frameCount);
+    SDL_Log("Setting time scale to %.2f for %.2f frames.", scale, seconds);
 
-    scaledFrameCount = frameCount;
+    scaledFrameSeconds = seconds;
     SetTimeScale(scale);
 }
 
