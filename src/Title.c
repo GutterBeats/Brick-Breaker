@@ -140,7 +140,7 @@ bool FinishTitleScreen(void)
 
 void TitleEnterKeyPressed(void)
 {
-    SDL_Log("Enter key pressed on the title screen.");
+    currentState = FADEOUT;
 }
 
 static Texture* LoadTitleTexture(const char* path)
