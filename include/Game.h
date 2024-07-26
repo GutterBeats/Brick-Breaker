@@ -11,6 +11,7 @@ typedef struct game_t
     int ScreenWidth;
     int ScreenHeight;
 
+    float TimeScale;
     float DeltaSeconds;
     float FPS;
 
@@ -32,6 +33,8 @@ void UnpauseGame(void);
 
 void StartFrame();
 void EndFrame();
+void SetTimeScale(float scale);
+void SetTimeScaleForFrames(float scale, int frameCount);
 float GetDeltaSeconds();
 float GetFPS();
 void DrawFPS(const int x, const int y);

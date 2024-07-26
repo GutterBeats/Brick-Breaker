@@ -22,6 +22,7 @@ static Game game;
 static SDL_Window* window;
 static float lastFrame = 0;
 static float currentFrame = 0;
+static int scaledFrameCount = 0;
 
 void InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight)
 {
@@ -83,8 +84,11 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
     game = (Game){
         .ScreenWidth = desiredScreenWidth,
         .ScreenHeight = desiredScreenHeight,
+        .TimeScale = 1.f,
+        .DeltaSeconds = 0.f,
+        .FPS = 0.f,
         .IsRunning = true,
-        .IsPaused = false
+        .IsPaused = false,
     };
 }
 
@@ -142,6 +146,17 @@ void StartFrame()
     currentFrame = SDL_GetTicks64();
     game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
 
+    if (scaledFrameCount > 0)
+    {
+        SDL_Log("Scaled for %d frames", scaledFrameCount);
+
+        if (--scaledFrameCount == 0)
+        {
+            SDL_Log("Resetting scaled frame time.");
+            SetTimeScaleForFrames(1.f, 0);
+        }
+    }
+
     static int frameCount = 0;
     static float frames[MAX_FRAME_AVG];
     static float time = 0;
@@ -174,9 +189,22 @@ void EndFrame()
     lastFrame = currentFrame;
 }
 
+void SetTimeScale(const float scale)
+{
+    game.TimeScale = UTL_FClamp(0.1f, 3.f, scale);
+}
+
+void SetTimeScaleForFrames(const float scale, const int frameCount)
+{
+    SDL_Log("Setting time scale to %.2f for %d frames.", scale, frameCount);
+
+    scaledFrameCount = frameCount;
+    SetTimeScale(scale);
+}
+
 float GetDeltaSeconds()
 {
-    return game.DeltaSeconds;
+    return game.DeltaSeconds * game.TimeScale;
 }
 
 float GetFPS()
