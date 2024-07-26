@@ -7,25 +7,16 @@
 #include "Entity.h"
 
 // IMPR: Use flywheel pattern to reuse texture for bricks that share texture.
-typedef struct brick
-{
-    int Health;
-
-    SDL_FRect Bounds;
-    SDL_Texture* Texture;
-
-    bool IsEnabled;
-} Brick;
-
 typedef struct brick_manager
 {
     int BrickCount;
 
-    Brick** Bricks;
+    Entity** Bricks;
 } BrickManager;
 
-BrickManager* CreateBricks(float x, float y, float w, float h);
+BrickManager* CreateBricks(float x, float y, float w, float h, float padding);
 void DrawBricks(const BrickManager* manager);
-void CheckBrickCollision(const BrickManager* manager, float otherX, float otherY, Brick* collision);
+
+bool CheckBrickCollision(const BrickManager* manager, const Entity* other);
 
 void DestroyManager(BrickManager* manager);

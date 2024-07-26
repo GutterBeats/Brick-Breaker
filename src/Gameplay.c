@@ -53,7 +53,7 @@ void InitGameplayScreen(void)
             windowWidth / 2.f, windowHeight / 2.f,
             BALL_BLUE_TEXTURE);
 
-    brickManager = CreateBricks(50, 50, windowWidth - 50, windowHeight - 200);
+    brickManager = CreateBricks(90, 50, windowWidth - 100, windowHeight / 3, ball->Bounds.h * 1.5f);
 
     ASSERT_NOTNULL(player, "Player")
     ASSERT_NOTNULL(ball, "Ball")

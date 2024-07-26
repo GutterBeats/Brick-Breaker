@@ -30,6 +30,8 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
         .h = (float)height
     };
 
+    entity->Health = 0;
+    entity->DamageGiven = 0;
     entity->IsEnabled = false;
 
     return entity;
@@ -59,4 +61,10 @@ bool HasTopCollision(const Entity* first, const Entity* second)
     return UTL_Between(second->Bounds.x, second->Bounds.x + second->Bounds.w, first->Bounds.x)
         // Checking with just > instead of >= here prevents stuttering of ball against paddle
         && first->Bounds.y + first->Bounds.w > second->Bounds.y;
+}
+
+bool IsColliding(const Entity* first, const Entity* second)
+{
+    return UTL_Between(second->Bounds.x, second->Bounds.x + second->Bounds.w, first->Bounds.x)
+        && UTL_Between(second->Bounds.y, second->Bounds.y + second->Bounds.h, first->Bounds.y);
 }

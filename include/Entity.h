@@ -9,6 +9,9 @@
 
 typedef struct entity
 {
+    int Health;
+    int DamageGiven;
+
     SDL_FRect Bounds;
 
     SDL_Texture* Texture;
@@ -22,3 +25,4 @@ void DrawEntity(const Entity* entity, const SDL_Rect* source);
 void DestroyEntity(Entity* entity);
 
 bool HasTopCollision(const Entity* first, const Entity* second);
+bool IsColliding(const Entity* first, const Entity* second);
