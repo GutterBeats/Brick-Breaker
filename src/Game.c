@@ -20,7 +20,6 @@
 
 static Game game;
 static SDL_Window* window;
-static bool textInitialized = false;
 static float lastFrame = 0;
 static float currentFrame = 0;
 
@@ -73,7 +72,7 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
         return;
     }
 
-    textInitialized = InitializeText();
+    InitializeText();
     InitializeAudioSystem();
 
     KBD_InitializeKeymap();
@@ -93,6 +92,7 @@ void ShutdownGameSystems(void)
 {
     DestroyRenderer();
 
+    DestroyTextSystem();
     DestroyAudioSystem();
 
     SDL_DestroyWindow(window);

@@ -4,9 +4,7 @@
 
 #pragma once
 
-#include <stdbool.h>
-
-bool InitializeText(void);
-void ShutdownText(void);
+void InitializeText(void);
+void DestroyTextSystem(void);
 
 void DrawText(const char* text, int x, int y);
