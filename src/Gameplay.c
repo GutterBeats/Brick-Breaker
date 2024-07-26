@@ -105,6 +105,8 @@ void GameplayEnterKeyPressed(void)
     const Vector2D up = GetUpVector();
 
     ballSpeedY = up.Y * DEFAULT_BALL_SPEED;
+
+    // TODO: Calculate this as a random direction between left and right
     ballSpeedX = DEFAULT_BALL_SPEED;
 
     ball->IsEnabled = true;
@@ -132,19 +134,25 @@ static void UpdateBallPosition(const float deltaTime)
 {
     if (!ball->IsEnabled) return;
 
-    const float ballDiameter = ball->Bounds.w;
+    const SDL_FRect bounds = ball->Bounds;
+    const float ballDiameter = bounds.w;
 
-    if (ball->Bounds.x + ballDiameter >= windowWidth || ball->Bounds.x <= 0.f)
+    if (bounds.x + ballDiameter >= windowWidth || bounds.x <= 0.f)
     {
         ballSpeedX *= -1;
     }
 
-    if (ball->Bounds.y + ballDiameter >= windowHeight || ball->Bounds.y <= 0.f)
+    if (bounds.y + ballDiameter >= windowHeight || bounds.y <= 0.f)
     {
         ballSpeedY *= -1;
     }
 
     if (HasTopCollision(ball, player))
+    {
+        ballSpeedY *= -1;
+    }
+
+    if (CheckBrickCollision(brickManager, ball))
     {
         ballSpeedY *= -1;
     }
