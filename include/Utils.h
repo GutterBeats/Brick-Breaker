@@ -50,15 +50,15 @@ static int UTL_Clamp(const int min, const int max, const int value)
 /**
  * Utility function to lerp between two values.
  *
- * @param a The current value.
- * @param b The value to lerp to.
- * @param t The interpolation speed.
+ * @param current The current value.
+ * @param target The value to lerp to.
+ * @param lerpSpeed The interpolation speed.
  *
  * @return A float value between a and b.
  */
-static float UTL_Lerp(const float a, const float b, const float t)
+static float UTL_Lerp(const float current, const float target, const float lerpSpeed)
 {
-    return a + (b - a) * UTL_FClamp(0, 1, t);
+    return current + (target - current) * UTL_FClamp(0, 1, lerpSpeed);
 }
 
 /**
