@@ -5,7 +5,8 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(Brick_Breaker main.c
+add_executable(Brick_Breaker
+        src/main.c
         include/Types.h
         include/Keyboard.h
         src/Keyboard.c

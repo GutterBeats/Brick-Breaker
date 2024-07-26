@@ -6,10 +6,10 @@
 
 #include <SDL.h>
 
-#include "Game.h"
-#include "Keyboard.h"
-#include "Screens.h"
-#include "Renderer.h"
+#include "../include/Game.h"
+#include "../include/Keyboard.h"
+#include "../include/Renderer.h"
+#include "../include/Screens.h"
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 1280
