@@ -158,27 +158,22 @@ void StartFrame()
     }
 
     static int frameCount = 0;
-    static float frames[MAX_FRAME_AVG];
+    static float total = 0;
     static float time = 0;
 
-    if (frameCount < MAX_FRAME_AVG && time <= 1.f)
+    if (frameCount++ < MAX_FRAME_AVG && time <= 1.f)
     {
-        frames[frameCount++] = game.DeltaSeconds;
+        total += game.DeltaSeconds;
         time += game.DeltaSeconds;
 
         return;
     }
 
-    float average = 0;
-    for (int i = 0; i < frameCount; ++i)
-    {
-        average += frames[i];
-    }
+    const float average = total / (float)frameCount;
 
-    average /= frameCount;
     frameCount = 0;
     time = 0.f;
-    memset(frames, 0, MAX_FRAME_AVG);
+    total = 0.f;
 
     game.FPS = 1000.f / (average * 1000.f);
     SDL_Log("FPS: %6.2f", game.FPS);
