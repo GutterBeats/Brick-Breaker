@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+#include "Audio.h"
 #include "BrickManager.h"
 #include "Keyboard.h"
 #include "Entity.h"
@@ -65,6 +66,8 @@ void InitGameplayScreen(void)
     player->Bounds.y -= player->Bounds.h * 2.f;
     player->Bounds.x = destinationX;
     player->IsEnabled = true;
+
+    PlayMusic(MAIN_MUSIC);
 }
 
 void UpdateGameplayScreen(const float deltaTime)
