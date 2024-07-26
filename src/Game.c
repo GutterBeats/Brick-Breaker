@@ -3,7 +3,8 @@
 //
 
 #include "Game.h"
-#include "Types.h"
+
+#include "Audio.h"
 #include "Keyboard.h"
 #include "Renderer.h"
 #include "Text.h"
@@ -73,6 +74,7 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
     }
 
     textInitialized = InitializeText();
+    InitializeAudioSystem();
 
     KBD_InitializeKeymap();
     UTL_SetRandomSeed();
@@ -90,6 +92,8 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
 void ShutdownGameSystems(void)
 {
     DestroyRenderer();
+
+    DestroyAudioSystem();
 
     SDL_DestroyWindow(window);
     SDL_Quit();

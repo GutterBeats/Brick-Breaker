@@ -27,3 +27,12 @@
 //
 #define DEFAULT_FONT "resources/Fonts/Kenney Pixel Square.ttf"
 #define DEFAULT_FONT_SIZE 16
+
+//
+// Sounds
+//
+
+//
+// Music
+//
+#define MAIN_MUSIC "resources/Music/Metal Violence Main.wav"

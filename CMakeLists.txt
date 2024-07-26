@@ -27,6 +27,8 @@ add_executable(Brick_Breaker main.c
         include/Text.h
         src/Text.c
         include/Resources.h
+        include/Audio.h
+        src/Audio.c
 )
 
 add_custom_target(CopyResources
