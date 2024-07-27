@@ -37,6 +37,8 @@
 //
 // Sounds
 //
+#define PADDLE_COLLISION_SFX "resources/Sounds/BrickCollision.wav"
+#define BRICK_COLLISION_SFX "resources/Sounds/PaddleCollision.wav"
 
 //
 // Music

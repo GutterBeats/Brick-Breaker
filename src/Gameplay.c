@@ -29,6 +29,9 @@ static Entity* player;
 static Entity* ball;
 static BrickManager* brickManager;
 
+i8 paddleCollisionSfx;
+i8 brickCollisionSfx;
+
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
@@ -69,6 +72,9 @@ void InitGameplayScreen(void)
     player->CurrentPosition.Y -= player->Size.Y * 2.f;
     player->CurrentPosition.X = destinationX;
     player->IsEnabled = true;
+
+    paddleCollisionSfx = LoadSoundEffect(PADDLE_COLLISION_SFX);
+    brickCollisionSfx = LoadSoundEffect(BRICK_COLLISION_SFX);
 
     PlayMusic(MAIN_MUSIC);
 }
