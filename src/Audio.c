@@ -7,6 +7,8 @@
 
 #include "Audio.h"
 
+#include <stdbool.h>
+
 #define MIX_DEFAULT_CHUNK_SIZE 2048
 #define DEFAULT_FREQUENCY 48000
 #define MAX_SFX_COUNT 8
@@ -14,7 +16,7 @@
 static bool audioInitialized;
 static Mix_Music* music = NULL;
 static Mix_Chunk** soundEffects = NULL;
-static u8 currentEffectIndex = 0;
+static i8 currentEffectIndex = 0;
 
 void InitializeAudioSystem(void)
 {
@@ -26,7 +28,7 @@ void InitializeAudioSystem(void)
 
     audioInitialized = false;
 
-    if (Mix_OpenAudio(DEFAULT_FREQUENCY, AUDIO_F32SYS, MIX_DEFAULT_CHANNELS, MIX_DEFAULT_CHUNK_SIZE) < 0)
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, MIX_DEFAULT_CHUNK_SIZE) < 0)
     {
         SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
         return;
@@ -90,7 +92,7 @@ void PlayMusic(const char* filepath)
     }
 }
 
-void PlaySoundEffect(const u8 index)
+void PlaySoundEffect(const i8 index)
 {
     if (index < 0) return;
 
@@ -101,7 +103,7 @@ void PlaySoundEffect(const u8 index)
     }
 }
 
-u8 LoadSoundEffect(const char* filepath)
+i8 LoadSoundEffect(const char* filepath)
 {
     if (currentEffectIndex >= MAX_SFX_COUNT) return -1;
 

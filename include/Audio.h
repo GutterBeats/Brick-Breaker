@@ -10,5 +10,5 @@ void InitializeAudioSystem(void);
 void DestroyAudioSystem(void);
 
 void PlayMusic(const char* filepath);
-void PlaySoundEffect(u8 index);
-u8 LoadSoundEffect(const char* filepath);
+void PlaySoundEffect(i8 index);
+i8 LoadSoundEffect(const char* filepath);
