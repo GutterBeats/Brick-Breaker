@@ -5,6 +5,9 @@
 #include <SDL_ttf.h>
 
 #include "Text.h"
+
+#include <stdbool.h>
+
 #include "Renderer.h"
 #include "Resources.h"
 
@@ -49,7 +52,7 @@ void DestroyTextSystem(void)
     TTF_Quit();
 }
 
-void DrawText(const char* text, const int x, const int y)
+void DrawText(const char* text, Vector2D position)
 {
     if (!TTF_WasInit()) return;
 
@@ -77,7 +80,7 @@ void DrawText(const char* text, const int x, const int y)
     texture->Width = w;
     texture->Height = h;
 
-    DrawTexture(texture, x, y);
+    DrawTexture(texture, position);
 
     FreeTexture(texture);
     SDL_FreeSurface(textSurface);

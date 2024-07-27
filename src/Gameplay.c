@@ -47,24 +47,27 @@ void InitGameplayScreen(void)
     windowHeight = (float)height;
 
     player = CreateEntity(
-            windowWidth / 2.f, windowHeight,
+            (VectorF2D){ windowWidth / 2.f, windowHeight},
             PLAYER_RED_TEXTURE);
 
     ball = CreateEntity(
-            windowWidth / 2.f, windowHeight / 2.f,
+            (VectorF2D){ windowWidth / 2.f, windowHeight / 2.f },
             BALL_BLUE_TEXTURE);
 
-    brickManager = CreateBricks(90, 50, windowWidth - 100, windowHeight / 3, ball->Bounds.h * .5f);
+    brickManager = CreateBricks(
+        (VectorF2D){90, 50 },
+        (VectorF2D){ windowWidth - 100, windowHeight / 3 },
+        ball->Size.Y * .5f);
 
     ASSERT_NOTNULL(player, "Player")
     ASSERT_NOTNULL(ball, "Ball")
     ASSERT_NOTNULL(brickManager, "Brick Manager")
 
-    const float playerWidth = player->Bounds.w;
+    const float playerWidth = player->Size.X;
     destinationX = windowWidth / 2.f - playerWidth / 2.f;
 
-    player->Bounds.y -= player->Bounds.h * 2.f;
-    player->Bounds.x = destinationX;
+    player->CurrentPosition.Y -= player->Size.Y * 2.f;
+    player->CurrentPosition.X = destinationX;
     player->IsEnabled = true;
 
     PlayMusic(MAIN_MUSIC);
@@ -99,8 +102,8 @@ void GameplayEnterKeyPressed(void)
 {
     if (ball->IsEnabled) return;
 
-    ball->Bounds.x = player->Bounds.x + player->Bounds.w / 2;
-    ball->Bounds.y = player->Bounds.y - player->Bounds.h;
+    ball->CurrentPosition.X = player->CurrentPosition.X + player->Size.X / 2;
+    ball->CurrentPosition.Y = player->CurrentPosition.Y - player->Size.Y;
 
     const Vector2D up = GetUpVector();
 
@@ -123,26 +126,26 @@ static void UpdatePlayerPosition(const float deltaTime)
         destinationX += playerMovementSpeed * deltaTime;
     }
 
-    const float playerWidth = player->Bounds.w;
+    const float playerWidth = player->Size.X;
     destinationX = UTL_FClamp(0.f, windowWidth - playerWidth, destinationX);
 
     const float interpolation = powf(interpolationSpeed, deltaTime * 60);
-    player->Bounds.x = UTL_Lerp(destinationX, player->Bounds.x, interpolation);
+    player->CurrentPosition.X = UTL_Lerp(destinationX, player->CurrentPosition.X, interpolation);
 }
 
 static void UpdateBallPosition(const float deltaTime)
 {
     if (!ball->IsEnabled) return;
 
-    const SDL_FRect bounds = ball->Bounds;
-    const float ballDiameter = bounds.w;
+    const VectorF2D currentPosition = ball->CurrentPosition;
+    const float ballDiameter = ball->Size.X;
 
-    if (bounds.x + ballDiameter >= windowWidth || bounds.x <= 0.f)
+    if (currentPosition.X + ballDiameter >= windowWidth || currentPosition.X <= 0.f)
     {
         ballSpeedX *= -1;
     }
 
-    if (bounds.y + ballDiameter >= windowHeight || bounds.y <= 0.f)
+    if (currentPosition.Y + ballDiameter >= windowHeight || currentPosition.Y <= 0.f)
     {
         ballSpeedY *= -1;
     }
@@ -150,16 +153,23 @@ static void UpdateBallPosition(const float deltaTime)
     if (HasTopCollision(ball, player))
     {
         ballSpeedY *= -1;
+
+        if (paddleCollisionSfx >= 0)
+        {
+            PlaySoundEffect(paddleCollisionSfx);
+        }
     }
 
-    if (CheckBrickCollision(brickManager, ball))
+    const Entity collision;
+    if (CheckBrickCollision(brickManager, ball, &collision))
     {
+
         ballSpeedY *= -1;
     }
 
-    ball->Bounds.x += ballSpeedX * deltaTime;
-    ball->Bounds.x = UTL_FClamp(0, windowWidth - ballDiameter, ball->Bounds.x);
+    ball->CurrentPosition.X += ballSpeedX * deltaTime;
+    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->CurrentPosition.X);
 
-    ball->Bounds.y += ballSpeedY * deltaTime;
-    ball->Bounds.y = UTL_FClamp(0, windowHeight - ballDiameter, ball->Bounds.y);
+    ball->CurrentPosition.Y += ballSpeedY * deltaTime;
+    ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->CurrentPosition.Y);
 }

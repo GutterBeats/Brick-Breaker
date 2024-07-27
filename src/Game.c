@@ -204,10 +204,10 @@ float GetFPS()
     return game.FPS;
 }
 
-void DrawFPS(const int x, const int y)
+void DrawFPS(const Vector2D position)
 {
     char buffer[10];
     sprintf(buffer, "FPS: %d", (int)game.FPS);
 
-    DrawText(buffer, x, y);
+    DrawText(buffer, position);
 }

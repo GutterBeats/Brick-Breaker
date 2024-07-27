@@ -110,18 +110,22 @@ void DrawTitleScreen(void)
     {
         case COMPANY:
         {
-            const int xPos = screenWidth / 2 - companyImage->Width / 2;
-            const int yPos = screenHeight / 2 - companyImage->Height / 2;
+            const Vector2D position = (Vector2D){
+                screenWidth / 2 - companyImage->Width / 2,
+                screenHeight / 2 - companyImage->Height / 2
+            };
 
-            DrawTexture_Alpha(companyImage, xPos, yPos, currentAlpha);
+            DrawTexture_Alpha(companyImage, position, currentAlpha);
             break;
         }
         case ENGINE:
         {
-            const int xPos = screenWidth / 2 - engineImage->Width / 2;
-            const int yPos = screenHeight / 2 - engineImage->Height / 2;
+            const Vector2D position = (Vector2D){
+                screenWidth / 2 - engineImage->Width / 2,
+                screenHeight / 2 - engineImage->Height / 2
+            };
 
-            DrawTexture_Alpha(engineImage, xPos, yPos, currentAlpha);
+            DrawTexture_Alpha(engineImage, position, currentAlpha);
             break;
         }
     }

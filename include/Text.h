@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include "Types.h"
+
 void InitializeText(void);
 void DestroyTextSystem(void);
 
-void DrawText(const char* text, int x, int y);
+void DrawText(const char* text, Vector2D position);

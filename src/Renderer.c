@@ -55,9 +55,9 @@ void FinishDrawing(void)
     SDL_RenderPresent(renderer);
 }
 
-void DrawTexture(const Texture* texture, const int x, const int y)
+void DrawTexture(const Texture* texture, const Vector2D position)
 {
-    const SDL_Rect dest = { x, y, texture->Width, texture->Height };
+    const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     if (SDL_RenderCopy(renderer, texture->Data, NULL, &dest))
     {
@@ -65,9 +65,9 @@ void DrawTexture(const Texture* texture, const int x, const int y)
     }
 }
 
-void DrawTexture_Alpha(const Texture* texture, const int x, const int y, const float alpha)
+void DrawTexture_Alpha(const Texture* texture, const Vector2D position, const float alpha)
 {
-    const SDL_Rect dest = { x, y, texture->Width, texture->Height };
+    const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     SDL_SetTextureBlendMode(texture->Data, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(texture->Data, alpha * 255);
@@ -78,9 +78,9 @@ void DrawTexture_Alpha(const Texture* texture, const int x, const int y, const f
     }
 }
 
-void DrawTextureF(const Texture* texture, const float x, const float y)
+void DrawTextureF(const Texture* texture, const VectorF2D position)
 {
-    const SDL_FRect dest = { x, y, texture->Width, texture->Height };
+    const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     if (SDL_RenderCopyF(renderer, texture->Data, NULL, &dest))
     {
@@ -88,9 +88,9 @@ void DrawTextureF(const Texture* texture, const float x, const float y)
     }
 }
 
-void DrawTextureF_Alpha(const Texture* texture, const float x, const float y, const float alpha)
+void DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const float alpha)
 {
-    const SDL_FRect dest = { x, y, texture->Width, texture->Height };
+    const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     SDL_SetTextureBlendMode(texture->Data, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(texture->Data, alpha * 255);

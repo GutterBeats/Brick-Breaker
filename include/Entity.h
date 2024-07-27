@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <SDL.h>
-
 #include "Renderer.h"
 
 typedef struct entity
@@ -13,17 +11,18 @@ typedef struct entity
     int Health;
     int DamageGiven;
 
-    SDL_FRect Bounds;
+    VectorF2D CurrentPosition;
+    VectorF2D PreviousPosition;
+    VectorF2D Size;
 
     Texture* Texture;
 
     bool IsEnabled;
 } Entity;
 
-Entity* CreateEntity(float x, float y, const char* texturePath);
+Entity* CreateEntity(VectorF2D startPosition, const char* texturePath);
 
 void DrawEntity(const Entity* entity);
 void DestroyEntity(Entity* entity);
 
 bool HasTopCollision(const Entity* first, const Entity* second);
-bool IsColliding(const Entity* first, const Entity* second);

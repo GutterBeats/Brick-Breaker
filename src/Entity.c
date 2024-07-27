@@ -6,7 +6,7 @@
 #include "Renderer.h"
 #include "Utils.h"
 
-Entity* CreateEntity(const float x, const float y, const char* texturePath)
+Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
 {
     Entity* entity = malloc(sizeof(Entity));
     if (entity == NULL)
@@ -21,13 +21,9 @@ Entity* CreateEntity(const float x, const float y, const char* texturePath)
         return NULL;
     }
 
-    entity->Bounds = (SDL_FRect){
-        .x = x,
-        .y = y,
-        .w = entity->Texture->Width,
-        .h = entity->Texture->Height
-    };
-
+    entity->CurrentPosition = startPosition;
+    entity->PreviousPosition = GetZeroVectorF();
+    entity->Size = (VectorF2D){ entity->Texture->Width, entity->Texture->Height };
     entity->Health = 0;
     entity->DamageGiven = 0;
     entity->IsEnabled = false;
@@ -39,7 +35,7 @@ void DrawEntity(const Entity* entity)
 {
     if (!entity->IsEnabled) return;
 
-    DrawTextureF(entity->Texture, entity->Bounds.x, entity->Bounds.y);
+    DrawTextureF(entity->Texture, entity->CurrentPosition);
 }
 
 void DestroyEntity(Entity* entity)
@@ -52,13 +48,7 @@ void DestroyEntity(Entity* entity)
 
 bool HasTopCollision(const Entity* first, const Entity* second)
 {
-    return UTL_Between(second->Bounds.x, second->Bounds.x + second->Bounds.w, first->Bounds.x)
+    return UTL_Between(second->CurrentPosition.X, second->CurrentPosition.X + second->Size.X, first->CurrentPosition.X)
         // Checking with just > instead of >= here prevents stuttering of ball against paddle
-        && first->Bounds.y + first->Bounds.w > second->Bounds.y;
-}
-
-bool IsColliding(const Entity* first, const Entity* second)
-{
-    return UTL_Between(second->Bounds.x, second->Bounds.x + second->Bounds.w, first->Bounds.x)
-        && UTL_Between(second->Bounds.y, second->Bounds.y + second->Bounds.h, first->Bounds.y);
+        && first->CurrentPosition.Y + first->Size.X > second->CurrentPosition.Y;
 }

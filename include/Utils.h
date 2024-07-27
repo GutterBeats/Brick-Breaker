@@ -109,7 +109,14 @@ int UTL_GetRandom(int lower, int upper);
 
 #pragma endregion
 
-#pragma region Direction Constants
+#pragma region Vector Constants
+
+static Vector2D GetZeroVector(void)
+{
+    return (Vector2D){
+        .X = 0, .Y = 0
+    };
+}
 
 static Vector2D GetUpVector(void)
 {
@@ -135,6 +142,41 @@ static Vector2D GetLeftVector(void)
 static Vector2D GetRightVector(void)
 {
     return (Vector2D){
+        .X = 1, .Y = 0
+    };
+}
+
+static VectorF2D GetZeroVectorF(void)
+{
+    return (VectorF2D){
+        .X = 0, .Y = 0
+    };
+}
+
+static VectorF2D GetUpVectorF(void)
+{
+    return (VectorF2D){
+        .X = 0, .Y = -1
+    };
+}
+
+static VectorF2D GetDownVectorF(void)
+{
+    return (VectorF2D){
+        .X = 0, .Y = 1
+    };
+}
+
+static VectorF2D GetLeftVectorF(void)
+{
+    return (VectorF2D){
+        .X = -1, .Y = 0
+    };
+}
+
+static VectorF2D GetRightVectorF(void)
+{
+    return (VectorF2D){
         .X = 1, .Y = 0
     };
 }

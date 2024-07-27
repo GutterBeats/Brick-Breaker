@@ -11,11 +11,11 @@
 #define MIN_ROW_COUNT 3
 #define MAX_ROW_COUNT 10
 
-static Entity* CreateBrick(float x, float y, int health);
-static const char* GetTexturePathForHealth(int health);
+static Entity* CreateBrick(float, float, int);
+static const char* GetTexturePathForHealth(int);
 
 // TODO: Refactor this to load level layouts from a file. Or center it in the window.
-BrickManager* CreateBricks(float x, float y, const float w, const float h, const float padding)
+BrickManager* CreateBricks(VectorF2D startPosition, const VectorF2D containerSize, const float padding)
 {
     int brickWidth, brickHeight;
 
@@ -36,8 +36,8 @@ BrickManager* CreateBricks(float x, float y, const float w, const float h, const
             brickWidth, brickHeight);
     }
 
-    const int cols = w / (brickWidth + padding);
-    const int rows = UTL_Clamp(MIN_ROW_COUNT, MAX_ROW_COUNT, h / (brickHeight + padding));
+    const int cols = containerSize.X / (brickWidth + padding);
+    const int rows = UTL_Clamp(MIN_ROW_COUNT, MAX_ROW_COUNT, containerSize.Y / (brickHeight + padding));
 
     FreeTexture(brickTexture);
 
@@ -51,8 +51,8 @@ BrickManager* CreateBricks(float x, float y, const float w, const float h, const
         return NULL;
     }
 
-    x -= padding;
-    y -= padding;
+    startPosition.X -= padding;
+    startPosition.Y -= padding;
 
     manager->BrickCount = 0;
 
@@ -65,8 +65,8 @@ BrickManager* CreateBricks(float x, float y, const float w, const float h, const
         for (int c = 0; c < cols; ++c)
         {
             Entity* brick = CreateBrick(
-                    x + (brickWidth + padding) * c,
-                    y + (brickHeight + padding) * r,
+                    startPosition.X + (brickWidth + padding) * c,
+                    startPosition.Y + (brickHeight + padding) * r,
                     rowHealth);
 
             if (brick == NULL)
@@ -91,24 +91,27 @@ void DrawBricks(const BrickManager* manager)
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        DrawTextureF(current->Texture, current->Bounds.x, current->Bounds.y);
+        DrawTextureF(current->Texture, current->CurrentPosition);
     }
 }
 
-bool CheckBrickCollision(const BrickManager* manager, const Entity* other)
+bool CheckBrickCollision(const BrickManager* manager, const Entity* other, const Entity* collision)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        const SDL_FRect bounds = current->Bounds;
-
-        if (UTL_Between(bounds.x, bounds.x + bounds.w, other->Bounds.x)
-            && UTL_Between(bounds.y, bounds.y + bounds.h, other->Bounds.y))
-        {
-            return true;
-        }
+        // const SDL_FRect otherBounds = other->Bounds;
+        // const SDL_FRect bounds = current->Bounds;
+        //
+        // if (bounds.x < otherBounds.x + otherBounds.w && otherBounds.x < bounds.x + bounds.w
+        //     && bounds.y < otherBounds.y + otherBounds.h && otherBounds.y < bounds.y + bounds.h)
+        // {
+        //     collision = current;
+        //
+        //     return true;
+        // }
     }
 
     return false;
@@ -145,12 +148,9 @@ static Entity* CreateBrick(const float x, const float y, const int health)
         return NULL;
     }
 
-    brick->Bounds = (SDL_FRect){
-        .x = x,
-        .y = y,
-        .w = brick->Texture->Width,
-        .h = brick->Texture->Height
-    };
+    brick->CurrentPosition = (VectorF2D){ x, y };
+    brick->PreviousPosition = (VectorF2D){0,0};
+    brick->Size = (VectorF2D){ brick->Texture->Width, brick->Texture->Height };
 
     brick->Health = health;
     brick->IsEnabled = true;

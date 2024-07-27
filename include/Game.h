@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Types.h"
 #include "stdbool.h"
 
 typedef struct game_t
@@ -37,4 +38,4 @@ void SetTimeScale(float scale);
 void SetTimeScaleForSeconds(float scale, float seconds);
 float GetDeltaSeconds();
 float GetFPS();
-void DrawFPS(const int x, const int y);
+void DrawFPS(Vector2D position);
