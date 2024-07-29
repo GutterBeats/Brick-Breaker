@@ -24,6 +24,7 @@ Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
     entity->CurrentPosition = startPosition;
     entity->PreviousPosition = GetZeroVectorF();
     entity->Size = (VectorF2D){ entity->Texture->Width, entity->Texture->Height };
+    entity->HalfSize = (VectorF2D){ (float)entity->Texture->Width / 2.f, (float)entity->Texture->Height / 2.f };
     entity->Health = 0;
     entity->DamageGiven = 0;
     entity->IsEnabled = false;

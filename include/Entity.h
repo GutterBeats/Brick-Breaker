@@ -14,6 +14,7 @@ typedef struct entity
     VectorF2D CurrentPosition;
     VectorF2D PreviousPosition;
     VectorF2D Size;
+    VectorF2D HalfSize;
 
     Texture* Texture;
 
