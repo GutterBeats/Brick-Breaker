@@ -3,8 +3,10 @@
 //
 // main.c
 //
+// ReSharper disable CppParameterNeverUsed
 
 #include <SDL.h>
+#include <SDL_main.h>
 
 #include "Game.h"
 #include "Keyboard.h"
@@ -95,24 +97,6 @@ void QuitGame(void)
    ShutdownGameSystems();
 }
 
-/*
- * Main Gameplay loop.
- *
- * Update Loop -
- * Update Player Position (Check for Collision with walls, ball) ->
- * Update Ball Position (Check for Collision with player, walls, bricks, floor) ->
- * On Collision with Brick, take health away and optionally update texture that represents it.
- *
- * Draw Loop -
- * Draw Player -> Draw Ball -> Draw Bricks
- *
- * (Optional)
- * Add score
- * Add particles
- * Add Game Over Screen
- * Add Main Menu
- * Add Options
- * */
 void UpdateGame()
 {
     const float deltaTime = GetDeltaSeconds();
