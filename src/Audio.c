@@ -65,6 +65,8 @@ void DestroyAudioSystem(void)
 
 void PlayMusic(const char* filepath)
 {
+    if (!audioInitialized) return;
+
     if (music != NULL)
     {
         SDL_Log("Unloading music (%s)", Mix_GetMusicTitle(music));
@@ -94,6 +96,7 @@ void PlayMusic(const char* filepath)
 
 void PlaySoundEffect(const i8 index)
 {
+    if (!audioInitialized) return;
     if (index < 0) return;
 
     Mix_Chunk* sfx = soundEffects[index];
@@ -105,6 +108,7 @@ void PlaySoundEffect(const i8 index)
 
 i8 LoadSoundEffect(const char* filepath)
 {
+    if (!audioInitialized) return -1;
     if (currentEffectIndex >= MAX_SFX_COUNT) return -1;
 
     Mix_Chunk* sfx = Mix_LoadWAV(filepath);
