@@ -11,7 +11,7 @@ Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
     Entity* entity = malloc(sizeof(Entity));
     if (entity == NULL)
     {
-        SDL_Log("Unable to allocated memory for new entity.");
+        SDL_Log("Unable to allocate memory for new entity.");
         return NULL;
     }
 
