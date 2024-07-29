@@ -9,7 +9,7 @@
 
 #include <stdbool.h>
 
-#define MIX_DEFAULT_CHUNK_SIZE 2048
+#define MIX_DEFAULT_CHUNK_SIZE 4096
 #define DEFAULT_FREQUENCY 48000
 #define MAX_SFX_COUNT 8
 
@@ -28,7 +28,7 @@ void InitializeAudioSystem(void)
 
     audioInitialized = false;
 
-    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, MIX_DEFAULT_CHUNK_SIZE) < 0)
+    if (Mix_OpenAudio(DEFAULT_FREQUENCY, AUDIO_F32SYS, MIX_DEFAULT_CHANNELS, MIX_DEFAULT_CHUNK_SIZE) < 0)
     {
         SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
         return;
