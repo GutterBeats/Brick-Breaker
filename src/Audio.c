@@ -30,7 +30,7 @@ void InitializeAudioSystem(void)
 
     if (Mix_OpenAudio(DEFAULT_FREQUENCY, AUDIO_F32SYS, MIX_DEFAULT_CHANNELS, MIX_DEFAULT_CHUNK_SIZE) < 0)
     {
-        SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
+        SDL_Log("SDL_mixer could not open audio system! SDL_mixer Error: %s", Mix_GetError());
         return;
     }
 
@@ -59,7 +59,9 @@ void DestroyAudioSystem(void)
         Mix_FreeChunk(sfx);
     }
 
+    Mix_FadeOutMusic(1000);
     Mix_FreeMusic(music);
+    Mix_CloseAudio();
     Mix_Quit();
 }
 
