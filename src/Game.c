@@ -87,6 +87,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
         .FPS = 0.f,
         .IsRunning = true,
         .IsPaused = false,
+        .ShowDebug = false,
     };
 }
 
@@ -139,7 +140,7 @@ void GAM_UnpauseGame(void)
     game.IsPaused = false;
 }
 
-void GAM_StartFrame()
+void GAM_StartFrame(void)
 {
     currentFrame = SDL_GetTicks64();
     game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
@@ -176,7 +177,7 @@ void GAM_StartFrame()
     SDL_Log("FPS: %6.2f", game.FPS);
 }
 
-void GAM_EndFrame()
+void GAM_EndFrame(void)
 {
     lastFrame = currentFrame;
 }
@@ -194,12 +195,12 @@ void GAM_SetTimeScaleForSeconds(const float scale, const float seconds)
     GAM_SetTimeScale(scale);
 }
 
-float GAM_GetDeltaSeconds()
+float GAM_GetDeltaSeconds(void)
 {
     return game.DeltaSeconds * game.TimeScale;
 }
 
-float GAM_GetFPS()
+float GAM_GetFPS(void)
 {
     return game.FPS;
 }
@@ -210,4 +211,14 @@ void GAM_DrawFPS(const Vector2D position)
     sprintf(buffer, "FPS: %d", (int)game.FPS);
 
     TXT_DrawText(buffer, position);
+}
+
+bool GAM_GetShowDebug(void)
+{
+    return game.ShowDebug;
+}
+
+void GAM_SetShowDebug(const bool showDebug)
+{
+    game.ShowDebug = showDebug;
 }

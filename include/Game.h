@@ -18,6 +18,7 @@ typedef struct game_t
 
     bool IsRunning;
     bool IsPaused;
+    bool ShowDebug;
 } Game;
 
 void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight);
@@ -28,14 +29,17 @@ void GAM_GetScreenDimensions(int* width, int* height);
 bool GAM_GetIsGameRunning(void);
 void GAM_SetIsGameRunning(bool running);
 
+bool GAM_GetShowDebug(void);
+void GAM_SetShowDebug(bool showDebug);
+
 bool GAM_GetIsPaused(void);
 void GAM_PauseGame(void);
 void GAM_UnpauseGame(void);
 
-void GAM_StartFrame();
-void GAM_EndFrame();
+void GAM_StartFrame(void);
+void GAM_EndFrame(void);
 void GAM_SetTimeScale(float scale);
 void GAM_SetTimeScaleForSeconds(float scale, float seconds);
-float GAM_GetDeltaSeconds();
-float GAM_GetFPS();
+float GAM_GetDeltaSeconds(void);
+float GAM_GetFPS(void);
 void GAM_DrawFPS(Vector2D position);

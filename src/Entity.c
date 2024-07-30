@@ -3,6 +3,8 @@
 //
 
 #include "Entity.h"
+
+#include "Game.h"
 #include "Renderer.h"
 #include "Utils.h"
 
@@ -37,7 +39,11 @@ void ENT_DrawEntity(const Entity* entity)
 {
     if (!entity->IsEnabled) return;
 
-    REN_DrawRectangleF(entity->Position, entity->Size);
+    if (GAM_GetShowDebug())
+    {
+        REN_DrawRectangleF(entity->Position, entity->Size);
+    }
+
     REN_DrawTextureF(entity->Texture, entity->Position);
 }
 

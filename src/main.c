@@ -21,6 +21,7 @@ static void UpdateGame();
 static void ChangeToScreen(GameScreen screen);
 static void HandlePause(void);
 static void HandleEnter(void);
+static void ToggleDebug(void);
 
 GameScreen currentScreen = UNKNOWN;
 static GameScreen previousScreen = UNKNOWN;
@@ -50,13 +51,18 @@ int main(int argc, char* argv[])
 
             if (event.type == SDL_USEREVENT)
             {
-                if (event.user.code == PAUSE)
+                switch (event.user.code)
                 {
-                    HandlePause();
-                }
-                else if (event.user.code == ENTER)
-                {
-                    HandleEnter();
+                    case PAUSE:
+                        HandlePause();
+                        break;
+                    case ENTER:
+                        HandleEnter();
+                        break;
+                    case DEBUG:
+                        ToggleDebug();
+                        break;
+                    default: break;
                 }
 
                 continue;
@@ -162,7 +168,11 @@ void UpdateGame()
             break;
     }
 
-    GAM_DrawFPS(fpsPosition);
+    if (GAM_GetShowDebug())
+    {
+        GAM_DrawFPS(fpsPosition);
+    }
+
     REN_FinishDrawing();
 }
 
@@ -222,4 +232,10 @@ void HandleEnter(void)
             EndingEnterKeyPressed();
             break;
     }
+}
+
+void ToggleDebug(void)
+{
+    GAM_SetShowDebug(
+        !GAM_GetShowDebug());
 }
