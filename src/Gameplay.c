@@ -34,12 +34,14 @@ static BrickManager* brickManager;
 static i8 paddleCollisionSfx;
 static i8 brickCollisionSfx;
 static int lives;
+static bool shouldFinish;
 
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
 static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
+static void BallDied(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions
@@ -49,6 +51,7 @@ void InitGameplayScreen(void)
     int width, height;
     GAM_GetScreenDimensions(&width, &height);
 
+    shouldFinish = false;
     windowWidth = (float)width;
     windowHeight = (float)height;
 
@@ -153,9 +156,7 @@ static void UpdateBallPosition(const float deltaTime)
 
     if (currentPosition.Y + ballDiameter >= windowHeight)
     {
-        --lives;
-        ball->IsEnabled = false;
-
+        BallDied();
         return;
     }
 
@@ -209,4 +210,10 @@ static void UpdateBallPosition(const float deltaTime)
 
     ball->Position.Y += ballSpeedY * deltaTime;
     ball->Position.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->Position.Y);
+}
+
+static void BallDied(void)
+{
+    ball->IsEnabled = false;
+    shouldFinish = --lives == 0;
 }
