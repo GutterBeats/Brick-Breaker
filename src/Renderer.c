@@ -34,8 +34,6 @@ u8 InitializeRenderer(SDL_Window* window)
         return 0;
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
-
     return 1;
 }
 
@@ -47,12 +45,24 @@ void DestroyRenderer(void)
 
 void BeginDrawing(void)
 {
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
     SDL_RenderClear(renderer);
 }
 
 void FinishDrawing(void)
 {
     SDL_RenderPresent(renderer);
+}
+
+void DrawRectangle(const Vector2D position, const Vector2D size)
+{
+    const SDL_Rect rect = (SDL_Rect){
+        .x = position.X, .y = position.Y,
+        .w = size.X, .h = size.Y
+    };
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(renderer, &rect);
 }
 
 void DrawTexture(const Texture* texture, const Vector2D position)
@@ -76,6 +86,17 @@ void DrawTexture_Alpha(const Texture* texture, const Vector2D position, const fl
     {
         SDL_Log("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
     }
+}
+
+void DrawRectangleF(const VectorF2D position, const VectorF2D size)
+{
+    const SDL_FRect rect = (SDL_FRect){
+        .x = position.X, .y = position.Y,
+        .w = size.X, .h = size.Y
+    };
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRectF(renderer, &rect);
 }
 
 void DrawTextureF(const Texture* texture, const VectorF2D position)

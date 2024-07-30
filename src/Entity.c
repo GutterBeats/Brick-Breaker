@@ -37,7 +37,8 @@ void DrawEntity(const Entity* entity)
 {
     if (!entity->IsEnabled) return;
 
-    DrawTextureF(entity->Texture, entity->CurrentPosition);
+    DrawRectangleF(entity->Position, entity->Size);
+    DrawTextureF(entity->Texture, entity->Position);
 }
 
 void DestroyEntity(Entity* entity)
