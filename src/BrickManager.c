@@ -137,21 +137,10 @@ void DestroyManager(BrickManager* manager)
 
 static Entity* CreateBrick(const float x, const float y, const int health)
 {
-    Entity* brick = malloc(sizeof(Entity));
+    const char* texturePath = GetTexturePathForHealth(health);
+
+    Entity* brick = CreateEntity((VectorF2D){ x, y }, texturePath);
     if (brick == NULL) return NULL;
-
-    brick->Texture = LoadTexture(
-        GetTexturePathForHealth(health));
-
-    if (brick->Texture == NULL)
-    {
-        free(brick);
-        return NULL;
-    }
-
-    brick->CurrentPosition = (VectorF2D){ x, y };
-    brick->PreviousPosition = (VectorF2D){0,0};
-    brick->Size = (VectorF2D){ brick->Texture->Width, brick->Texture->Height };
 
     brick->Health = health;
     brick->IsEnabled = true;
