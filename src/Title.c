@@ -104,7 +104,7 @@ void UpdateTitleScreen(const float deltaTime)
 void DrawTitleScreen(void)
 {
     int screenWidth, screenHeight;
-    GetScreenDimensions(&screenWidth, &screenHeight);
+    GAM_GetScreenDimensions(&screenWidth, &screenHeight);
 
     switch (currentFrame)
     {
@@ -115,7 +115,7 @@ void DrawTitleScreen(void)
                 screenHeight / 2 - companyImage->Height / 2
             };
 
-            DrawTexture_Alpha(companyImage, position, currentAlpha);
+            REN_DrawTexture_Alpha(companyImage, position, currentAlpha);
             break;
         }
         case ENGINE:
@@ -125,7 +125,7 @@ void DrawTitleScreen(void)
                 screenHeight / 2 - engineImage->Height / 2
             };
 
-            DrawTexture_Alpha(engineImage, position, currentAlpha);
+            REN_DrawTexture_Alpha(engineImage, position, currentAlpha);
             break;
         }
     }
@@ -133,8 +133,8 @@ void DrawTitleScreen(void)
 
 void UnloadTitleScreen(void)
 {
-    FreeTexture(companyImage);
-    FreeTexture(engineImage);
+    REN_FreeTexture(companyImage);
+    REN_FreeTexture(engineImage);
 }
 
 bool FinishTitleScreen(void)
@@ -149,7 +149,7 @@ void TitleEnterKeyPressed(void)
 
 static Texture* LoadTitleTexture(const char* path)
 {
-    Texture* titleTexture = LoadTexture(path);
+    Texture* titleTexture = REN_LoadTexture(path);
     if (titleTexture == NULL)
     {
         shouldFinish = true;
@@ -160,7 +160,7 @@ static Texture* LoadTitleTexture(const char* path)
     titleTexture->Height -= IMAGE_PADDING;
 
     int screenWidth, screenHeight;
-    GetScreenDimensions(&screenWidth, &screenHeight);
+    GAM_GetScreenDimensions(&screenWidth, &screenHeight);
 
     const float imageRatio = (float)titleTexture->Width / (float)titleTexture->Height;
 

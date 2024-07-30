@@ -14,7 +14,7 @@
 static TTF_Font* s_Font;
 static bool textInitialized;
 
-void InitializeText(void)
+void TXT_InitializeText(void)
 {
     if (textInitialized)
     {
@@ -35,14 +35,14 @@ void InitializeText(void)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
 
-        DestroyTextSystem();
+        TXT_DestroyTextSystem();
         return;
     }
 
     textInitialized = true;
 }
 
-void DestroyTextSystem(void)
+void TXT_DestroyTextSystem(void)
 {
     SDL_Log("Destroying text system.");
 
@@ -52,7 +52,7 @@ void DestroyTextSystem(void)
     TTF_Quit();
 }
 
-void DrawText(const char* text, Vector2D position)
+void TXT_DrawText(const char* text, Vector2D position)
 {
     if (!TTF_WasInit()) return;
 
@@ -66,7 +66,7 @@ void DrawText(const char* text, Vector2D position)
         return;
     }
 
-    Texture* texture = LoadTextureFromSurface(textSurface);
+    Texture* texture = REN_LoadTextureFromSurface(textSurface);
     if (texture == NULL)
     {
         SDL_Log("Could not create texture from text surface: %s", TTF_GetError());
@@ -80,8 +80,8 @@ void DrawText(const char* text, Vector2D position)
     texture->Width = w;
     texture->Height = h;
 
-    DrawTexture(texture, position);
+    REN_DrawTexture(texture, position);
 
-    FreeTexture(texture);
+    REN_FreeTexture(texture);
     SDL_FreeSurface(textSurface);
 }

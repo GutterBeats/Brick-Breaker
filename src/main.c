@@ -32,19 +32,19 @@ extern "C"
 
 int main(int argc, char* argv[])
 {
-    InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
+    GAM_InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
     ChangeToScreen(TITLE);
 
-    while (GetIsGameRunning())
+    while (GAM_GetIsGameRunning())
     {
-        StartFrame();
+        GAM_StartFrame();
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
-                SetIsGameRunning(false);
+                GAM_SetIsGameRunning(false);
                 break;
             }
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         }
 
         UpdateGame();
-        EndFrame();
+        GAM_EndFrame();
     }
 
     QuitGame();
@@ -94,12 +94,12 @@ void QuitGame(void)
             break;
     }
 
-   ShutdownGameSystems();
+   GAM_ShutdownGameSystems();
 }
 
 void UpdateGame()
 {
-    const float deltaTime = GetDeltaSeconds();
+    const float deltaTime = GAM_GetDeltaSeconds();
 
     switch (currentScreen)
     {
@@ -142,7 +142,7 @@ void UpdateGame()
             break;
     }
 
-    BeginDrawing();
+    REN_BeginDrawing();
 
     switch (currentScreen)
     {
@@ -162,8 +162,8 @@ void UpdateGame()
             break;
     }
 
-    DrawFPS(fpsPosition);
-    FinishDrawing();
+    GAM_DrawFPS(fpsPosition);
+    REN_FinishDrawing();
 }
 
 void ChangeToScreen(const GameScreen screen)
@@ -197,9 +197,9 @@ void ChangeToScreen(const GameScreen screen)
 
 void HandlePause(void)
 {
-    if (GetIsPaused()) return;
+    if (GAM_GetIsPaused()) return;
 
-    PauseGame();
+    GAM_PauseGame();
     ChangeToScreen(OPTIONS);
 }
 

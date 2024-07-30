@@ -22,7 +22,7 @@ static float lastFrame = 0;
 static float currentFrame = 0;
 static float scaledFrameSeconds = 0.f;
 
-void InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight)
+void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
@@ -71,8 +71,8 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
         return;
     }
 
-    InitializeText();
-    InitializeAudioSystem();
+    TXT_InitializeText();
+    AUD_InitializeAudioSystem();
 
     KBD_InitializeKeymap();
     UTL_SetRandomSeed();
@@ -90,18 +90,18 @@ void InitializeGameSystems(const char* title, int desiredScreenWidth, int desire
     };
 }
 
-void ShutdownGameSystems(void)
+void GAM_ShutdownGameSystems(void)
 {
-    DestroyRenderer();
+    REN_DestroyRenderer();
 
-    DestroyTextSystem();
-    DestroyAudioSystem();
+    TXT_DestroyTextSystem();
+    AUD_DestroyAudioSystem();
 
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-void GetScreenDimensions(int* width, int* height)
+void GAM_GetScreenDimensions(int* width, int* height)
 {
     if (width != NULL)
     {
@@ -114,32 +114,32 @@ void GetScreenDimensions(int* width, int* height)
     }
 }
 
-bool GetIsGameRunning(void)
+bool GAM_GetIsGameRunning(void)
 {
     return game.IsRunning;
 }
 
-void SetIsGameRunning(const bool running)
+void GAM_SetIsGameRunning(const bool running)
 {
     game.IsRunning = running;
 }
 
-bool GetIsPaused(void)
+bool GAM_GetIsPaused(void)
 {
     return game.IsPaused;
 }
 
-void PauseGame(void)
+void GAM_PauseGame(void)
 {
     game.IsPaused = true;
 }
 
-void UnpauseGame(void)
+void GAM_UnpauseGame(void)
 {
     game.IsPaused = false;
 }
 
-void StartFrame()
+void GAM_StartFrame()
 {
     currentFrame = SDL_GetTicks64();
     game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
@@ -152,7 +152,7 @@ void StartFrame()
         if (scaledFrameSeconds <= 0)
         {
             SDL_Log("Resetting scaled frame time.");
-            SetTimeScaleForSeconds(1.f, 0);
+            GAM_SetTimeScaleForSeconds(1.f, 0);
         }
     }
 
@@ -176,38 +176,38 @@ void StartFrame()
     SDL_Log("FPS: %6.2f", game.FPS);
 }
 
-void EndFrame()
+void GAM_EndFrame()
 {
     lastFrame = currentFrame;
 }
 
-void SetTimeScale(const float scale)
+void GAM_SetTimeScale(const float scale)
 {
     game.TimeScale = UTL_FClamp(0.1f, 5.f, scale);
 }
 
-void SetTimeScaleForSeconds(const float scale, const float seconds)
+void GAM_SetTimeScaleForSeconds(const float scale, const float seconds)
 {
     SDL_Log("Setting time scale to %.2f for %.2f frames.", scale, seconds);
 
     scaledFrameSeconds = seconds;
-    SetTimeScale(scale);
+    GAM_SetTimeScale(scale);
 }
 
-float GetDeltaSeconds()
+float GAM_GetDeltaSeconds()
 {
     return game.DeltaSeconds * game.TimeScale;
 }
 
-float GetFPS()
+float GAM_GetFPS()
 {
     return game.FPS;
 }
 
-void DrawFPS(const Vector2D position)
+void GAM_DrawFPS(const Vector2D position)
 {
     char buffer[10];
     sprintf(buffer, "FPS: %d", (int)game.FPS);
 
-    DrawText(buffer, position);
+    TXT_DrawText(buffer, position);
 }

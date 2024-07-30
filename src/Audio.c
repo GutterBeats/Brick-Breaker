@@ -18,7 +18,7 @@ static Mix_Music* music = NULL;
 static Mix_Chunk** soundEffects = NULL;
 static i8 currentEffectIndex = 0;
 
-void InitializeAudioSystem(void)
+void AUD_InitializeAudioSystem(void)
 {
     if (audioInitialized)
     {
@@ -44,7 +44,7 @@ void InitializeAudioSystem(void)
     audioInitialized = true;
 }
 
-void DestroyAudioSystem(void)
+void AUD_DestroyAudioSystem(void)
 {
     if (!audioInitialized) return;
 
@@ -65,7 +65,7 @@ void DestroyAudioSystem(void)
     Mix_Quit();
 }
 
-void PlayMusic(const char* filepath)
+void AUD_PlayMusic(const char* filepath)
 {
     if (!audioInitialized) return;
 
@@ -96,7 +96,7 @@ void PlayMusic(const char* filepath)
     }
 }
 
-void PlaySoundEffect(const i8 index)
+void AUD_PlaySoundEffect(const i8 index)
 {
     if (!audioInitialized) return;
     if (index < 0) return;
@@ -108,7 +108,7 @@ void PlaySoundEffect(const i8 index)
     }
 }
 
-i8 LoadSoundEffect(const char* filepath)
+i8 AUD_LoadSoundEffect(const char* filepath)
 {
     if (!audioInitialized) return -1;
     if (currentEffectIndex >= MAX_SFX_COUNT) return -1;

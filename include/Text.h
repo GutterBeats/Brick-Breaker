@@ -6,7 +6,7 @@
 
 #include "Types.h"
 
-void InitializeText(void);
-void DestroyTextSystem(void);
+void TXT_InitializeText(void);
+void TXT_DestroyTextSystem(void);
 
-void DrawText(const char* text, Vector2D position);
+void TXT_DrawText(const char* text, Vector2D position);

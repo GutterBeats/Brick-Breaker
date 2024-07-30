@@ -15,12 +15,12 @@ static Entity* CreateBrick(float, float, int);
 static const char* GetTexturePathForHealth(int);
 
 // TODO: Refactor this to load level layouts from a file. Or center it in the window.
-BrickManager* CreateBricks(VectorF2D startPosition, const VectorF2D containerSize, const float padding)
+BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D containerSize, const float padding)
 {
     int brickWidth, brickHeight;
 
     // Making the assumption that all brick textures are the same size. And they are in this instance.
-    Texture* brickTexture = LoadTexture(GREEN_BRICK_TEXTURE);
+    Texture* brickTexture = REN_LoadTexture(GREEN_BRICK_TEXTURE);
     if (brickTexture != NULL)
     {
         brickWidth = brickTexture->Width;
@@ -39,7 +39,7 @@ BrickManager* CreateBricks(VectorF2D startPosition, const VectorF2D containerSiz
     const int cols = containerSize.X / (brickWidth + padding);
     const int rows = UTL_Clamp(MIN_ROW_COUNT, MAX_ROW_COUNT, containerSize.Y / (brickHeight + padding));
 
-    FreeTexture(brickTexture);
+    REN_FreeTexture(brickTexture);
 
     BrickManager* manager = malloc(sizeof(BrickManager));
     if (manager == NULL) return NULL;
@@ -71,7 +71,7 @@ BrickManager* CreateBricks(VectorF2D startPosition, const VectorF2D containerSiz
 
             if (brick == NULL)
             {
-                DestroyManager(manager);
+                BM_DestroyManager(manager);
                 free(brick);
 
                 return NULL;
@@ -84,18 +84,18 @@ BrickManager* CreateBricks(VectorF2D startPosition, const VectorF2D containerSiz
     return manager;
 }
 
-void DrawBricks(const BrickManager* manager)
+void BM_DrawBricks(const BrickManager* manager)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        DrawTextureF(current->Texture, current->Position);
+        REN_DrawTextureF(current->Texture, current->Position);
     }
 }
 
-bool CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex)
+bool BM_CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
@@ -118,18 +118,14 @@ bool CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* coll
     return false;
 }
 
-void DestroyManager(BrickManager* manager)
+void BM_DestroyManager(BrickManager* manager)
 {
     if (manager == NULL) return;
 
     for (int i = 0; i < manager->BrickCount; ++i)
     {
         // ReSharper disable once CppDFANullDereference
-        Entity* brick = manager->Bricks[i];
-        if (brick == NULL) break;
-
-        FreeTexture(brick->Texture);
-        free(brick);
+        ENT_DestroyEntity(manager->Bricks[i]);
     }
 
     free(manager);
@@ -139,7 +135,7 @@ static Entity* CreateBrick(const float x, const float y, const int health)
 {
     const char* texturePath = GetTexturePathForHealth(health);
 
-    Entity* brick = CreateEntity((VectorF2D){ x, y }, texturePath);
+    Entity* brick = ENT_CreateEntity((VectorF2D){ x, y }, texturePath);
     if (brick == NULL) return NULL;
 
     brick->Health = health;

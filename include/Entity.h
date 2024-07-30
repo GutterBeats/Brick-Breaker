@@ -22,11 +22,10 @@ typedef struct entity
     bool IsEnabled;
 } Entity;
 
-Entity* CreateEntity(VectorF2D startPosition, const char* texturePath);
+Entity* ENT_CreateEntity(VectorF2D startPosition, const char* texturePath);
 
-void DrawEntity(const Entity* entity);
-void DestroyEntity(Entity* entity);
+void ENT_DrawEntity(const Entity* entity);
+void ENT_DestroyEntity(Entity* entity);
 
-bool HasTopCollision(const Entity* first, const Entity* second);
 bool ENT_HasCollision(Entity* first, Entity* second);
 void ENT_ResolveCollision(Entity* collider, const Entity* collidee);

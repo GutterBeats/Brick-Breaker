@@ -47,20 +47,20 @@ static void UpdateBallPosition(float deltaTime);
 void InitGameplayScreen(void)
 {
     int width, height;
-    GetScreenDimensions(&width, &height);
+    GAM_GetScreenDimensions(&width, &height);
 
     windowWidth = (float)width;
     windowHeight = (float)height;
 
-    paddle = CreateEntity(
+    paddle = ENT_CreateEntity(
             (VectorF2D){ windowWidth / 2.f, windowHeight},
             PLAYER_RED_TEXTURE);
 
-    ball = CreateEntity(
+    ball = ENT_CreateEntity(
             (VectorF2D){ windowWidth / 2.f, windowHeight / 2.f },
             BALL_BLUE_TEXTURE);
 
-    brickManager = CreateBricks(
+    brickManager = BM_CreateBricks(
         (VectorF2D){90, 50 },
         (VectorF2D){ windowWidth - 100, windowHeight / 3 },
         ball->Size.Y * .5f);
@@ -76,11 +76,11 @@ void InitGameplayScreen(void)
     paddle->Position.X = destinationX;
     paddle->IsEnabled = true;
 
-    paddleCollisionSfx = LoadSoundEffect(PADDLE_COLLISION_SFX);
-    brickCollisionSfx = LoadSoundEffect(BRICK_COLLISION_SFX);
+    paddleCollisionSfx = AUD_LoadSoundEffect(PADDLE_COLLISION_SFX);
+    brickCollisionSfx = AUD_LoadSoundEffect(BRICK_COLLISION_SFX);
     lives = DEFAULT_MAX_LIVES;
 
-    PlayMusic(MAIN_MUSIC);
+    AUD_PlayMusic(MAIN_MUSIC);
 }
 
 void UpdateGameplayScreen(const float deltaTime)
@@ -91,16 +91,16 @@ void UpdateGameplayScreen(const float deltaTime)
 
 void DrawGameplayScreen(void)
 {
-    DrawEntity(ball);
-    DrawEntity(paddle);
-    DrawBricks(brickManager);
+    ENT_DrawEntity(ball);
+    ENT_DrawEntity(paddle);
+    BM_DrawBricks(brickManager);
 }
 
 void UnloadGameplayScreen(void)
 {
-    DestroyEntity(paddle);
-    DestroyEntity(ball);
-    DestroyManager(brickManager);
+    ENT_DestroyEntity(paddle);
+    ENT_DestroyEntity(ball);
+    BM_DestroyManager(brickManager);
 }
 
 bool FinishGameplayScreen(void)
@@ -115,7 +115,7 @@ void GameplayEnterKeyPressed(void)
     ball->Position.X = paddle->Position.X + paddle->Size.X / 2;
     ball->Position.Y = paddle->Position.Y - paddle->Size.Y;
 
-    const Vector2D up = GetUpVector();
+    const Vector2D up = UTL_GetUpVector();
 
     ballSpeedY = up.Y * DEFAULT_BALL_SPEED;
 
@@ -182,11 +182,11 @@ static void UpdateBallPosition(const float deltaTime)
             ballSpeedX *= -1;
         }
 
-        PlaySoundEffect(paddleCollisionSfx);
+        AUD_PlaySoundEffect(paddleCollisionSfx);
     }
 
     size_t collisionIndex;
-    if (CheckBrickCollision(brickManager, ball, &collisionIndex))
+    if (BM_CheckBrickCollision(brickManager, ball, &collisionIndex))
     {
         const Entity* collision = brickManager->Bricks[collisionIndex];
         ENT_ResolveCollision(ball, collision);
@@ -201,7 +201,7 @@ static void UpdateBallPosition(const float deltaTime)
             ballSpeedX *= -1;
         }
 
-        PlaySoundEffect(brickCollisionSfx);
+        AUD_PlaySoundEffect(brickCollisionSfx);
     }
 
     ball->Position.X += ballSpeedX * deltaTime;

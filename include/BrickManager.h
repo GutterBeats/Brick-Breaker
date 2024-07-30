@@ -14,9 +14,9 @@ typedef struct brick_manager
     Entity** Bricks;
 } BrickManager;
 
-BrickManager* CreateBricks(VectorF2D startPosition, VectorF2D containerSize, float padding);
-void DrawBricks(const BrickManager* manager);
+BrickManager* BM_CreateBricks(VectorF2D startPosition, VectorF2D containerSize, float padding);
+void BM_DrawBricks(const BrickManager* manager);
 
-bool CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex);
+bool BM_CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex);
 
-void DestroyManager(BrickManager* manager);
+void BM_DestroyManager(BrickManager* manager);

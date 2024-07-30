@@ -6,9 +6,9 @@
 
 #include "Types.h"
 
-void InitializeAudioSystem(void);
-void DestroyAudioSystem(void);
+void AUD_InitializeAudioSystem(void);
+void AUD_DestroyAudioSystem(void);
 
-void PlayMusic(const char* filepath);
-void PlaySoundEffect(i8 index);
-i8 LoadSoundEffect(const char* filepath);
+void AUD_PlayMusic(const char* filepath);
+void AUD_PlaySoundEffect(i8 index);
+i8 AUD_LoadSoundEffect(const char* filepath);

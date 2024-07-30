@@ -18,18 +18,18 @@ typedef struct texture
 
 u8 InitializeRenderer(SDL_Window* window);
 
-void BeginDrawing(void);
-void FinishDrawing(void);
-void DestroyRenderer(void);
+void REN_BeginDrawing(void);
+void REN_FinishDrawing(void);
+void REN_DestroyRenderer(void);
 
-void DrawRectangle(Vector2D position, Vector2D size);
-void DrawTexture(const Texture* texture, Vector2D position);
-void DrawTexture_Alpha(const Texture* texture, Vector2D position, float alpha);
+void REN_DrawRectangle(Vector2D position, Vector2D size);
+void REN_DrawTexture(const Texture* texture, Vector2D position);
+void REN_DrawTexture_Alpha(const Texture* texture, Vector2D position, float alpha);
 
-void DrawRectangleF(VectorF2D position, VectorF2D size);
-void DrawTextureF(const Texture* texture, VectorF2D position);
-void DrawTextureF_Alpha(const Texture* texture, VectorF2D position, float alpha);
+void REN_DrawRectangleF(VectorF2D position, VectorF2D size);
+void REN_DrawTextureF(const Texture* texture, VectorF2D position);
+void REN_DrawTextureF_Alpha(const Texture* texture, VectorF2D position, float alpha);
 
-Texture* LoadTexture(const char* filePath);
-Texture* LoadTextureFromSurface(SDL_Surface* surface);
-void FreeTexture(Texture* texture);
+Texture* REN_LoadTexture(const char* filePath);
+Texture* REN_LoadTextureFromSurface(SDL_Surface* surface);
+void REN_FreeTexture(Texture* texture);

@@ -37,24 +37,24 @@ u8 InitializeRenderer(SDL_Window* window)
     return 1;
 }
 
-void DestroyRenderer(void)
+void REN_DestroyRenderer(void)
 {
     SDL_DestroyRenderer(renderer);
     IMG_Quit();
 }
 
-void BeginDrawing(void)
+void REN_BeginDrawing(void)
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
     SDL_RenderClear(renderer);
 }
 
-void FinishDrawing(void)
+void REN_FinishDrawing(void)
 {
     SDL_RenderPresent(renderer);
 }
 
-void DrawRectangle(const Vector2D position, const Vector2D size)
+void REN_DrawRectangle(const Vector2D position, const Vector2D size)
 {
     const SDL_Rect rect = (SDL_Rect){
         .x = position.X, .y = position.Y,
@@ -65,7 +65,7 @@ void DrawRectangle(const Vector2D position, const Vector2D size)
     SDL_RenderDrawRect(renderer, &rect);
 }
 
-void DrawTexture(const Texture* texture, const Vector2D position)
+void REN_DrawTexture(const Texture* texture, const Vector2D position)
 {
     const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
@@ -75,7 +75,7 @@ void DrawTexture(const Texture* texture, const Vector2D position)
     }
 }
 
-void DrawTexture_Alpha(const Texture* texture, const Vector2D position, const float alpha)
+void REN_DrawTexture_Alpha(const Texture* texture, const Vector2D position, const float alpha)
 {
     const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
@@ -88,7 +88,7 @@ void DrawTexture_Alpha(const Texture* texture, const Vector2D position, const fl
     }
 }
 
-void DrawRectangleF(const VectorF2D position, const VectorF2D size)
+void REN_DrawRectangleF(const VectorF2D position, const VectorF2D size)
 {
     const SDL_FRect rect = (SDL_FRect){
         .x = position.X, .y = position.Y,
@@ -99,7 +99,7 @@ void DrawRectangleF(const VectorF2D position, const VectorF2D size)
     SDL_RenderDrawRectF(renderer, &rect);
 }
 
-void DrawTextureF(const Texture* texture, const VectorF2D position)
+void REN_DrawTextureF(const Texture* texture, const VectorF2D position)
 {
     const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
@@ -109,7 +109,7 @@ void DrawTextureF(const Texture* texture, const VectorF2D position)
     }
 }
 
-void DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const float alpha)
+void REN_DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const float alpha)
 {
     const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
@@ -122,7 +122,7 @@ void DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const 
     }
 }
 
-Texture* LoadTexture(const char* filePath)
+Texture* REN_LoadTexture(const char* filePath)
 {
     if ((IMG_Init(0) & flags) != flags)
     {
@@ -149,7 +149,7 @@ Texture* LoadTexture(const char* filePath)
     if (SDL_QueryTexture(texture->Data, NULL, NULL, &texture->Width, &texture->Height))
     {
         SDL_Log("Unable to query texture for width and height!: %s", SDL_GetError());
-        FreeTexture(texture);
+        REN_FreeTexture(texture);
 
         return NULL;
     }
@@ -157,7 +157,7 @@ Texture* LoadTexture(const char* filePath)
     return texture;
 }
 
-Texture* LoadTextureFromSurface(SDL_Surface* surface)
+Texture* REN_LoadTextureFromSurface(SDL_Surface* surface)
 {
     Texture* texture = malloc(sizeof(Texture));
     if (texture == NULL)
@@ -178,7 +178,7 @@ Texture* LoadTextureFromSurface(SDL_Surface* surface)
     return texture;
 }
 
-void FreeTexture(Texture* texture)
+void REN_FreeTexture(Texture* texture)
 {
     if (texture == NULL) return;
 

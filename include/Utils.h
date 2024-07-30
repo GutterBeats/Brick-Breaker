@@ -111,70 +111,70 @@ int UTL_GetRandom(int lower, int upper);
 
 #pragma region Vector Constants
 
-static Vector2D GetZeroVector(void)
+static Vector2D UTL_GetZeroVector(void)
 {
     return (Vector2D){
         .X = 0, .Y = 0
     };
 }
 
-static Vector2D GetUpVector(void)
+static Vector2D UTL_GetUpVector(void)
 {
     return (Vector2D){
         .X = 0, .Y = -1
     };
 }
 
-static Vector2D GetDownVector(void)
+static Vector2D UTL_GetDownVector(void)
 {
     return (Vector2D){
         .X = 0, .Y = 1
     };
 }
 
-static Vector2D GetLeftVector(void)
+static Vector2D UTL_GetLeftVector(void)
 {
     return (Vector2D){
         .X = -1, .Y = 0
     };
 }
 
-static Vector2D GetRightVector(void)
+static Vector2D UTL_GetRightVector(void)
 {
     return (Vector2D){
         .X = 1, .Y = 0
     };
 }
 
-static VectorF2D GetZeroVectorF(void)
+static VectorF2D UTL_GetZeroVectorF(void)
 {
     return (VectorF2D){
         .X = 0, .Y = 0
     };
 }
 
-static VectorF2D GetUpVectorF(void)
+static VectorF2D UTL_GetUpVectorF(void)
 {
     return (VectorF2D){
         .X = 0, .Y = -1
     };
 }
 
-static VectorF2D GetDownVectorF(void)
+static VectorF2D UTL_GetDownVectorF(void)
 {
     return (VectorF2D){
         .X = 0, .Y = 1
     };
 }
 
-static VectorF2D GetLeftVectorF(void)
+static VectorF2D UTL_GetLeftVectorF(void)
 {
     return (VectorF2D){
         .X = -1, .Y = 0
     };
 }
 
-static VectorF2D GetRightVectorF(void)
+static VectorF2D UTL_GetRightVectorF(void)
 {
     return (VectorF2D){
         .X = 1, .Y = 0

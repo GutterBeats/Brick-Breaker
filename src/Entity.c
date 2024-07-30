@@ -6,7 +6,7 @@
 #include "Renderer.h"
 #include "Utils.h"
 
-Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
+Entity* ENT_CreateEntity(const VectorF2D startPosition, const char* texturePath)
 {
     Entity* entity = malloc(sizeof(Entity));
     if (entity == NULL)
@@ -15,15 +15,15 @@ Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
         return NULL;
     }
 
-    entity->Texture = LoadTexture(texturePath);
+    entity->Texture = REN_LoadTexture(texturePath);
     if (entity->Texture == NULL)
     {
         return NULL;
     }
 
     entity->Position = startPosition;
-    entity->CurrentOverlap = GetZeroVectorF();
-    entity->PreviousOverlap = GetZeroVectorF();
+    entity->CurrentOverlap = UTL_GetZeroVectorF();
+    entity->PreviousOverlap = UTL_GetZeroVectorF();
     entity->Size = (VectorF2D){ entity->Texture->Width, entity->Texture->Height };
     entity->HalfSize = (VectorF2D){ (float)entity->Texture->Width / 2.f, (float)entity->Texture->Height / 2.f };
     entity->Health = 0;
@@ -33,27 +33,20 @@ Entity* CreateEntity(const VectorF2D startPosition, const char* texturePath)
     return entity;
 }
 
-void DrawEntity(const Entity* entity)
+void ENT_DrawEntity(const Entity* entity)
 {
     if (!entity->IsEnabled) return;
 
-    DrawRectangleF(entity->Position, entity->Size);
-    DrawTextureF(entity->Texture, entity->Position);
+    REN_DrawRectangleF(entity->Position, entity->Size);
+    REN_DrawTextureF(entity->Texture, entity->Position);
 }
 
-void DestroyEntity(Entity* entity)
+void ENT_DestroyEntity(Entity* entity)
 {
     if (entity == NULL) return;
 
-    FreeTexture(entity->Texture);
+    REN_FreeTexture(entity->Texture);
     free(entity);
-}
-
-bool HasTopCollision(const Entity* first, const Entity* second)
-{
-    return UTL_Between(second->Position.X, second->Position.X + second->Size.X, first->Position.X)
-        // Checking with just > instead of >= here prevents stuttering of ball against paddle
-        && first->Position.Y + first->Size.X > second->Position.Y;
 }
 
 bool ENT_HasCollision(Entity* first, Entity* second)
