@@ -144,7 +144,27 @@ static Entity* CreateBrick(const float x, const float y, const int health)
     return brick;
 }
 
-static const char* GetTexturePathForHealth(int health)
+static const char* GetTexturePathForHealth(const int health)
 {
+    if (health >= 80)
+    {
+        return RED_BRICK_TEXTURE;
+    }
+
+    if (health >= 60)
+    {
+        return GREY_BRICK_TEXTURE;
+    }
+
+    if (health >= 40)
+    {
+        return PURPLE_BRICK_TEXTURE;
+    }
+
+    if (health >= 20)
+    {
+        return BLUE_BRICK_TEXTURE;
+    }
+
     return GREEN_BRICK_TEXTURE;
 }
