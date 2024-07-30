@@ -12,7 +12,9 @@
 #include "Resources.h"
 #include "Utils.h"
 
-#define DEFAULT_BALL_SPEED 200.f
+#define DEFAULT_BALL_SPEED 250.f
+#define DEFAULT_MAX_LIVES 3
+#define DEFAULT_BALL_DAMAGE 30
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -25,12 +27,13 @@ static float ballSpeedX = 200.f;
 static float ballSpeedY = 200.f;
 static float destinationX;
 
-static Entity* player;
+static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
 
-i8 paddleCollisionSfx;
-i8 brickCollisionSfx;
+static i8 paddleCollisionSfx;
+static i8 brickCollisionSfx;
+static int lives;
 
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
@@ -49,7 +52,7 @@ void InitGameplayScreen(void)
     windowWidth = (float)width;
     windowHeight = (float)height;
 
-    player = CreateEntity(
+    paddle = CreateEntity(
             (VectorF2D){ windowWidth / 2.f, windowHeight},
             PLAYER_RED_TEXTURE);
 
@@ -62,19 +65,20 @@ void InitGameplayScreen(void)
         (VectorF2D){ windowWidth - 100, windowHeight / 3 },
         ball->Size.Y * .5f);
 
-    ASSERT_NOTNULL(player, "Player")
+    ASSERT_NOTNULL(paddle, "Player")
     ASSERT_NOTNULL(ball, "Ball")
     ASSERT_NOTNULL(brickManager, "Brick Manager")
 
-    const float playerWidth = player->Size.X;
+    const float playerWidth = paddle->Size.X;
     destinationX = windowWidth / 2.f - playerWidth / 2.f;
 
-    player->CurrentPosition.Y -= player->Size.Y * 2.f;
-    player->CurrentPosition.X = destinationX;
-    player->IsEnabled = true;
+    paddle->Position.Y -= paddle->Size.Y * 2.f;
+    paddle->Position.X = destinationX;
+    paddle->IsEnabled = true;
 
     paddleCollisionSfx = LoadSoundEffect(PADDLE_COLLISION_SFX);
     brickCollisionSfx = LoadSoundEffect(BRICK_COLLISION_SFX);
+    lives = DEFAULT_MAX_LIVES;
 
     PlayMusic(MAIN_MUSIC);
 }
@@ -88,13 +92,13 @@ void UpdateGameplayScreen(const float deltaTime)
 void DrawGameplayScreen(void)
 {
     DrawEntity(ball);
-    DrawEntity(player);
+    DrawEntity(paddle);
     DrawBricks(brickManager);
 }
 
 void UnloadGameplayScreen(void)
 {
-    DestroyEntity(player);
+    DestroyEntity(paddle);
     DestroyEntity(ball);
     DestroyManager(brickManager);
 }
@@ -108,8 +112,8 @@ void GameplayEnterKeyPressed(void)
 {
     if (ball->IsEnabled) return;
 
-    ball->CurrentPosition.X = player->CurrentPosition.X + player->Size.X / 2;
-    ball->CurrentPosition.Y = player->CurrentPosition.Y - player->Size.Y;
+    ball->Position.X = paddle->Position.X + paddle->Size.X / 2;
+    ball->Position.Y = paddle->Position.Y - paddle->Size.Y;
 
     const Vector2D up = GetUpVector();
 
@@ -119,6 +123,7 @@ void GameplayEnterKeyPressed(void)
     ballSpeedX = DEFAULT_BALL_SPEED;
 
     ball->IsEnabled = true;
+    ball->DamageGiven = DEFAULT_BALL_DAMAGE;
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
@@ -132,50 +137,76 @@ static void UpdatePlayerPosition(const float deltaTime)
         destinationX += playerMovementSpeed * deltaTime;
     }
 
-    const float playerWidth = player->Size.X;
+    const float playerWidth = paddle->Size.X;
     destinationX = UTL_FClamp(0.f, windowWidth - playerWidth, destinationX);
 
     const float interpolation = powf(interpolationSpeed, deltaTime * 60);
-    player->CurrentPosition.X = UTL_Lerp(destinationX, player->CurrentPosition.X, interpolation);
+    paddle->Position.X = UTL_Lerp(destinationX, paddle->Position.X, interpolation);
 }
 
 static void UpdateBallPosition(const float deltaTime)
 {
     if (!ball->IsEnabled) return;
 
-    const VectorF2D currentPosition = ball->CurrentPosition;
+    const VectorF2D currentPosition = ball->Position;
     const float ballDiameter = ball->Size.X;
+
+    if (currentPosition.Y + ballDiameter >= windowHeight)
+    {
+        --lives;
+        ball->IsEnabled = false;
+
+        return;
+    }
 
     if (currentPosition.X + ballDiameter >= windowWidth || currentPosition.X <= 0.f)
     {
         ballSpeedX *= -1;
     }
 
-    if (currentPosition.Y + ballDiameter >= windowHeight || currentPosition.Y <= 0.f)
+    if (currentPosition.Y <= 0.f)
     {
         ballSpeedY *= -1;
     }
 
-    if (HasTopCollision(ball, player))
+    if (ENT_HasCollision(ball, paddle))
     {
-        ballSpeedY *= -1;
-
-        if (paddleCollisionSfx >= 0)
+        ENT_ResolveCollision(ball, paddle);
+        if (paddle->PreviousOverlap.X > 0)
         {
-            PlaySoundEffect(paddleCollisionSfx);
+            ballSpeedY *= -1;
         }
+
+        if (paddle->PreviousOverlap.Y > 0)
+        {
+            ballSpeedX *= -1;
+        }
+
+        PlaySoundEffect(paddleCollisionSfx);
     }
 
-    const Entity collision;
-    if (CheckBrickCollision(brickManager, ball, &collision))
+    size_t collisionIndex;
+    if (CheckBrickCollision(brickManager, ball, &collisionIndex))
     {
+        const Entity* collision = brickManager->Bricks[collisionIndex];
+        ENT_ResolveCollision(ball, collision);
 
-        ballSpeedY *= -1;
+        if (collision->PreviousOverlap.X > 0)
+        {
+            ballSpeedY *= -1;
+        }
+
+        if (collision->PreviousOverlap.Y > 0)
+        {
+            ballSpeedX *= -1;
+        }
+
+        PlaySoundEffect(brickCollisionSfx);
     }
 
-    ball->CurrentPosition.X += ballSpeedX * deltaTime;
-    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->CurrentPosition.X);
+    ball->Position.X += ballSpeedX * deltaTime;
+    ball->Position.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->Position.X);
 
-    ball->CurrentPosition.Y += ballSpeedY * deltaTime;
-    ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->CurrentPosition.Y);
+    ball->Position.Y += ballSpeedY * deltaTime;
+    ball->Position.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->Position.Y);
 }

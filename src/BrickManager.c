@@ -91,27 +91,28 @@ void DrawBricks(const BrickManager* manager)
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        DrawTextureF(current->Texture, current->CurrentPosition);
+        DrawTextureF(current->Texture, current->Position);
     }
 }
 
-bool CheckBrickCollision(const BrickManager* manager, const Entity* other, const Entity* collision)
+bool CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
-        const Entity* current = manager->Bricks[i];
+        Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        // const SDL_FRect otherBounds = other->Bounds;
-        // const SDL_FRect bounds = current->Bounds;
-        //
-        // if (bounds.x < otherBounds.x + otherBounds.w && otherBounds.x < bounds.x + bounds.w
-        //     && bounds.y < otherBounds.y + otherBounds.h && otherBounds.y < bounds.y + bounds.h)
-        // {
-        //     collision = current;
-        //
-        //     return true;
-        // }
+        if (ENT_HasCollision(ball, current))
+        {
+            current->Health -= ball->DamageGiven;
+            if (current->Health <= 0)
+            {
+                current->IsEnabled = false;
+            }
+
+            *collisionIndex = i;
+            return true;
+        }
     }
 
     return false;
