@@ -13,8 +13,8 @@
 #include "Renderer.h"
 #include "Screens.h"
 
-#define WINDOW_WIDTH 720
-#define WINDOW_HEIGHT 1280
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 800
 
 static void QuitGame(void);
 static void UpdateGame();
