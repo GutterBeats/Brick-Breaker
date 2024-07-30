@@ -26,8 +26,8 @@ Entity* ENT_CreateEntity(const VectorF2D startPosition, const char* texturePath)
     entity->Position = startPosition;
     entity->CurrentOverlap = UTL_GetZeroVectorF();
     entity->PreviousOverlap = UTL_GetZeroVectorF();
-    entity->Size = (VectorF2D){ entity->Texture->Width, entity->Texture->Height };
-    entity->HalfSize = (VectorF2D){ (float)entity->Texture->Width / 2.f, (float)entity->Texture->Height / 2.f };
+    entity->Size = UTL_MakeVectorF2D(entity->Texture->Width, entity->Texture->Height);
+    entity->HalfSize = UTL_ScaleVectorF2D(entity->Size, 0.5f);
     entity->Health = 0;
     entity->DamageGiven = 0;
     entity->IsEnabled = false;
@@ -66,8 +66,8 @@ bool ENT_HasCollision(Entity* first, Entity* second)
     first->PreviousOverlap = first->CurrentOverlap;
     second->PreviousOverlap = second->CurrentOverlap;
 
-    first->CurrentOverlap = (VectorF2D){ xOverlap, yOverlap };
-    second->CurrentOverlap = (VectorF2D){ xOverlap, yOverlap };
+    first->CurrentOverlap = UTL_MakeVectorF2D(xOverlap, yOverlap);
+    second->CurrentOverlap = UTL_MakeVectorF2D(xOverlap, yOverlap);
 
     return xOverlap > 0 && yOverlap > 0;
 }

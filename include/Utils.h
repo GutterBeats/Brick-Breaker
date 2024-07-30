@@ -85,6 +85,12 @@ static int UTL_Max(const int a, const int b)
     return a > b ? a : b;
 }
 
+Vector2D UTL_MakeVector2D(int x, int y);
+Vector2D UTL_ScaleVector2D(Vector2D vector, int factor);
+
+VectorF2D UTL_MakeVectorF2D(float x, float y);
+VectorF2D UTL_ScaleVectorF2D(VectorF2D vector, float factor);
+
 #pragma endregion
 
 #pragma region Random Value Utility Functions

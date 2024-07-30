@@ -135,7 +135,9 @@ static Entity* CreateBrick(const float x, const float y, const int health)
 {
     const char* texturePath = GetTexturePathForHealth(health);
 
-    Entity* brick = ENT_CreateEntity((VectorF2D){ x, y }, texturePath);
+    Entity* brick = ENT_CreateEntity(
+        UTL_MakeVectorF2D(x, y), texturePath);
+
     if (brick == NULL) return NULL;
 
     brick->Health = health;

@@ -110,20 +110,20 @@ void DrawTitleScreen(void)
     {
         case COMPANY:
         {
-            const Vector2D position = (Vector2D){
+            const Vector2D position = UTL_MakeVector2D(
                 screenWidth / 2 - companyImage->Width / 2,
                 screenHeight / 2 - companyImage->Height / 2
-            };
+            );
 
             REN_DrawTexture_Alpha(companyImage, position, currentAlpha);
             break;
         }
         case ENGINE:
         {
-            const Vector2D position = (Vector2D){
+            const Vector2D position = UTL_MakeVector2D(
                 screenWidth / 2 - engineImage->Width / 2,
                 screenHeight / 2 - engineImage->Height / 2
-            };
+            );
 
             REN_DrawTexture_Alpha(engineImage, position, currentAlpha);
             break;

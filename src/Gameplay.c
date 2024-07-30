@@ -53,16 +53,16 @@ void InitGameplayScreen(void)
     windowHeight = (float)height;
 
     paddle = ENT_CreateEntity(
-            (VectorF2D){ windowWidth / 2.f, windowHeight},
+            UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight),
             PLAYER_RED_TEXTURE);
 
     ball = ENT_CreateEntity(
-            (VectorF2D){ windowWidth / 2.f, windowHeight / 2.f },
+            UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight / 2.f),
             BALL_BLUE_TEXTURE);
 
     brickManager = BM_CreateBricks(
-        (VectorF2D){90, 50 },
-        (VectorF2D){ windowWidth - 100, windowHeight / 3 },
+        UTL_MakeVectorF2D(90, 50),
+        UTL_MakeVectorF2D(windowWidth - 100, windowHeight / 3),
         ball->Size.Y * .5f);
 
     ASSERT_NOTNULL(paddle, "Player")
