@@ -67,6 +67,8 @@ void REN_DrawRectangle(const Vector2D position, const Vector2D size)
 
 void REN_DrawTexture(const Texture* texture, const Vector2D position)
 {
+    if (texture == NULL) return;
+
     const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     if (SDL_RenderCopy(renderer, texture->Data, NULL, &dest))
@@ -77,6 +79,8 @@ void REN_DrawTexture(const Texture* texture, const Vector2D position)
 
 void REN_DrawTexture_Alpha(const Texture* texture, const Vector2D position, const float alpha)
 {
+    if (texture == NULL) return;
+
     const SDL_Rect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     SDL_SetTextureBlendMode(texture->Data, SDL_BLENDMODE_BLEND);
@@ -101,6 +105,8 @@ void REN_DrawRectangleF(const VectorF2D position, const VectorF2D size)
 
 void REN_DrawTextureF(const Texture* texture, const VectorF2D position)
 {
+    if (texture == NULL) return;
+
     const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     if (SDL_RenderCopyF(renderer, texture->Data, NULL, &dest))
@@ -111,6 +117,8 @@ void REN_DrawTextureF(const Texture* texture, const VectorF2D position)
 
 void REN_DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const float alpha)
 {
+    if (texture == NULL) return;
+
     const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
 
     SDL_SetTextureBlendMode(texture->Data, SDL_BLENDMODE_BLEND);

@@ -91,7 +91,7 @@ void BM_DrawBricks(const BrickManager* manager)
         const Entity* current = manager->Bricks[i];
         if (!current->IsEnabled) continue;
 
-        REN_DrawTextureF(current->Texture, current->Position);
+        REN_DrawTextureF(current->Texture, current->CurrentPosition);
     }
 }
 

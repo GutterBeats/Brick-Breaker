@@ -11,7 +11,10 @@ typedef struct entity
     int Health;
     int DamageGiven;
 
-    VectorF2D Position;
+    float Speed;
+
+    VectorF2D CurrentPosition;
+    VectorF2D PreviousPosition;
     VectorF2D CurrentOverlap;
     VectorF2D PreviousOverlap;
     VectorF2D Size;
@@ -23,7 +26,9 @@ typedef struct entity
 } Entity;
 
 Entity* ENT_CreateEntity(VectorF2D startPosition, const char* texturePath);
+Entity* ENT_CreateInvisibleEntity(VectorF2D startPosition, VectorF2D size);
 
+void ENT_MoveEntity(Entity* entity, VectorF2D direction, float deltaTime);
 void ENT_DrawEntity(const Entity* entity);
 void ENT_DestroyEntity(Entity* entity);
 
