@@ -34,7 +34,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
     GAM_InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
-    ChangeToScreen(TITLE);
+    ChangeToScreen(GAMEPLAY);
 
     while (GAM_GetIsGameRunning())
     {
