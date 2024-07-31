@@ -69,7 +69,7 @@ bool ENT_HasCollision(Entity* first, Entity* second)
     first->CurrentOverlap = UTL_MakeVectorF2D(xOverlap, yOverlap);
     second->CurrentOverlap = UTL_MakeVectorF2D(xOverlap, yOverlap);
 
-    return xOverlap > 0 && yOverlap > 0;
+    return xOverlap >= 0 && yOverlap >= 0;
 }
 
 void ENT_ResolveCollision(Entity* collider, const Entity* collidee)
