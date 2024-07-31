@@ -11,12 +11,22 @@
   #define MAX_RAND_COUNT 20
 #endif
 
-Vector2D UTL_MakeVector2D(int x, int y)
+Vector2D UTL_AddVector2D(const Vector2D left, const Vector2D right)
+{
+    return UTL_MakeVector2D(left.X + right.X, left.Y + right.Y);
+}
+
+Vector2D UTL_SubtractVector2D(const Vector2D left, const Vector2D right)
+{
+    return UTL_MakeVector2D(left.X - right.X, left.Y - right.Y);
+}
+
+Vector2D UTL_MakeVector2D(const int x, const int y)
 {
     return (Vector2D){ x, y };
 }
 
-Vector2D UTL_ScaleVector2D(const Vector2D vector, int factor)
+Vector2D UTL_ScaleVector2D(const Vector2D vector, const int factor)
 {
     return (Vector2D){
         vector.X * factor,
@@ -24,7 +34,17 @@ Vector2D UTL_ScaleVector2D(const Vector2D vector, int factor)
     };
 }
 
-VectorF2D UTL_MakeVectorF2D(float x, float y)
+VectorF2D UTL_AddVectorF2D(const VectorF2D left, const VectorF2D right)
+{
+    return UTL_MakeVectorF2D(left.X + right.X, left.Y + right.Y);
+}
+
+VectorF2D UTL_SubtractVectorF2D(const VectorF2D left, const VectorF2D right)
+{
+    return UTL_MakeVectorF2D(left.X - right.X, left.Y - right.Y);
+}
+
+VectorF2D UTL_MakeVectorF2D(const float x, const float y)
 {
     return (VectorF2D){ x, y };
 }
@@ -58,4 +78,14 @@ int UTL_GetRandom(const int lower, const int upper)
     }
 
     return upper;
+}
+
+void UTL_PrintVector(const Vector2D vector)
+{
+    SDL_Log("VectorF2D: X=%d, Y=%d", vector.X, vector.Y);
+}
+
+void UTL_PrintVectorF(const VectorF2D vector)
+{
+    SDL_Log("VectorF2D: X=%6.2f, Y=%6.2f", vector.X, vector.Y);
 }

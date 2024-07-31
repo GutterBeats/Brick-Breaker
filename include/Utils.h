@@ -85,9 +85,13 @@ static int UTL_Max(const int a, const int b)
     return a > b ? a : b;
 }
 
+Vector2D UTL_AddVector2D(Vector2D left, Vector2D right);
+Vector2D UTL_SubtractVector2D(Vector2D left, Vector2D right);
 Vector2D UTL_MakeVector2D(int x, int y);
 Vector2D UTL_ScaleVector2D(Vector2D vector, int factor);
 
+VectorF2D UTL_AddVectorF2D(VectorF2D left, VectorF2D right);
+VectorF2D UTL_SubtractVectorF2D(VectorF2D left, VectorF2D right);
 VectorF2D UTL_MakeVectorF2D(float x, float y);
 VectorF2D UTL_ScaleVectorF2D(VectorF2D vector, float factor);
 
@@ -188,3 +192,6 @@ static VectorF2D UTL_GetRightVectorF(void)
 }
 
 #pragma endregion
+
+void UTL_PrintVector(Vector2D vector);
+void UTL_PrintVectorF(VectorF2D vector);
