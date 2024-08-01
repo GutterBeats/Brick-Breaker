@@ -30,6 +30,10 @@ add_executable(Brick_Breaker
         include/Resources.h
         include/Audio.h
         src/Audio.c
+        include/HashTable.h
+        include/Prime.h
+        src/HashTable.c
+        src/Prime.c
 )
 
 add_custom_target(CopyResources
