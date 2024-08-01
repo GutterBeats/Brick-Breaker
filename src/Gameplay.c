@@ -169,16 +169,10 @@ void GameplayEnterKeyPressed(void)
 
     ball->CurrentPosition.X = paddle->CurrentPosition.X + paddle->Size.X / 2;
     ball->CurrentPosition.Y = paddle->CurrentPosition.Y - paddle->Size.Y;
-
-    const Vector2D up = UTL_GetUpVector();
-
-    ballSpeedY = up.Y * DEFAULT_BALL_SPEED;
-
-    // TODO: Calculate this as a random direction between left and right
-    ballSpeedX = DEFAULT_BALL_SPEED;
-
+    ball->PreviousPosition = ball->CurrentPosition;
     ball->IsEnabled = true;
-    ball->DamageGiven = DEFAULT_BALL_DAMAGE;
+
+    ENT_MoveEntity(ball, UTL_GetUpVectorF(), GAM_GetDeltaSeconds());
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
@@ -207,14 +201,16 @@ static void UpdateBallPosition(const float deltaTime)
         return;
     }
 
+    VectorF2D currentDirection = ENT_GetDirection(ball);
+
     if (currentPosition.X + ballDiameter >= windowWidth || currentPosition.X <= 0.f)
     {
-        ballSpeedX *= -1;
+        currentDirection.X *= -1;
     }
 
     if (currentPosition.Y <= 0.f)
     {
-        ballSpeedY *= -1;
+        currentDirection.Y *= -1;
     }
 
     if (ENT_HasCollision(ball, paddle))
@@ -224,12 +220,12 @@ static void UpdateBallPosition(const float deltaTime)
         ENT_ResolveCollision(ball, paddle);
         if (paddle->PreviousOverlap.X > 0)
         {
-            ballSpeedY *= -1;
+            currentDirection.Y *= -1;
         }
 
         if (paddle->PreviousOverlap.Y > 0)
         {
-            ballSpeedX *= -1;
+            currentDirection.X *= -1;
         }
 
         AUD_PlaySoundEffect(paddleCollisionSfx);
@@ -245,21 +241,20 @@ static void UpdateBallPosition(const float deltaTime)
 
         if (brick->PreviousOverlap.X > 0)
         {
-            ballSpeedY *= -1;
+            currentDirection.Y *= -1;
         }
 
         if (brick->PreviousOverlap.Y > 0)
         {
-            ballSpeedX *= -1;
+            currentDirection.X *= -1;
         }
 
         AUD_PlaySoundEffect(brickCollisionSfx);
     }
 
-    ball->CurrentPosition.X += ballSpeedX * deltaTime;
-    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->CurrentPosition.X);
+    ENT_MoveEntity(ball, currentDirection, deltaTime);
 
-    ball->CurrentPosition.Y += ballSpeedY * deltaTime;
+    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->CurrentPosition.X);
     ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->CurrentPosition.Y);
 }
 
