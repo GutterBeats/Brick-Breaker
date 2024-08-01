@@ -14,7 +14,7 @@
 static Entity* CreateBrick(float, float, int);
 static const char* GetTexturePathForHealth(int);
 
-// TODO: Refactor this to load level layouts from a file. Or center it in the window.
+// IMPR: Refactor this to load level layouts from a file. Or center it in the window.
 BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D containerSize, const float padding)
 {
     int brickWidth, brickHeight;

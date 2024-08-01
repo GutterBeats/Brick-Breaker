@@ -114,7 +114,7 @@ void InitGameplayScreen(void)
     walls[3]->IsEnabled = true;
     walls[3]->Name = "Bottom Wall";
 
-    AUD_PlayMusic(MAIN_MUSIC);
+    //AUD_PlayMusic(MAIN_MUSIC);
 }
 
 void UpdateGameplayScreen(const float deltaTime)
