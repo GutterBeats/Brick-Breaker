@@ -32,6 +32,7 @@ Entity* ENT_CreateInvisibleEntity(VectorF2D startPosition, VectorF2D size);
 void ENT_MoveEntity(Entity* entity, VectorF2D direction, float deltaTime);
 void ENT_DrawEntity(const Entity* entity);
 void ENT_DestroyEntity(Entity* entity);
+VectorF2D ENT_GetDirection(const Entity* entity);
 
 bool ENT_HasCollision(Entity* first, Entity* second);
 void ENT_ResolveCollision(Entity* collider, const Entity* collidee);

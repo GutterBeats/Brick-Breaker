@@ -83,6 +83,12 @@ void ENT_DestroyEntity(Entity* entity)
     free(entity);
 }
 
+VectorF2D ENT_GetDirection(const Entity* entity)
+{
+    const VectorF2D direction = UTL_SubtractVectorF2D(entity->CurrentPosition, entity->PreviousPosition);
+    return UTL_NormalizeVectorF2D(direction);
+}
+
 bool ENT_HasCollision(Entity* first, Entity* second)
 {
     const float dx = fabs(first->CurrentPosition.X - second->CurrentPosition.X);
