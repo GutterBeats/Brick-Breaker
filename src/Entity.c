@@ -55,7 +55,7 @@ void ENT_MoveEntity(Entity* entity, const VectorF2D direction, const float delta
 {
     entity->PreviousPosition = entity->CurrentPosition;
 
-    const VectorF2D newDirection = UTL_AddVectorF2D(entity->CurrentPosition, direction);
+    const VectorF2D newDirection = UTL_AddVectorF2D(entity->CurrentPosition, UTL_NormalizeVectorF2D(direction));
 
     const VectorF2D velocity = UTL_ScaleVectorF2D(
         UTL_SubtractVectorF2D(newDirection, entity->PreviousPosition), entity->Speed * deltaTime);
