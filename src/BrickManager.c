@@ -132,6 +132,7 @@ void BM_DestroyManager(BrickManager* manager)
         ENT_DestroyEntity(manager->Bricks[i]);
     }
 
+    free(manager->Bricks);
     free(manager);
 }
 
