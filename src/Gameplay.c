@@ -2,8 +2,6 @@
 // Created by Anthony Lesch on 7/16/24.
 //
 
-#include <math.h>
-
 #include "Audio.h"
 #include "BrickManager.h"
 #include "Keyboard.h"
@@ -23,8 +21,6 @@
 static float windowWidth = 0;
 static float windowHeight = 0;
 static float playerMovementSpeed = 350.f;
-static float ballSpeedX = 200.f;
-static float ballSpeedY = 200.f;
 static float destinationX;
 
 static Entity* paddle;
