@@ -25,7 +25,7 @@ static float windowHeight = 0;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
-static Entity* walls[WALL_COUNT];
+static Entity** walls;
 
 static i8 paddleCollisionSfx;
 static i8 brickCollisionSfx;
@@ -35,6 +35,8 @@ static bool shouldFinish;
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
+static void InitializeEntities(void);
+static void DestroyWalls(void);
 static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
@@ -51,60 +53,11 @@ void InitGameplayScreen(void)
     windowWidth = (float)width;
     windowHeight = (float)height;
 
-    paddle = ENT_CreateEntity(
-            UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight),
-            PLAYER_RED_TEXTURE);
-
-    ball = ENT_CreateEntity(
-            UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight / 2.f),
-            BALL_BLUE_TEXTURE);
-
-    brickManager = BM_CreateBricks(
-        UTL_MakeVectorF2D(90, 50),
-        UTL_MakeVectorF2D(windowWidth - 100, windowHeight / 3),
-        ball->Size.Y * .5f);
-
-    ASSERT_NOTNULL(paddle, "Player")
-    ASSERT_NOTNULL(ball, "Ball")
-    ASSERT_NOTNULL(brickManager, "Brick Manager")
-
-    paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
-    paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
-    paddle->Speed = DEFAULT_PLAYER_SPEED;
-    paddle->IsEnabled = true;
-    paddle->Name = "Player Paddle";
-
-    ball->Name = "Ball";
-    ball->Speed = DEFAULT_BALL_SPEED;
-    ball->DamageGiven = DEFAULT_BALL_DAMAGE;
-
     paddleCollisionSfx = AUD_LoadSoundEffect(PADDLE_COLLISION_SFX);
     brickCollisionSfx = AUD_LoadSoundEffect(BRICK_COLLISION_SFX);
     lives = DEFAULT_MAX_LIVES;
 
-    // Left
-    walls[0] = ENT_CreateInvisibleEntity(
-        UTL_GetZeroVectorF(), UTL_MakeVectorF2D(10, windowHeight));
-    walls[0]->IsEnabled = true;
-    walls[0]->Name = "Left Wall";
-
-    // Top
-    walls[1] = ENT_CreateInvisibleEntity(
-        UTL_GetZeroVectorF(), UTL_MakeVectorF2D(windowWidth, 10));
-    walls[1]->IsEnabled = true;
-    walls[1]->Name = "Top Wall";
-
-    // Right
-    walls[2] = ENT_CreateInvisibleEntity(
-        UTL_MakeVectorF2D(windowWidth - 10, 0), UTL_MakeVectorF2D(10, windowHeight));
-    walls[2]->IsEnabled = true;
-    walls[2]->Name = "Right Wall";
-
-    // Bottom
-    walls[3] = ENT_CreateInvisibleEntity(
-        UTL_MakeVectorF2D(0, windowHeight - 10), UTL_MakeVectorF2D(windowWidth, 10));
-    walls[3]->IsEnabled = true;
-    walls[3]->Name = "Bottom Wall";
+    InitializeEntities();
 
     //AUD_PlayMusic(MAIN_MUSIC);
 }
@@ -143,11 +96,7 @@ void UnloadGameplayScreen(void)
     ENT_DestroyEntity(paddle);
     ENT_DestroyEntity(ball);
     BM_DestroyManager(brickManager);
-
-    for (int i = 0; i < WALL_COUNT; ++i)
-    {
-        ENT_DestroyEntity(walls[i]);
-    }
+    DestroyWalls();
 }
 
 bool FinishGameplayScreen(void)
@@ -165,6 +114,77 @@ void GameplayEnterKeyPressed(void)
     ball->IsEnabled = true;
 
     ENT_MoveEntity(ball, UTL_GetUpVectorF(), GAM_GetDeltaSeconds());
+}
+
+static void InitializeEntities(void)
+{
+    paddle = ENT_CreateEntity(
+                UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight),
+                PLAYER_RED_TEXTURE);
+
+    ball = ENT_CreateEntity(
+            UTL_MakeVectorF2D(windowWidth / 2.f, windowHeight / 2.f),
+            BALL_BLUE_TEXTURE);
+
+    brickManager = BM_CreateBricks(
+        UTL_MakeVectorF2D(90, 50),
+        UTL_MakeVectorF2D(windowWidth - 100, windowHeight / 3),
+        ball->Size.Y * .5f);
+
+    ASSERT_NOTNULL(paddle, "Player")
+    ASSERT_NOTNULL(ball, "Ball")
+    ASSERT_NOTNULL(brickManager, "Brick Manager")
+
+    paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
+    paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
+    paddle->Speed = DEFAULT_PLAYER_SPEED;
+    paddle->IsEnabled = true;
+    paddle->Name = "Player Paddle";
+
+    ball->Name = "Ball";
+    ball->Speed = DEFAULT_BALL_SPEED;
+    ball->DamageGiven = DEFAULT_BALL_DAMAGE;
+
+    walls = calloc(WALL_COUNT, sizeof(Entity*));
+    if (walls == NULL)
+    {
+        SDL_Log("Could not get memory for walls!");
+        return;
+    }
+
+    // Left
+    walls[0] = ENT_CreateInvisibleEntity(
+        UTL_MakeVectorF2D(-windowWidth, 0), UTL_MakeVectorF2D(windowWidth, windowHeight));
+    walls[0]->IsEnabled = true;
+    walls[0]->Name = "Left Wall";
+
+    // Top
+    walls[1] = ENT_CreateInvisibleEntity(
+        UTL_GetZeroVectorF(), UTL_MakeVectorF2D(windowWidth, 10));
+    walls[1]->IsEnabled = true;
+    walls[1]->Name = "Top Wall";
+
+    // Right
+    walls[2] = ENT_CreateInvisibleEntity(
+        UTL_MakeVectorF2D(windowWidth - 10, 0), UTL_MakeVectorF2D(10, windowHeight));
+    walls[2]->IsEnabled = true;
+    walls[2]->Name = "Right Wall";
+
+    // Bottom
+    walls[3] = ENT_CreateInvisibleEntity(
+        UTL_MakeVectorF2D(0, windowHeight - 10), UTL_MakeVectorF2D(windowWidth, 10));
+    walls[3]->IsEnabled = true;
+    walls[3]->Name = "Bottom Wall";
+}
+
+static void DestroyWalls(void)
+{
+    for (int i = 0; i < WALL_COUNT; ++i)
+    {
+        ENT_DestroyEntity(walls[i]);
+    }
+
+    free(walls);
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
