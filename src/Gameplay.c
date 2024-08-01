@@ -160,7 +160,7 @@ void UnloadGameplayScreen(void)
 
 bool FinishGameplayScreen(void)
 {
-    return false;
+    return shouldFinish;
 }
 
 void GameplayEnterKeyPressed(void)
