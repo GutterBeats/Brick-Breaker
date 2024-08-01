@@ -10,6 +10,7 @@
 #include "Resources.h"
 #include "Utils.h"
 
+#define DEFAULT_PLAYER_SPEED 350.f
 #define DEFAULT_BALL_SPEED 250.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
@@ -20,8 +21,6 @@
 //----------------------------------------------------------------------------------
 static float windowWidth = 0;
 static float windowHeight = 0;
-static float playerMovementSpeed = 350.f;
-static float destinationX;
 
 static Entity* paddle;
 static Entity* ball;
@@ -69,12 +68,9 @@ void InitGameplayScreen(void)
     ASSERT_NOTNULL(ball, "Ball")
     ASSERT_NOTNULL(brickManager, "Brick Manager")
 
-    const float playerWidth = paddle->Size.X;
-    destinationX = windowWidth / 2.f - playerWidth / 2.f;
-
     paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
-    paddle->CurrentPosition.X = destinationX;
-    paddle->Speed = playerMovementSpeed;
+    paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
+    paddle->Speed = DEFAULT_PLAYER_SPEED;
     paddle->IsEnabled = true;
     paddle->Name = "Player Paddle";
 
