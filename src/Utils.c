@@ -34,6 +34,14 @@ Vector2D UTL_ScaleVector2D(const Vector2D vector, const int factor)
     };
 }
 
+Vector2D UTL_NormalizeVector2D(Vector2D vector)
+{
+    const int magnitude = sqrt(vector.X * vector.X + vector.Y * vector.Y);
+    if (magnitude == 0) return vector;
+
+    return UTL_MakeVector2D(vector.X / magnitude, vector.Y / magnitude);
+}
+
 VectorF2D UTL_AddVectorF2D(const VectorF2D left, const VectorF2D right)
 {
     return UTL_MakeVectorF2D(left.X + right.X, left.Y + right.Y);
@@ -55,6 +63,14 @@ VectorF2D UTL_ScaleVectorF2D(const VectorF2D vector, const float factor)
         vector.X * factor,
         vector.Y * factor
     };
+}
+
+VectorF2D UTL_NormalizeVectorF2D(VectorF2D vector)
+{
+    const float magnitude = sqrt(vector.X * vector.X + vector.Y * vector.Y);
+    if (magnitude == 0) return vector;
+
+    return UTL_MakeVectorF2D(vector.X / magnitude, vector.Y / magnitude);
 }
 
 void UTL_SetRandomSeed(void)
