@@ -80,6 +80,11 @@ void InitGameplayScreen(void)
     paddle->CurrentPosition.X = destinationX;
     paddle->Speed = playerMovementSpeed;
     paddle->IsEnabled = true;
+    paddle->Name = "Player Paddle";
+
+    ball->Name = "Ball";
+    ball->Speed = DEFAULT_BALL_SPEED;
+    ball->DamageGiven = DEFAULT_BALL_DAMAGE;
 
     paddleCollisionSfx = AUD_LoadSoundEffect(PADDLE_COLLISION_SFX);
     brickCollisionSfx = AUD_LoadSoundEffect(BRICK_COLLISION_SFX);
@@ -89,21 +94,25 @@ void InitGameplayScreen(void)
     walls[0] = ENT_CreateInvisibleEntity(
         UTL_GetZeroVectorF(), UTL_MakeVectorF2D(10, windowHeight));
     walls[0]->IsEnabled = true;
+    walls[0]->Name = "Left Wall";
 
     // Top
     walls[1] = ENT_CreateInvisibleEntity(
         UTL_GetZeroVectorF(), UTL_MakeVectorF2D(windowWidth, 10));
     walls[1]->IsEnabled = true;
+    walls[1]->Name = "Top Wall";
 
     // Right
     walls[2] = ENT_CreateInvisibleEntity(
         UTL_MakeVectorF2D(windowWidth - 10, 0), UTL_MakeVectorF2D(10, windowHeight));
     walls[2]->IsEnabled = true;
+    walls[2]->Name = "Right Wall";
 
     // Bottom
     walls[3] = ENT_CreateInvisibleEntity(
         UTL_MakeVectorF2D(0, windowHeight - 10), UTL_MakeVectorF2D(windowWidth, 10));
     walls[3]->IsEnabled = true;
+    walls[3]->Name = "Bottom Wall";
 
     AUD_PlayMusic(MAIN_MUSIC);
 }
@@ -118,12 +127,9 @@ void UpdateGameplayScreen(const float deltaTime)
         Entity* wall = walls[i];
         if (ENT_HasCollision(paddle, wall))
         {
-            ENT_ResolveCollision(paddle, wall);
-        }
+            SDL_Log("Entity %s and %s collided!", paddle->Name, wall->Name);
 
-        if (ENT_HasCollision(ball, wall))
-        {
-            ENT_ResolveCollision(ball, wall);
+            ENT_ResolveCollision(paddle, wall);
         }
     }
 }
@@ -213,6 +219,8 @@ static void UpdateBallPosition(const float deltaTime)
 
     if (ENT_HasCollision(ball, paddle))
     {
+        SDL_Log("Entity %s and %s collided!", ball->Name, paddle->Name);
+
         ENT_ResolveCollision(ball, paddle);
         if (paddle->PreviousOverlap.X > 0)
         {
@@ -231,6 +239,8 @@ static void UpdateBallPosition(const float deltaTime)
     if (BM_CheckBrickCollision(brickManager, ball, &collisionIndex))
     {
         const Entity* brick = brickManager->Bricks[collisionIndex];
+        SDL_Log("Entity %s and %s collided!", ball->Name, brick->Name);
+
         ENT_ResolveCollision(ball, brick);
 
         if (brick->PreviousOverlap.X > 0)

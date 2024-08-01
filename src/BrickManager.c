@@ -77,6 +77,10 @@ BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D container
                 return NULL;
             }
 
+            char buffer[20];
+            sprintf(buffer, "Brick [%i, %i]", r, c);
+
+            brick->Name = strdup(buffer);
             manager->Bricks[manager->BrickCount++] = brick;
         }
     }

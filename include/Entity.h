@@ -10,6 +10,7 @@ typedef struct entity
 {
     int Health;
     int DamageGiven;
+    const char* Name;
 
     float Speed;
 
