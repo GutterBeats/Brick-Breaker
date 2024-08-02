@@ -80,6 +80,12 @@ void ENT_DestroyEntity(Entity* entity)
     if (entity == NULL) return;
 
     REN_FreeTexture(entity->Texture);
+
+    if (entity->CollisionVolume != NULL)
+    {
+        free(entity->CollisionVolume);
+    }
+
     free(entity);
 }
 

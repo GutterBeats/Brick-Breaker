@@ -22,6 +22,7 @@ typedef struct entity
     VectorF2D HalfSize;
 
     Texture* Texture;
+    void* CollisionVolume;
 
     bool IsEnabled;
 } Entity;
