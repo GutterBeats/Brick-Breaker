@@ -4,7 +4,7 @@
 
 #include "BrickManager.h"
 
-#include "CollisionVolume.h"
+#include "Collision.h"
 #include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
@@ -101,14 +101,16 @@ void BM_DrawBricks(const BrickManager* manager)
     }
 }
 
-bool BM_CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex)
+CollisionResult BM_CheckBrickCollision(const BrickManager* manager, Entity* ball)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
         Entity* current = manager->Bricks[i];
-        if (!current->IsEnabled) continue;
+        if (!current->IsEnabled)
+            continue;
 
-        if (ENT_HasCollision(ball, current))
+        const CollisionResult result = COL_HasCollisionBoxCircle(current->CollisionVolume, ball->CollisionVolume);
+        if (result.Collided)
         {
             current->Health -= ball->DamageGiven;
             if (current->Health <= 0)
@@ -116,12 +118,11 @@ bool BM_CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* c
                 current->IsEnabled = false;
             }
 
-            *collisionIndex = i;
-            return true;
+            return result;
         }
     }
 
-    return false;
+    return (CollisionResult) { .Collided = false };
 }
 
 void BM_DestroyManager(BrickManager* manager)

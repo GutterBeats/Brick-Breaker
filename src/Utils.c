@@ -83,6 +83,11 @@ float UTL_GetVectorF2DLength(const VectorF2D vector)
     return sqrt(vector.X * vector.X + vector.Y * vector.Y);
 }
 
+float UTL_GetVectorF2DDotProduct(const VectorF2D first, const VectorF2D second)
+{
+    return first.X * second.X + first.Y * second.Y;
+}
+
 void UTL_SetRandomSeed(void)
 {
     static bool seeded = false;

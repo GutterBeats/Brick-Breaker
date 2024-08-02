@@ -4,7 +4,7 @@
 
 #include "Audio.h"
 #include "BrickManager.h"
-#include "CollisionVolume.h"
+#include "Collision.h"
 #include "Entity.h"
 #include "Game.h"
 #include "Keyboard.h"
@@ -15,7 +15,6 @@
 #define DEFAULT_BALL_SPEED 250.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
-#define WALL_COUNT 4
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -26,7 +25,6 @@ static float windowHeight = 0;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
-static Entity** walls;
 
 static i8 paddleCollisionSfx;
 static i8 brickCollisionSfx;
@@ -37,7 +35,6 @@ static bool shouldFinish;
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
 static void InitializeEntities(void);
-static void DestroyWalls(void);
 static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
@@ -68,15 +65,13 @@ void UpdateGameplayScreen(const float deltaTime)
     UpdatePlayerPosition(deltaTime);
     UpdateBallPosition(deltaTime);
 
-    for (int i = 0; i < WALL_COUNT; ++i)
-    {
-        Entity* wall = walls[i];
-        if (ENT_HasCollision(paddle, wall))
-        {
-            SDL_Log("Entity %s and %s collided!", paddle->Name, wall->Name);
+    paddle->CurrentPosition.X = UTL_FClamp(0, windowWidth - paddle->Size.X, paddle->CurrentPosition.X);
+    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ball->Size.X / 2.f, ball->CurrentPosition.X);
+    ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ball->Size.Y / 2.f, ball->CurrentPosition.Y);
 
-            ENT_ResolveCollision(paddle, wall);
-        }
+    if (ball->CurrentPosition.Y + ball->Size.Y >= windowHeight)
+    {
+        BallDied();
     }
 }
 
@@ -85,11 +80,6 @@ void DrawGameplayScreen(void)
     ENT_DrawEntity(ball);
     ENT_DrawEntity(paddle);
     BM_DrawBricks(brickManager);
-
-    for (int i = 0; i < WALL_COUNT; ++i)
-    {
-        ENT_DrawEntity(walls[i]);
-    }
 }
 
 void UnloadGameplayScreen(void)
@@ -97,7 +87,6 @@ void UnloadGameplayScreen(void)
     ENT_DestroyEntity(paddle);
     ENT_DestroyEntity(ball);
     BM_DestroyManager(brickManager);
-    DestroyWalls();
 }
 
 bool FinishGameplayScreen(void)
@@ -109,7 +98,7 @@ void GameplayEnterKeyPressed(void)
 {
     if (ball->IsEnabled) return;
 
-    ball->CurrentPosition.X = paddle->CurrentPosition.X + paddle->Size.X / 2;
+    ball->CurrentPosition.X = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
     ball->CurrentPosition.Y = paddle->CurrentPosition.Y - paddle->Size.Y;
     ball->PreviousPosition = ball->CurrentPosition;
     ball->IsEnabled = true;
@@ -147,47 +136,6 @@ static void InitializeEntities(void)
     ball->Speed = DEFAULT_BALL_SPEED;
     ball->DamageGiven = DEFAULT_BALL_DAMAGE;
     ball->CollisionVolume = COL_MakeCircleCollisionVolume(paddle->CurrentPosition, ball->Size.X / 2.f);
-
-    walls = calloc(WALL_COUNT, sizeof(Entity*));
-    if (walls == NULL)
-    {
-        SDL_Log("Could not get memory for walls!");
-        return;
-    }
-
-    // Left
-    walls[0] = ENT_CreateInvisibleEntity(
-        UTL_MakeVectorF2D(-windowWidth, 0), UTL_MakeVectorF2D(windowWidth, windowHeight));
-    walls[0]->IsEnabled = true;
-    walls[0]->Name = "Left Wall";
-
-    // Top
-    walls[1] = ENT_CreateInvisibleEntity(
-        UTL_GetZeroVectorF(), UTL_MakeVectorF2D(windowWidth, 10));
-    walls[1]->IsEnabled = true;
-    walls[1]->Name = "Top Wall";
-
-    // Right
-    walls[2] = ENT_CreateInvisibleEntity(
-        UTL_MakeVectorF2D(windowWidth - 10, 0), UTL_MakeVectorF2D(10, windowHeight));
-    walls[2]->IsEnabled = true;
-    walls[2]->Name = "Right Wall";
-
-    // Bottom
-    walls[3] = ENT_CreateInvisibleEntity(
-        UTL_MakeVectorF2D(0, windowHeight - 10), UTL_MakeVectorF2D(windowWidth, 10));
-    walls[3]->IsEnabled = true;
-    walls[3]->Name = "Bottom Wall";
-}
-
-static void DestroyWalls(void)
-{
-    for (int i = 0; i < WALL_COUNT; ++i)
-    {
-        ENT_DestroyEntity(walls[i]);
-    }
-
-    free(walls);
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
@@ -207,61 +155,84 @@ static void UpdateBallPosition(const float deltaTime)
 {
     if (!ball->IsEnabled) return;
 
-    const VectorF2D currentPosition = ball->CurrentPosition;
-    const float ballDiameter = ball->Size.X;
-
-    if (currentPosition.Y + ballDiameter >= windowHeight)
-    {
-        BallDied();
-        return;
-    }
-
     VectorF2D currentDirection = ENT_GetDirection(ball);
 
-    if (currentPosition.X + ballDiameter >= windowWidth || currentPosition.X <= 0.f)
-    {
-        currentDirection.X *= -1;
-    }
+    const CollisionResult paddleResult = COL_HasCollisionBoxCircle(paddle->CollisionVolume, ball->CollisionVolume);
+    const CollisionResult brickResult = BM_CheckBrickCollision(brickManager, ball);
 
-    if (currentPosition.Y <= 0.f)
+    if (paddleResult.Collided)
     {
-        currentDirection.Y *= -1;
-    }
-
-    if (ENT_HasCollision(ball, paddle))
-    {
-        SDL_Log("Entity %s and %s collided!", ball->Name, paddle->Name);
-
-        ENT_ResolveCollision(ball, paddle);
-        if (paddle->PreviousOverlap.X > 0)
+        switch (paddleResult.Direction)
         {
-            currentDirection.Y *= -1;
+            case UP:
+                ball->CurrentPosition.Y += paddleResult.Difference.Y;
+                currentDirection.Y *= -1;
+                break;
+            case DOWN:
+                ball->CurrentPosition.Y -= paddleResult.Difference.Y;
+                currentDirection.Y *= -1;
+            case LEFT:
+                ball->CurrentPosition.X += paddleResult.Difference.X;
+                currentDirection.X *= -1;
+                break;
+            case RIGHT:
+                ball->CurrentPosition.X += paddleResult.Difference.X;
+                currentDirection.X *= -1;
+                break;
+            default: break;
         }
 
-        if (paddle->PreviousOverlap.Y > 0)
+        /*
+        *  // check where it hit the board, and change velocity based on where it hit the board
+        float centerBoard = Player->Position.x + Player->Size.x / 2.0f;
+        float distance = (Ball->Position.x + Ball->Radius) - centerBoard;
+        float percentage = distance / (Player->Size.x / 2.0f);
+        // then move accordingly
+        float strength = 2.0f;
+        glm::vec2 oldVelocity = Ball->Velocity;
+        Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
+        Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity); // keep speed consistent over both axes (multiply by length of old velocity, so total strength is not changed)
+        // fix sticky paddle
+        Ball->Velocity.y = -1.0f * abs(Ball->Velocity.y);
+         */
+
+        const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
+        const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
+        const float percentage = distance / (paddle->Size.X / 2.f);
+        const float strength = 2.0f;
+
+        if (currentDirection.X == 0)
         {
-            currentDirection.X *= -1;
+            currentDirection.X += percentage * strength;
+        }
+        else
+        {
+            currentDirection.X *= percentage * strength;
         }
 
         AUD_PlaySoundEffect(paddleCollisionSfx);
     }
 
-    size_t collisionIndex;
-    if (BM_CheckBrickCollision(brickManager, ball, &collisionIndex))
+    if (brickResult.Collided)
     {
-        const Entity* brick = brickManager->Bricks[collisionIndex];
-        SDL_Log("Entity %s and %s collided!", ball->Name, brick->Name);
-
-        ENT_ResolveCollision(ball, brick);
-
-        if (brick->PreviousOverlap.X > 0)
+        switch (brickResult.Direction)
         {
-            currentDirection.Y *= -1;
-        }
-
-        if (brick->PreviousOverlap.Y > 0)
-        {
-            currentDirection.X *= -1;
+            case UP:
+                ball->CurrentPosition.Y -= brickResult.Difference.Y;
+                currentDirection.Y *= -1;
+                break;
+            case DOWN:
+                ball->CurrentPosition.Y += brickResult.Difference.Y;
+                currentDirection.Y *= -1;
+            case LEFT:
+                ball->CurrentPosition.X += brickResult.Difference.X;
+                currentDirection.X *= -1;
+                break;
+            case RIGHT:
+                ball->CurrentPosition.X -= brickResult.Difference.X;
+                currentDirection.X *= -1;
+                break;
+            default: break;
         }
 
         AUD_PlaySoundEffect(brickCollisionSfx);
@@ -269,12 +240,24 @@ static void UpdateBallPosition(const float deltaTime)
 
     ENT_MoveEntity(ball, currentDirection, deltaTime);
 
-    ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ballDiameter, ball->CurrentPosition.X);
-    ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ballDiameter, ball->CurrentPosition.Y);
+    const VectorF2D ballPosition = ball->CurrentPosition;
+    if (ballPosition.X <= 0 || ballPosition.X + ball->Size.X >= windowWidth)
+    {
+        currentDirection.X *= 1;
+    }
+
+    if (ballPosition.Y <= 0)
+    {
+        currentDirection.Y *= 1;
+    }
+
+    ENT_MoveEntity(ball, currentDirection, deltaTime);
 }
 
 static void BallDied(void)
 {
+    if (!ball->IsEnabled) return;
+
     ball->IsEnabled = false;
     shouldFinish = --lives == 0;
 }

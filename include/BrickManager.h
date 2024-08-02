@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Collision.h"
 #include "Entity.h"
 
 // IMPR: Use flywheel pattern to reuse texture for bricks that share texture.
@@ -17,6 +18,6 @@ typedef struct brick_manager
 BrickManager* BM_CreateBricks(VectorF2D startPosition, VectorF2D containerSize, float padding);
 void BM_DrawBricks(const BrickManager* manager);
 
-bool BM_CheckBrickCollision(const BrickManager* manager, Entity* ball, size_t* collisionIndex);
+CollisionResult BM_CheckBrickCollision(const BrickManager* manager, Entity* ball);
 
 void BM_DestroyManager(BrickManager* manager);

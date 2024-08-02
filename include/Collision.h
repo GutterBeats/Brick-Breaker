@@ -6,6 +6,15 @@
 
 #include "Types.h"
 
+typedef enum collision_direction
+{
+    DOWN,
+    RIGHT,
+    UP,
+    LEFT,
+    NONE
+} CollisionDirection;
+
 typedef struct box_collision
 {
     VectorF2D Position;
@@ -18,8 +27,15 @@ typedef struct circle_collision
     float Radius;
 } CircleCollision;
 
+typedef struct collision_result
+{
+    bool Collided;
+    CollisionDirection Direction;
+    VectorF2D Difference;
+} CollisionResult;
+
 BoxCollision* COL_MakeBoxCollisionVolume(VectorF2D position, VectorF2D size);
 CircleCollision* COL_MakeCircleCollisionVolume(VectorF2D position, float radius);
 
-bool COL_HasCollisionBox(const BoxCollision* first, const BoxCollision* second);
-bool COL_HasCollisionBoxCircle(const BoxCollision* first, const CircleCollision* second);
+CollisionResult COL_HasCollisionBoxCircle(const BoxCollision* first, const CircleCollision* second);
+CollisionDirection COL_GetCollisionDirection(VectorF2D vector);
