@@ -182,20 +182,6 @@ static void UpdateBallPosition(const float deltaTime)
             default: break;
         }
 
-        /*
-        *  // check where it hit the board, and change velocity based on where it hit the board
-        float centerBoard = Player->Position.x + Player->Size.x / 2.0f;
-        float distance = (Ball->Position.x + Ball->Radius) - centerBoard;
-        float percentage = distance / (Player->Size.x / 2.0f);
-        // then move accordingly
-        float strength = 2.0f;
-        glm::vec2 oldVelocity = Ball->Velocity;
-        Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
-        Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity); // keep speed consistent over both axes (multiply by length of old velocity, so total strength is not changed)
-        // fix sticky paddle
-        Ball->Velocity.y = -1.0f * abs(Ball->Velocity.y);
-         */
-
         const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
         const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
         const float percentage = distance / (paddle->Size.X / 2.f);
