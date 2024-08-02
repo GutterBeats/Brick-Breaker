@@ -11,7 +11,14 @@
 #include "Renderer.h"
 #include "Resources.h"
 
-static TTF_Font* s_Font;
+#define DEFAULT_FONT_SIZE 16
+#define LARGE_FONT_SIZE 32
+
+static void DrawTextInternal(const char* text, Vector2D position, TTF_Font* font);
+
+static TTF_Font* s_SmallFont;
+static TTF_Font* s_LargeFont;
+
 static bool textInitialized;
 
 void TXT_InitializeText(void)
@@ -30,8 +37,17 @@ void TXT_InitializeText(void)
         return;
     }
 
-    s_Font = TTF_OpenFont(DEFAULT_FONT, DEFAULT_FONT_SIZE);
-    if (s_Font == NULL)
+    s_SmallFont = TTF_OpenFont(DEFAULT_FONT, DEFAULT_FONT_SIZE);
+    if (s_SmallFont == NULL)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
+
+        TXT_DestroyTextSystem();
+        return;
+    }
+
+    s_LargeFont = TTF_OpenFont(DEFAULT_FONT, LARGE_FONT_SIZE);
+    if (s_LargeFont == NULL)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
 
@@ -48,18 +64,28 @@ void TXT_DestroyTextSystem(void)
 
     textInitialized = false;
 
-    TTF_CloseFont(s_Font);
+    TTF_CloseFont(s_SmallFont);
     TTF_Quit();
 }
 
-void TXT_DrawText(const char* text, Vector2D position)
+void TXT_DrawText(const char* text, const Vector2D position)
+{
+    DrawTextInternal(text, position, s_SmallFont);
+}
+
+void TXT_DrawText_Large(const char* text, const Vector2D position)
+{
+    DrawTextInternal(text, position, s_LargeFont);
+}
+
+static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font* font)
 {
     if (!TTF_WasInit()) return;
 
-    // Set color to black
-    const SDL_Color color = { 0, 0, 0 };
+    // Set color to white
+    const SDL_Color color = { 255, 255, 255 };
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(s_Font, text, color);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
     if (textSurface == NULL)
     {
         SDL_Log("Could not create text surface for text (%s): %s", text, TTF_GetError());
@@ -75,7 +101,7 @@ void TXT_DrawText(const char* text, Vector2D position)
     }
 
     int w, h;
-    TTF_SizeText(s_Font, text, &w, &h);
+    TTF_SizeText(font, text, &w, &h);
 
     texture->Width = w;
     texture->Height = h;

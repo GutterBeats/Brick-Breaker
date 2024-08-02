@@ -10,3 +10,4 @@ void TXT_InitializeText(void);
 void TXT_DestroyTextSystem(void);
 
 void TXT_DrawText(const char* text, Vector2D position);
+void TXT_DrawText_Large(const char* text, Vector2D position);

@@ -9,12 +9,14 @@
 #include "Game.h"
 #include "Keyboard.h"
 #include "Resources.h"
+#include "Text.h"
 #include "Utils.h"
 
 #define DEFAULT_PLAYER_SPEED 350.f
-#define DEFAULT_BALL_SPEED 350.f
+#define DEFAULT_BALL_SPEED 450.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
+#define STUCK_FRAME_COUNT 240
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -22,6 +24,7 @@
 static float windowWidth = 0;
 static float windowHeight = 0;
 
+static Texture* background;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
@@ -38,6 +41,7 @@ static void InitializeEntities(void);
 static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
+static void UnstickBall(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions
@@ -72,11 +76,36 @@ void UpdateGameplayScreen(const float deltaTime)
     if (ball->CurrentPosition.Y + ball->Size.Y >= windowHeight)
     {
         BallDied();
+        return;
+    }
+
+    UnstickBall();
+
+    if (brickManager->EnabledBrickCount <= 0)
+    {
+        GAM_SetGameWon(true);
+        shouldFinish = true;
     }
 }
 
 void DrawGameplayScreen(void)
 {
+    REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), 0.35f);
+
+    char buffer[12];
+    sprintf(buffer, "Score: %d", GAM_GetScore());
+
+    const Vector2D position = UTL_MakeVector2D(brickManager->Position.X, 5);
+
+    TXT_DrawText(buffer, position);
+
+    char lifeBuffer[12];
+    sprintf(lifeBuffer, "Lives: %i", lives);
+
+    const Vector2D lifePosition = UTL_MakeVector2D(brickManager->Position.X + brickManager->Size.X - 133, 5);
+
+    TXT_DrawText(lifeBuffer, lifePosition);
+
     ENT_DrawEntity(ball);
     ENT_DrawEntity(paddle);
     BM_DrawBricks(brickManager);
@@ -87,6 +116,7 @@ void UnloadGameplayScreen(void)
     ENT_DestroyEntity(paddle);
     ENT_DestroyEntity(ball);
     BM_DestroyManager(brickManager);
+    REN_FreeTexture(background);
 }
 
 bool FinishGameplayScreen(void)
@@ -124,6 +154,8 @@ static void InitializeEntities(void)
     ASSERT_NOTNULL(paddle, "Player")
     ASSERT_NOTNULL(ball, "Ball")
     ASSERT_NOTNULL(brickManager, "Brick Manager")
+
+    background = REN_LoadTexture(BACKGROUND_IMAGE);
 
     paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
     paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
@@ -165,18 +197,18 @@ static void UpdateBallPosition(const float deltaTime)
         switch (paddleResult.Direction)
         {
             case UP:
-                ball->CurrentPosition.Y += paddleResult.Difference.Y;
+                ball->CurrentPosition.Y += paddleResult.Difference.Y + 2;
                 currentDirection.Y *= -1;
                 break;
             case DOWN:
-                ball->CurrentPosition.Y -= paddleResult.Difference.Y;
+                ball->CurrentPosition.Y -= paddleResult.Difference.Y + 2;
                 currentDirection.Y *= -1;
             case LEFT:
-                ball->CurrentPosition.X += paddleResult.Difference.X;
+                ball->CurrentPosition.X += paddleResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             case RIGHT:
-                ball->CurrentPosition.X += paddleResult.Difference.X;
+                ball->CurrentPosition.X += paddleResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -185,15 +217,16 @@ static void UpdateBallPosition(const float deltaTime)
         const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
         const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
         const float percentage = distance / (paddle->Size.X / 2.f);
-        const float strength = 2.0f;
+
+        const VectorF2D vector = ball->CurrentPosition.X > centerPaddle ? UTL_GetRightVectorF() : UTL_GetLeftVectorF();
 
         if (currentDirection.X == 0)
         {
-            currentDirection.X += percentage * strength;
+            currentDirection.X += vector.X / (percentage * 2.f);
         }
         else
         {
-            currentDirection.X *= percentage * strength;
+            currentDirection.X *= vector.X / (percentage * 2.f);
         }
 
         AUD_PlaySoundEffect(paddleCollisionSfx);
@@ -204,18 +237,18 @@ static void UpdateBallPosition(const float deltaTime)
         switch (brickResult.Direction)
         {
             case UP:
-                ball->CurrentPosition.Y -= brickResult.Difference.Y;
+                ball->CurrentPosition.Y -= brickResult.Difference.Y + 2;
                 currentDirection.Y *= -1;
                 break;
             case DOWN:
-                ball->CurrentPosition.Y += brickResult.Difference.Y;
+                ball->CurrentPosition.Y += brickResult.Difference.Y + 2;
                 currentDirection.Y *= -1;
             case LEFT:
-                ball->CurrentPosition.X += brickResult.Difference.X;
+                ball->CurrentPosition.X += brickResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             case RIGHT:
-                ball->CurrentPosition.X -= brickResult.Difference.X;
+                ball->CurrentPosition.X -= brickResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -229,13 +262,14 @@ static void UpdateBallPosition(const float deltaTime)
     const VectorF2D ballPosition = ball->CurrentPosition;
     if (ballPosition.X <= 0 || ballPosition.X + ball->Size.X >= windowWidth)
     {
-        currentDirection.X *= 1;
+        currentDirection.X *= -1;
         ENT_MoveEntity(ball, currentDirection, deltaTime);
     }
 
     if (ballPosition.Y <= 0)
     {
-        currentDirection.Y *= 1;
+        currentDirection.Y *= -1;
+
         ENT_MoveEntity(ball, currentDirection, deltaTime);
     }
 }
@@ -245,5 +279,68 @@ static void BallDied(void)
     if (!ball->IsEnabled) return;
 
     ball->IsEnabled = false;
-    shouldFinish = --lives == 0;
+    --lives;
+
+    if (lives <= 0)
+    {
+        GAM_SetGameWon(false);
+        shouldFinish = true;
+    }
+}
+
+static void UnstickBall(void)
+{
+    static int stuckXFrameCount = 0;
+    static float lastFrameX = 0;
+    const VectorF2D ballPosition = ball->CurrentPosition;
+
+    if (UTL_Between(0, ball->Size.X, ballPosition.X)
+        || UTL_Between(windowWidth - ball->Size.X, windowWidth, ballPosition.X))
+    {
+        stuckXFrameCount++;
+    }
+    else
+    {
+        lastFrameX = ballPosition.X;
+        stuckXFrameCount = 0;
+    }
+
+    if (stuckXFrameCount >= STUCK_FRAME_COUNT)
+    {
+        stuckXFrameCount = 0;
+        VectorF2D newDirection = lastFrameX > windowWidth / 2.f ? UTL_GetLeftVectorF() : UTL_GetRightVectorF();
+        if (UTL_GetRandom(0, 1))
+        {
+            newDirection = UTL_AddVectorF2D(newDirection, UTL_GetUpVectorF());
+        }
+        else newDirection = UTL_AddVectorF2D(newDirection, UTL_GetDownVectorF());
+
+        ENT_MoveEntity(ball, newDirection, GAM_GetDeltaSeconds());
+    }
+
+    static int stuckYFrameCount = 0;
+    static float lastFrameY = 0;
+
+    if (UTL_Between(lastFrameY - 100, lastFrameY + 100, ballPosition.Y))
+    {
+        stuckYFrameCount++;
+    }
+    else
+    {
+        lastFrameY = ballPosition.Y;
+        stuckYFrameCount = 0;
+    }
+
+    if (stuckYFrameCount >= STUCK_FRAME_COUNT)
+    {
+        stuckYFrameCount = 0;
+        VectorF2D newDirection = stuckYFrameCount > windowHeight / 2.f ? UTL_GetDownVectorF() : UTL_GetUpVectorF();
+        if (UTL_GetRandom(0, 1))
+        {
+            newDirection = UTL_AddVectorF2D(newDirection, UTL_GetRightVectorF());
+        }
+        else newDirection = UTL_AddVectorF2D(newDirection, UTL_GetLeftVectorF());
+
+        ENT_MoveEntity(ball, newDirection, GAM_GetDeltaSeconds());
+    }
 }

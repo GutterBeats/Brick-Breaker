@@ -24,7 +24,7 @@ static void ToggleDebug(void);
 
 GameScreen currentScreen = UNKNOWN;
 static GameScreen previousScreen = UNKNOWN;
-static const Vector2D fpsPosition = { 10, 10 };
+static const Vector2D fpsPosition = { 5, 5 };
 
 #ifdef __cplusplus
 extern "C"

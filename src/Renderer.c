@@ -45,7 +45,7 @@ void REN_DestroyRenderer(void)
 
 void REN_BeginDrawing(void)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 1);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 }
 

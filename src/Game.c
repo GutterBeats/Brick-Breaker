@@ -87,9 +87,11 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
     game = (Game){
         .ScreenWidth = desiredScreenWidth,
         .ScreenHeight = desiredScreenHeight,
+        .Score = 0,
         .TimeScale = 1.f,
         .DeltaSeconds = 0.f,
         .FPS = 0.f,
+        .GameWon = false,
         .IsRunning = true,
         .ShowDebug = false,
     };
@@ -117,6 +119,26 @@ void GAM_GetScreenDimensions(int* width, int* height)
     {
         *height = game.ScreenHeight;
     }
+}
+
+void GAM_UpdateScore(const int points)
+{
+    game.Score += points;
+}
+
+int GAM_GetScore(void)
+{
+    return game.Score;
+}
+
+bool GAM_GetGameWon(void)
+{
+    return game.GameWon;
+}
+
+void GAM_SetGameWon(const bool value)
+{
+    game.GameWon = value;
 }
 
 bool GAM_GetIsGameRunning(void)

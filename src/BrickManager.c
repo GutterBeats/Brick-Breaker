@@ -87,6 +87,10 @@ BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D container
         }
     }
 
+    manager->Position = startPosition;
+    manager->Size = containerSize;
+    manager->EnabledBrickCount = manager->BrickCount;
+
     return manager;
 }
 
@@ -101,7 +105,7 @@ void BM_DrawBricks(const BrickManager* manager)
     }
 }
 
-CollisionResult BM_CheckBrickCollision(const BrickManager* manager, Entity* ball)
+CollisionResult BM_CheckBrickCollision(BrickManager* manager, const Entity* ball)
 {
     for (size_t i = 0; i < manager->BrickCount; ++i)
     {
@@ -112,10 +116,13 @@ CollisionResult BM_CheckBrickCollision(const BrickManager* manager, Entity* ball
         const CollisionResult result = COL_HasCollisionBoxCircle(current->CollisionVolume, ball->CollisionVolume);
         if (result.Collided)
         {
+            GAM_UpdateScore(UTL_Min(current->Health, ball->DamageGiven));
+
             current->Health -= ball->DamageGiven;
             if (current->Health <= 0)
             {
                 current->IsEnabled = false;
+                --manager->EnabledBrickCount;
             }
 
             return result;
