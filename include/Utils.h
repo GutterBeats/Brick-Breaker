@@ -90,12 +90,14 @@ Vector2D UTL_SubtractVector2D(Vector2D left, Vector2D right);
 Vector2D UTL_MakeVector2D(int x, int y);
 Vector2D UTL_ScaleVector2D(Vector2D vector, int factor);
 Vector2D UTL_NormalizeVector2D(Vector2D vector);
+float UTL_GetVector2DLength(Vector2D vector);
 
 VectorF2D UTL_AddVectorF2D(VectorF2D left, VectorF2D right);
 VectorF2D UTL_SubtractVectorF2D(VectorF2D left, VectorF2D right);
 VectorF2D UTL_MakeVectorF2D(float x, float y);
 VectorF2D UTL_ScaleVectorF2D(VectorF2D vector, float factor);
 VectorF2D UTL_NormalizeVectorF2D(VectorF2D vector);
+float UTL_GetVectorF2DLength(VectorF2D vector);
 
 #pragma endregion
 
