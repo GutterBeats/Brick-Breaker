@@ -7,6 +7,8 @@
 
 #include "Utils.h"
 
+#include <stdbool.h>
+
 #ifndef MAX_RAND_COUNT
   #define MAX_RAND_COUNT 20
 #endif

@@ -44,7 +44,7 @@ void ENT_MoveEntity(Entity* entity, const VectorF2D direction, const float delta
         UTL_SubtractVectorF2D(newDirection, entity->PreviousPosition), entity->Speed * deltaTime);
 
     entity->CurrentPosition = UTL_AddVectorF2D(entity->CurrentPosition, velocity);
-    ((BoxCollision*)entity->CollisionVolume)->Position = entity->CurrentPosition;
+    entity->CollisionVolume->Position = entity->CurrentPosition;
 }
 
 void ENT_DrawEntity(const Entity* entity)

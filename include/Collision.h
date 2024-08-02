@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include "Types.h"
 
 typedef enum collision_direction
@@ -15,17 +17,11 @@ typedef enum collision_direction
     NONE
 } CollisionDirection;
 
-typedef struct box_collision
+typedef struct collision_volume
 {
     VectorF2D Position;
     VectorF2D Size;
-} BoxCollision;
-
-typedef struct circle_collision
-{
-    VectorF2D Position;
-    float Radius;
-} CircleCollision;
+} CollisionVolume;
 
 typedef struct collision_result
 {
@@ -34,8 +30,7 @@ typedef struct collision_result
     VectorF2D Difference;
 } CollisionResult;
 
-BoxCollision* COL_MakeBoxCollisionVolume(VectorF2D position, VectorF2D size);
-CircleCollision* COL_MakeCircleCollisionVolume(VectorF2D position, float radius);
+CollisionVolume* COL_MakeCollisionVolume(VectorF2D position, VectorF2D size);
 
-CollisionResult COL_HasCollisionBoxCircle(const BoxCollision* first, const CircleCollision* second);
+CollisionResult COL_HasCollisionBoxCircle(const CollisionVolume* box, const CollisionVolume* circle);
 CollisionDirection COL_GetCollisionDirection(VectorF2D vector);

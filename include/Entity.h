@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <stdbool.h>
+
+#include "Collision.h"
 #include "Renderer.h"
 
 typedef struct entity
@@ -19,7 +22,7 @@ typedef struct entity
     VectorF2D Size;
 
     Texture* Texture;
-    void* CollisionVolume;
+    CollisionVolume* CollisionVolume;
 
     bool IsEnabled;
 } Entity;

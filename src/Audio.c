@@ -94,6 +94,8 @@ void AUD_PlayMusic(const char* filepath)
     {
         SDL_Log("Unable to fade music in!: %s", Mix_GetError());
     }
+
+    Mix_VolumeMusic(65);
 }
 
 void AUD_PlaySoundEffect(const i8 index)

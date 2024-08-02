@@ -5,7 +5,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <stdbool.h>
 #include <SDL.h>
 
 //----------------------------------------------------------------------------------
@@ -28,9 +27,7 @@ typedef enum GameScreen
 {
     UNKNOWN = -1,
     TITLE = 0,
-    OPTIONS,
-    GAMEPLAY,
-    ENDING
+    GAMEPLAY
 } GameScreen;
 
 typedef struct vector2D

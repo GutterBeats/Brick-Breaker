@@ -17,7 +17,6 @@ add_executable(Brick_Breaker
         include/Entity.h
         include/BrickManager.h
         src/Title.c
-        src/Options.c
         src/Ending.c
         src/Entity.c
         include/Utils.h
@@ -30,10 +29,6 @@ add_executable(Brick_Breaker
         include/Resources.h
         include/Audio.h
         src/Audio.c
-        include/HashTable.h
-        include/Prime.h
-        src/HashTable.c
-        src/Prime.c
         include/Collision.h
         src/Collision.c
 )

@@ -54,17 +54,6 @@ void REN_FinishDrawing(void)
     SDL_RenderPresent(renderer);
 }
 
-void REN_DrawRectangle(const Vector2D position, const Vector2D size)
-{
-    const SDL_Rect rect = (SDL_Rect){
-        .x = position.X, .y = position.Y,
-        .w = size.X, .h = size.Y
-    };
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &rect);
-}
-
 void REN_DrawTexture(const Texture* texture, const Vector2D position)
 {
     if (texture == NULL) return;
@@ -112,21 +101,6 @@ void REN_DrawTextureF(const Texture* texture, const VectorF2D position)
     if (SDL_RenderCopyF(renderer, texture->Data, NULL, &dest))
     {
         SDL_Log("DrawTextureF: There was an error copy the texture: %s", SDL_GetError());
-    }
-}
-
-void REN_DrawTextureF_Alpha(const Texture* texture, const VectorF2D position, const float alpha)
-{
-    if (texture == NULL) return;
-
-    const SDL_FRect dest = { position.X, position.Y, texture->Width, texture->Height };
-
-    SDL_SetTextureBlendMode(texture->Data, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(texture->Data, alpha * 255);
-
-    if (SDL_RenderCopyF(renderer, texture->Data, NULL, &dest))
-    {
-        SDL_Log("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
     }
 }
 

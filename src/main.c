@@ -19,7 +19,6 @@
 static void QuitGame(void);
 static void UpdateGame();
 static void ChangeToScreen(GameScreen screen);
-static void HandlePause(void);
 static void HandleEnter(void);
 static void ToggleDebug(void);
 
@@ -34,7 +33,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
     GAM_InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
-    ChangeToScreen(GAMEPLAY);
+    ChangeToScreen(TITLE);
 
     while (GAM_GetIsGameRunning())
     {
@@ -53,9 +52,6 @@ int main(int argc, char* argv[])
             {
                 switch (event.user.code)
                 {
-                    case PAUSE:
-                        HandlePause();
-                        break;
                     case ENTER:
                         HandleEnter();
                         break;
@@ -89,14 +85,8 @@ void QuitGame(void)
         case TITLE:
             UnloadTitleScreen();
             break;
-        case OPTIONS:
-            UnloadOptionsScreen();
-            break;
         case GAMEPLAY:
             UnloadGameplayScreen();
-            break;
-        case ENDING:
-            UnloadEndingScreen();
             break;
     }
 
@@ -115,7 +105,7 @@ void UpdateGame()
 
             if (FinishGameplayScreen())
             {
-                ChangeToScreen(ENDING);
+                ChangeToScreen(TITLE);
             }
 
             break;
@@ -130,41 +120,19 @@ void UpdateGame()
                 ChangeToScreen(GAMEPLAY);
             }
             break;
-        case OPTIONS:
-            UpdateOptionsScreen(deltaTime);
-
-            if (FinishOptionsScreen())
-            {
-                ChangeToScreen(previousScreen);
-            }
-            break;
-        case ENDING:
-            UpdateEndingScreen(deltaTime);
-
-            if (FinishEndingScreen())
-            {
-                ChangeToScreen(TITLE);
-            }
-            break;
     }
 
     REN_BeginDrawing();
 
     switch (currentScreen)
     {
+        case UNKNOWN:
+            break;
         case GAMEPLAY:
             DrawGameplayScreen();
             break;
         case TITLE:
             DrawTitleScreen();
-            break;
-        case OPTIONS:
-            DrawOptionsScreen();
-            break;
-        case ENDING:
-            DrawEndingScreen();
-            break;
-        default:
             break;
     }
 
@@ -183,11 +151,9 @@ void ChangeToScreen(const GameScreen screen)
     // Unload current screen
     switch (currentScreen)
     {
+        case UNKNOWN:
         case TITLE: UnloadTitleScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
-        case ENDING: UnloadEndingScreen(); break;
-        case OPTIONS: UnloadOptionsScreen(); break;
-        default: break;
     }
 
     // Init next screen
@@ -196,21 +162,10 @@ void ChangeToScreen(const GameScreen screen)
         case UNKNOWN:
         case TITLE: InitTitleScreen(); break;
         case GAMEPLAY: InitGameplayScreen(); break;
-        case ENDING: InitEndingScreen(); break;
-        case OPTIONS: InitOptionsScreen(); break;
-        default: break;
     }
 
     previousScreen = currentScreen;
     currentScreen = screen;
-}
-
-void HandlePause(void)
-{
-    if (GAM_GetIsPaused()) return;
-
-    GAM_PauseGame();
-    ChangeToScreen(OPTIONS);
 }
 
 void HandleEnter(void)
@@ -222,14 +177,8 @@ void HandleEnter(void)
         case TITLE:
             TitleEnterKeyPressed();
             break;
-        case OPTIONS:
-            OptionsEnterKeyPressed();
-            break;
         case GAMEPLAY:
             GameplayEnterKeyPressed();
-            break;
-        case ENDING:
-            EndingEnterKeyPressed();
             break;
     }
 }

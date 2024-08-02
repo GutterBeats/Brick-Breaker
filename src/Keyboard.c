@@ -13,7 +13,6 @@ void KBD_InitializeKeymap()
 {
     s_KeyMap.Left = SDL_SCANCODE_A;
     s_KeyMap.Right = SDL_SCANCODE_D;
-    s_KeyMap.Pause = SDL_SCANCODE_ESCAPE;
     s_KeyMap.Up = SDL_SCANCODE_UP;
     s_KeyMap.Down = SDL_SCANCODE_DOWN;
     s_KeyMap.Enter = SDL_SCANCODE_SPACE;
@@ -72,14 +71,12 @@ static void HandleRealtimeKeys(const SDL_Scancode scancode, const enum KBD_KEY_S
 
     if (state == KEY_STATE_DOWN) return;
 
-    if (s_KeyMap.Pause == scancode
-        || s_KeyMap.Enter == scancode
+    if (s_KeyMap.Enter == scancode
         || s_KeyMap.Debug == scancode)
     {
         SDL_Event user;
         user.type = SDL_USEREVENT;
-        user.user.code = s_KeyMap.Pause == scancode ? PAUSE :
-            s_KeyMap.Enter == scancode ? ENTER : DEBUG;
+        user.user.code = s_KeyMap.Enter == scancode ? ENTER : DEBUG;
 
         SDL_PushEvent(&user);
     }

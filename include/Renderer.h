@@ -22,13 +22,11 @@ void REN_BeginDrawing(void);
 void REN_FinishDrawing(void);
 void REN_DestroyRenderer(void);
 
-void REN_DrawRectangle(Vector2D position, Vector2D size);
 void REN_DrawTexture(const Texture* texture, Vector2D position);
 void REN_DrawTexture_Alpha(const Texture* texture, Vector2D position, float alpha);
 
 void REN_DrawRectangleF(VectorF2D position, VectorF2D size);
 void REN_DrawTextureF(const Texture* texture, VectorF2D position);
-void REN_DrawTextureF_Alpha(const Texture* texture, VectorF2D position, float alpha);
 
 Texture* REN_LoadTexture(const char* filePath);
 Texture* REN_LoadTextureFromSurface(SDL_Surface* surface);

@@ -150,7 +150,7 @@ static Entity* CreateBrick(const float x, const float y, const int health)
 
     brick->Health = health;
     brick->IsEnabled = true;
-    brick->CollisionVolume = COL_MakeBoxCollisionVolume(brick->CurrentPosition, brick->Size);
+    brick->CollisionVolume = COL_MakeCollisionVolume(brick->CurrentPosition, brick->Size);
 
     return brick;
 }

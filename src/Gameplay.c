@@ -12,7 +12,7 @@
 #include "Utils.h"
 
 #define DEFAULT_PLAYER_SPEED 350.f
-#define DEFAULT_BALL_SPEED 250.f
+#define DEFAULT_BALL_SPEED 350.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
 
@@ -57,7 +57,7 @@ void InitGameplayScreen(void)
 
     InitializeEntities();
 
-    //AUD_PlayMusic(MAIN_MUSIC);
+    AUD_PlayMusic(MAIN_MUSIC);
 }
 
 void UpdateGameplayScreen(const float deltaTime)
@@ -99,7 +99,7 @@ void GameplayEnterKeyPressed(void)
     if (ball->IsEnabled) return;
 
     ball->CurrentPosition.X = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
-    ball->CurrentPosition.Y = paddle->CurrentPosition.Y - paddle->Size.Y;
+    ball->CurrentPosition.Y = paddle->CurrentPosition.Y - paddle->Size.Y * 2.f;
     ball->PreviousPosition = ball->CurrentPosition;
     ball->IsEnabled = true;
 
@@ -130,12 +130,12 @@ static void InitializeEntities(void)
     paddle->Speed = DEFAULT_PLAYER_SPEED;
     paddle->IsEnabled = true;
     paddle->Name = "Player Paddle";
-    paddle->CollisionVolume = COL_MakeBoxCollisionVolume(paddle->CurrentPosition, paddle->Size);
+    paddle->CollisionVolume = COL_MakeCollisionVolume(paddle->CurrentPosition, paddle->Size);
 
     ball->Name = "Ball";
     ball->Speed = DEFAULT_BALL_SPEED;
     ball->DamageGiven = DEFAULT_BALL_DAMAGE;
-    ball->CollisionVolume = COL_MakeCircleCollisionVolume(paddle->CurrentPosition, ball->Size.X / 2.f);
+    ball->CollisionVolume = COL_MakeCollisionVolume(paddle->CurrentPosition, ball->Size);
 }
 
 static void UpdatePlayerPosition(const float deltaTime)
@@ -230,14 +230,14 @@ static void UpdateBallPosition(const float deltaTime)
     if (ballPosition.X <= 0 || ballPosition.X + ball->Size.X >= windowWidth)
     {
         currentDirection.X *= 1;
+        ENT_MoveEntity(ball, currentDirection, deltaTime);
     }
 
     if (ballPosition.Y <= 0)
     {
         currentDirection.Y *= 1;
+        ENT_MoveEntity(ball, currentDirection, deltaTime);
     }
-
-    ENT_MoveEntity(ball, currentDirection, deltaTime);
 }
 
 static void BallDied(void)

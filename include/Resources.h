@@ -14,13 +14,10 @@
 #define GREY_BRICK_TEXTURE "resources/Textures/element_grey_rectangle_glossy.png"
 #define PURPLE_BRICK_TEXTURE "resources/Textures/element_purple_rectangle_glossy.png"
 #define RED_BRICK_TEXTURE "resources/Textures/element_red_rectangle_glossy.png"
-#define YELLOW_BRICK_TEXTURE "resources/Textures/element_yellow_rectangle_glossy.png"
 
-#define PLAYER_BLUE_TEXTURE "resources/Textures/paddleBlue.png"
 #define PLAYER_RED_TEXTURE "resources/Textures/paddleRed.png"
 
 #define BALL_BLUE_TEXTURE "resources/Textures/ballBlue.png"
-#define BALL_GREY_TEXTURE "resources/Textures/ballGrey.png"
 
 //
 // Images

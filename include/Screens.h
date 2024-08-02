@@ -25,12 +25,6 @@
 
 #pragma once
 
-#include "Types.h"
-
-#ifdef __cplusplus
-extern "C" {            // Prevents name mangling of functions
-#endif
-
 //----------------------------------------------------------------------------------
 // Title Screen Functions Declaration
 //----------------------------------------------------------------------------------
@@ -42,16 +36,6 @@ bool FinishTitleScreen(void);
 void TitleEnterKeyPressed(void);
 
 //----------------------------------------------------------------------------------
-// Options Screen Functions Declaration
-//----------------------------------------------------------------------------------
-void InitOptionsScreen(void);
-void UpdateOptionsScreen(float deltaTime);
-void DrawOptionsScreen(void);
-void UnloadOptionsScreen(void);
-bool FinishOptionsScreen(void);
-void OptionsEnterKeyPressed(void);
-
-//----------------------------------------------------------------------------------
 // Gameplay Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitGameplayScreen(void);
@@ -60,17 +44,3 @@ void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 bool FinishGameplayScreen(void);
 void GameplayEnterKeyPressed(void);
-
-//----------------------------------------------------------------------------------
-// Ending Screen Functions Declaration
-//----------------------------------------------------------------------------------
-void InitEndingScreen(void);
-void UpdateEndingScreen(float deltaTime);
-void DrawEndingScreen(void);
-void UnloadEndingScreen(void);
-bool FinishEndingScreen(void);
-void EndingEnterKeyPressed(void);
-
-#ifdef __cplusplus
-}
-#endif

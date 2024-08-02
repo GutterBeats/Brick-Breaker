@@ -16,6 +16,11 @@
 #define MENU_BAR_HEIGHT 0
 #endif
 
+static void CalculateFPS(void);
+
+#define MAX_FPS 60
+#define TICKS_PER_FRAME 1000 / MAX_FPS
+
 static Game game;
 static SDL_Window* window;
 static float lastFrame = 0;
@@ -86,7 +91,6 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
         .DeltaSeconds = 0.f,
         .FPS = 0.f,
         .IsRunning = true,
-        .IsPaused = false,
         .ShowDebug = false,
     };
 }
@@ -120,25 +124,7 @@ bool GAM_GetIsGameRunning(void)
     return game.IsRunning;
 }
 
-void GAM_SetIsGameRunning(const bool running)
-{
-    game.IsRunning = running;
-}
-
-bool GAM_GetIsPaused(void)
-{
-    return game.IsPaused;
-}
-
-void GAM_PauseGame(void)
-{
-    game.IsPaused = true;
-}
-
-void GAM_UnpauseGame(void)
-{
-    game.IsPaused = false;
-}
+void GAM_SetIsGameRunning(const bool running) { game.IsRunning = running; }
 
 void GAM_StartFrame(void)
 {
@@ -157,24 +143,14 @@ void GAM_StartFrame(void)
         }
     }
 
-    static int frameCount = 0;
-    static float total = 0;
+    CalculateFPS();
 
-    if (total <= 1.1f)
+    const int frameTicks = SDL_GetTicks64() - currentFrame;
+    if (frameTicks < TICKS_PER_FRAME)
     {
-        total += game.DeltaSeconds;
-        ++frameCount;
-
-        return;
+        //Wait remaining time
+        SDL_Delay(TICKS_PER_FRAME - frameTicks);
     }
-
-    const float average = total / (float)frameCount;
-
-    frameCount = 0;
-    total = 0.f;
-
-    game.FPS = 1000.f / (average * 1000.f);
-    SDL_Log("FPS: %6.2f", game.FPS);
 }
 
 void GAM_EndFrame(void)
@@ -221,4 +197,26 @@ bool GAM_GetShowDebug(void)
 void GAM_SetShowDebug(const bool showDebug)
 {
     game.ShowDebug = showDebug;
+}
+
+static void CalculateFPS(void)
+{
+    static int frameCount = 0;
+    static float total = 0;
+
+    if (total <= 1.1f)
+    {
+        total += game.DeltaSeconds;
+        ++frameCount;
+
+        return;
+    }
+
+    const float average = total / (float)frameCount;
+
+    frameCount = 0;
+    total = 0.f;
+
+    game.FPS = 1000.f / (average * 1000.f);
+    SDL_Log("FPS: %6.2f", game.FPS);
 }

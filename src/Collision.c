@@ -5,9 +5,9 @@
 #include "Collision.h"
 #include "Utils.h"
 
-BoxCollision* COL_MakeBoxCollisionVolume(VectorF2D position, VectorF2D size)
+CollisionVolume* COL_MakeCollisionVolume(const VectorF2D position, const VectorF2D size)
 {
-    BoxCollision* collision = malloc(sizeof(BoxCollision));
+    CollisionVolume* collision = malloc(sizeof(CollisionVolume));
     if (collision == NULL)
     {
         SDL_Log("Unable to allocate memory for Circle Collision volume.");
@@ -20,31 +20,18 @@ BoxCollision* COL_MakeBoxCollisionVolume(VectorF2D position, VectorF2D size)
     return collision;
 }
 
-CircleCollision* COL_MakeCircleCollisionVolume(const VectorF2D position, const float radius)
-{
-    CircleCollision* collision = malloc(sizeof(CircleCollision));
-    if (collision == NULL)
-    {
-        SDL_Log("Unable to allocate memory for Circle Collision volume.");
-        return NULL;
-    }
-
-    collision->Position = position;
-    collision->Radius = radius;
-
-    return collision;
-}
-
-CollisionResult COL_HasCollisionBoxCircle(const BoxCollision* first, const CircleCollision* second)
+CollisionResult COL_HasCollisionBoxCircle(const CollisionVolume* box, const CollisionVolume* circle)
 {
     // get center point circle first
+    const float radius = circle->Size.X / 2.f;
+
     const VectorF2D center = UTL_MakeVectorF2D(
-        second->Position.X + second->Radius, second->Position.Y + second->Radius);
+        circle->Position.X + radius, circle->Position.Y + radius);
 
     // calculate AABB info (center, half-extents)
-    const VectorF2D halfBox = UTL_MakeVectorF2D(first->Size.X / 2.0f, first->Size.Y / 2.0f);
+    const VectorF2D halfBox = UTL_MakeVectorF2D(box->Size.X / 2.0f, box->Size.Y / 2.0f);
     const VectorF2D boxCenter = UTL_MakeVectorF2D(
-        first->Position.X + halfBox.X, first->Position.Y + halfBox.Y);
+        box->Position.X + halfBox.X, box->Position.Y + halfBox.Y);
 
     // get difference vector between both centers
     VectorF2D difference = UTL_SubtractVectorF2D(center, boxCenter);
@@ -58,7 +45,7 @@ CollisionResult COL_HasCollisionBoxCircle(const BoxCollision* first, const Circl
     difference = UTL_SubtractVectorF2D(closest, center);
 
     return (CollisionResult) {
-        .Collided = UTL_GetVectorF2DLength(difference) < second->Radius,
+        .Collided = UTL_GetVectorF2DLength(difference) < radius,
         .Direction = COL_GetCollisionDirection(difference),
         .Difference = difference
     };

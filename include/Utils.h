@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include "Types.h"
 
 #pragma region Assertion Macros

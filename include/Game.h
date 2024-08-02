@@ -17,7 +17,6 @@ typedef struct game_t
     float FPS;
 
     bool IsRunning;
-    bool IsPaused;
     bool ShowDebug;
 } Game;
 
@@ -31,10 +30,6 @@ void GAM_SetIsGameRunning(bool running);
 
 bool GAM_GetShowDebug(void);
 void GAM_SetShowDebug(bool showDebug);
-
-bool GAM_GetIsPaused(void);
-void GAM_PauseGame(void);
-void GAM_UnpauseGame(void);
 
 void GAM_StartFrame(void);
 void GAM_EndFrame(void);

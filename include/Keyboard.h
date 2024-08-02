@@ -9,7 +9,6 @@
 
 typedef enum USER_EVENT_TYPE
 {
-    PAUSE,
     ENTER,
     DEBUG
 } USER_EVENT_TYPE;
@@ -24,7 +23,6 @@ typedef struct keymap
 {
     SDL_Scancode Left;
     SDL_Scancode Right;
-    SDL_Scancode Pause;
     SDL_Scancode Enter;
     SDL_Scancode Down;
     SDL_Scancode Up;
