@@ -88,6 +88,9 @@ void QuitGame(void)
         case GAMEPLAY:
             UnloadGameplayScreen();
             break;
+        case GAMEOVER:
+            UnloadGameOverScreen();
+            break;
     }
 
    GAM_ShutdownGameSystems();
@@ -105,7 +108,7 @@ void UpdateGame()
 
             if (FinishGameplayScreen())
             {
-                ChangeToScreen(TITLE);
+                ChangeToScreen(GAMEOVER);
             }
 
             break;
@@ -120,20 +123,24 @@ void UpdateGame()
                 ChangeToScreen(GAMEPLAY);
             }
             break;
+        case GAMEOVER:
+            UpdateGameOverScreen(deltaTime);
+
+            if (FinishGameOverScreen())
+            {
+                ChangeToScreen(GAMEPLAY);
+            }
+            break;
     }
 
     REN_BeginDrawing();
 
     switch (currentScreen)
     {
-        case UNKNOWN:
-            break;
-        case GAMEPLAY:
-            DrawGameplayScreen();
-            break;
-        case TITLE:
-            DrawTitleScreen();
-            break;
+        case UNKNOWN: break;
+        case GAMEPLAY: DrawGameplayScreen(); break;
+        case TITLE: DrawTitleScreen(); break;
+        case GAMEOVER: DrawGameOverScreen(); break;
     }
 
     if (GAM_GetShowDebug())
@@ -154,6 +161,7 @@ void ChangeToScreen(const GameScreen screen)
         case UNKNOWN:
         case TITLE: UnloadTitleScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
+        case GAMEOVER: UnloadGameOverScreen(); break;
     }
 
     // Init next screen
@@ -162,6 +170,7 @@ void ChangeToScreen(const GameScreen screen)
         case UNKNOWN:
         case TITLE: InitTitleScreen(); break;
         case GAMEPLAY: InitGameplayScreen(); break;
+        case GAMEOVER: InitGameOverScreen(); break;
     }
 
     previousScreen = currentScreen;
@@ -179,6 +188,9 @@ void HandleEnter(void)
             break;
         case GAMEPLAY:
             GameplayEnterKeyPressed();
+            break;
+        case GAMEOVER:
+            GameOverEnterKeyPressed();
             break;
     }
 }

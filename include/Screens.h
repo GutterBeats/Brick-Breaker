@@ -44,3 +44,13 @@ void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 bool FinishGameplayScreen(void);
 void GameplayEnterKeyPressed(void);
+
+//----------------------------------------------------------------------------------
+// Game Over Screen Functions Declaration
+//----------------------------------------------------------------------------------
+void InitGameOverScreen(void);
+void UpdateGameOverScreen(float deltaTime);
+void DrawGameOverScreen(void);
+void UnloadGameOverScreen(void);
+bool FinishGameOverScreen(void);
+void GameOverEnterKeyPressed(void);

@@ -31,6 +31,7 @@ add_executable(Brick_Breaker
         src/Audio.c
         include/Collision.h
         src/Collision.c
+        src/GameOver.c
 )
 
 add_custom_target(CopyResources

@@ -27,7 +27,8 @@ typedef enum GameScreen
 {
     UNKNOWN = -1,
     TITLE = 0,
-    GAMEPLAY
+    GAMEPLAY,
+    GAMEOVER
 } GameScreen;
 
 typedef struct vector2D
