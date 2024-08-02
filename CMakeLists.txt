@@ -34,6 +34,8 @@ add_executable(Brick_Breaker
         include/Prime.h
         src/HashTable.c
         src/Prime.c
+        include/CollisionVolume.h
+        src/CollisionVolume.c
 )
 
 add_custom_target(CopyResources
