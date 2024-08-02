@@ -3,10 +3,12 @@
 //
 
 #include "BrickManager.h"
+
+#include "CollisionVolume.h"
 #include "Game.h"
 #include "Renderer.h"
-#include "Utils.h"
 #include "Resources.h"
+#include "Utils.h"
 
 #define MIN_ROW_COUNT 3
 #define MAX_ROW_COUNT 10
@@ -147,6 +149,7 @@ static Entity* CreateBrick(const float x, const float y, const int health)
 
     brick->Health = health;
     brick->IsEnabled = true;
+    brick->CollisionVolume = COL_MakeBoxCollisionVolume(brick->CurrentPosition, brick->Size);
 
     return brick;
 }

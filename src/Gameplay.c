@@ -4,9 +4,10 @@
 
 #include "Audio.h"
 #include "BrickManager.h"
-#include "Keyboard.h"
+#include "CollisionVolume.h"
 #include "Entity.h"
 #include "Game.h"
+#include "Keyboard.h"
 #include "Resources.h"
 #include "Utils.h"
 
@@ -140,10 +141,12 @@ static void InitializeEntities(void)
     paddle->Speed = DEFAULT_PLAYER_SPEED;
     paddle->IsEnabled = true;
     paddle->Name = "Player Paddle";
+    paddle->CollisionVolume = COL_MakeBoxCollisionVolume(paddle->CurrentPosition, paddle->Size);
 
     ball->Name = "Ball";
     ball->Speed = DEFAULT_BALL_SPEED;
     ball->DamageGiven = DEFAULT_BALL_DAMAGE;
+    ball->CollisionVolume = COL_MakeCircleCollisionVolume(paddle->CurrentPosition, ball->Size.X / 2.f);
 
     walls = calloc(WALL_COUNT, sizeof(Entity*));
     if (walls == NULL)
