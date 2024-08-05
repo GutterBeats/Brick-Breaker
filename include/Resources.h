@@ -40,4 +40,5 @@
 //
 // Music
 //
-#define MAIN_MUSIC "resources/Music/Metal Violence Main.wav"
+#define MAIN_MUSIC "resources/Music/MainMusic.wav"
+#define GAMEOVER_MUSIC "resources/Music/GameOverMusic.wav"
