@@ -33,6 +33,7 @@ static i8 paddleCollisionSfx;
 static i8 brickCollisionSfx;
 static int lives;
 static bool shouldFinish;
+static bool shouldFinishNextFrame;
 
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
@@ -54,6 +55,7 @@ void InitGameplayScreen(void)
     shouldFinish = false;
     windowWidth = (float)width;
     windowHeight = (float)height;
+    shouldFinishNextFrame = false;
 
     paddleCollisionSfx = AUD_LoadSoundEffect(PADDLE_COLLISION_SFX);
     brickCollisionSfx = AUD_LoadSoundEffect(BRICK_COLLISION_SFX);
@@ -84,7 +86,7 @@ void UpdateGameplayScreen(const float deltaTime)
     if (brickManager->EnabledBrickCount <= 0)
     {
         GAM_SetGameWon(true);
-        shouldFinish = true;
+        shouldFinishNextFrame = true;
     }
 }
 
@@ -121,6 +123,14 @@ void UnloadGameplayScreen(void)
 
 bool FinishGameplayScreen(void)
 {
+    if (shouldFinishNextFrame)
+    {
+        shouldFinishNextFrame = false;
+        shouldFinish = true;
+
+        return false;
+    }
+
     return shouldFinish;
 }
 
@@ -284,7 +294,7 @@ static void BallDied(void)
     if (lives <= 0)
     {
         GAM_SetGameWon(false);
-        shouldFinish = true;
+        shouldFinishNextFrame = true;
     }
 }
 
