@@ -90,7 +90,7 @@ void UpdateGameplayScreen(const float deltaTime)
 
 void DrawGameplayScreen(void)
 {
-    REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), 0.35f);
+    REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), BB_BACKGROUND_ALPHA);
 
     char buffer[12];
     sprintf(buffer, "Score: %d", GAM_GetScore());

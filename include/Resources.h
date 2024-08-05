@@ -22,6 +22,7 @@
 //
 // Images
 //
+#define BB_BACKGROUND_ALPHA 0.35f
 #define COMPANY_IMAGE "resources/Images/PeeperGames.jpeg"
 #define ENGINE_IMAGE "resources/Images/LazloEngine.jpeg"
 #define BACKGROUND_IMAGE "resources/Images/Background.jpeg"
