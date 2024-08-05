@@ -10,11 +10,13 @@
 
 #include "Renderer.h"
 #include "Resources.h"
+#include "Utils.h"
 
 #define DEFAULT_FONT_SIZE 16
 #define LARGE_FONT_SIZE 32
 
 static void DrawTextInternal(const char* text, Vector2D position, TTF_Font* font);
+static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font);
 
 static TTF_Font* s_SmallFont;
 static TTF_Font* s_LargeFont;
@@ -73,23 +75,37 @@ void TXT_DrawText(const char* text, const Vector2D position)
     DrawTextInternal(text, position, s_SmallFont);
 }
 
-void TXT_DrawText_Large(const char* text, const Vector2D position)
+Texture* TXT_CreateTextureFromText(const char* text)
 {
-    DrawTextInternal(text, position, s_LargeFont);
+    return CreateTextureFromTextInternal(text, s_SmallFont);
+}
+
+Texture* TXT_CreateTextureFromText_Large(const char* text)
+{
+    return CreateTextureFromTextInternal(text, s_LargeFont);
 }
 
 static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font* font)
 {
-    if (!TTF_WasInit()) return;
+    Texture* texture = CreateTextureFromTextInternal(text, font);
+    if (texture == NULL) return;
+
+    REN_DrawTexture(texture, position);
+    REN_FreeTexture(texture);
+}
+
+static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font)
+{
+    if (!TTF_WasInit()) return NULL;
 
     // Set color to white
     const SDL_Color color = { 255, 255, 255 };
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
+    SDL_Surface* textSurface = TTF_RenderUTF8_Solid(font, text, color);
     if (textSurface == NULL)
     {
         SDL_Log("Could not create text surface for text (%s): %s", text, TTF_GetError());
-        return;
+        return NULL;
     }
 
     Texture* texture = REN_LoadTextureFromSurface(textSurface);
@@ -97,8 +113,11 @@ static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font
     {
         SDL_Log("Could not create texture from text surface: %s", TTF_GetError());
         SDL_FreeSurface(textSurface);
-        return;
+
+        return NULL;
     }
+
+    SDL_FreeSurface(textSurface);
 
     int w, h;
     TTF_SizeText(font, text, &w, &h);
@@ -106,8 +125,5 @@ static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font
     texture->Width = w;
     texture->Height = h;
 
-    REN_DrawTexture(texture, position);
-
-    REN_FreeTexture(texture);
-    SDL_FreeSurface(textSurface);
+    return texture;
 }
