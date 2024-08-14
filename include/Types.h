@@ -37,21 +37,8 @@ typedef struct vector2D
     int Y;
 } Vector2D;
 
-typedef struct vectors
-{
-    const Vector2D Up;
-    const Vector2D Down;
-    const Vector2D Left;
-    const Vector2D Right;
-} Vectors;
-
 typedef struct vectorF2d
 {
     float X;
     float Y;
 } VectorF2D;
-
-//----------------------------------------------------------------------------------
-// Global Variables Declaration (shared by several modules)
-//----------------------------------------------------------------------------------
-extern GameScreen currentScreen;

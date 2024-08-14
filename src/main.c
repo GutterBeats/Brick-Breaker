@@ -17,12 +17,12 @@
 #define WINDOW_HEIGHT 800
 
 static void QuitGame(void);
-static void UpdateGame();
+static void UpdateGame(void);
 static void ChangeToScreen(GameScreen screen);
 static void HandleEnter(void);
 static void ToggleDebug(void);
 
-GameScreen currentScreen = UNKNOWN;
+static GameScreen currentScreen = UNKNOWN;
 static GameScreen previousScreen = UNKNOWN;
 static const Vector2D fpsPosition = { 5, 5 };
 
@@ -96,7 +96,7 @@ void QuitGame(void)
    GAM_ShutdownGameSystems();
 }
 
-void UpdateGame()
+void UpdateGame(void)
 {
     const float deltaTime = GAM_GetDeltaSeconds();
 
