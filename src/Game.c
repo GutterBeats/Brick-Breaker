@@ -3,7 +3,6 @@
 //
 
 #include "Game.h"
-
 #include "Audio.h"
 #include "Keyboard.h"
 #include "Renderer.h"
@@ -31,7 +30,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
 {
     if (SDL_Init(SDL_INIT_EVERYTHING))
     {
-        SDL_Log("Could not initialize SDL!: %s", SDL_GetError());
+        BB_LOG("Could not initialize SDL!: %s", SDL_GetError());
         return;
     }
 
@@ -57,7 +56,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
     }
     else
     {
-        SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+        BB_LOG("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
     }
 
     window = SDL_CreateWindow(title,
@@ -67,7 +66,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
 
     if (window == NULL)
     {
-        SDL_Log("Unable to create a window!: %s", SDL_GetError());
+        BB_LOG("Unable to create a window!: %s", SDL_GetError());
         return;
     }
 
@@ -146,7 +145,10 @@ bool GAM_GetIsGameRunning(void)
     return game.IsRunning;
 }
 
-void GAM_SetIsGameRunning(const bool running) { game.IsRunning = running; }
+void GAM_SetIsGameRunning(const bool running)
+{
+    game.IsRunning = running;
+}
 
 void GAM_StartFrame(void)
 {
@@ -155,12 +157,12 @@ void GAM_StartFrame(void)
 
     if (scaledFrameSeconds > 0)
     {
-        SDL_Log("Scaled for %.2f seconds", scaledFrameSeconds);
+        BB_LOG("Scaled for %.2f seconds", scaledFrameSeconds);
 
         scaledFrameSeconds -= game.DeltaSeconds;
         if (scaledFrameSeconds <= 0)
         {
-            SDL_Log("Resetting scaled frame time.");
+            BB_LOG("Resetting scaled frame time.");
             GAM_SetTimeScaleForSeconds(1.f, 0);
         }
     }
@@ -187,7 +189,7 @@ void GAM_SetTimeScale(const float scale)
 
 void GAM_SetTimeScaleForSeconds(const float scale, const float seconds)
 {
-    SDL_Log("Setting time scale to %.2f for %.2f frames.", scale, seconds);
+    BB_LOG("Setting time scale to %.2f for %.2f frames.", scale, seconds);
 
     scaledFrameSeconds = seconds;
     GAM_SetTimeScale(scale);
@@ -240,5 +242,6 @@ static void CalculateFPS(void)
     total = 0.f;
 
     game.FPS = 1000.f / (average * 1000.f);
-    SDL_Log("FPS: %6.2f", game.FPS);
+
+    BB_LOG("FPS: %6.2f", game.FPS);
 }

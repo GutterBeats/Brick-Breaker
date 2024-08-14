@@ -10,7 +10,7 @@ CollisionVolume* COL_MakeCollisionVolume(const VectorF2D position, const VectorF
     CollisionVolume* collision = malloc(sizeof(CollisionVolume));
     if (collision == NULL)
     {
-        SDL_Log("Unable to allocate memory for Circle Collision volume.");
+        BB_LOG("Unable to allocate memory for Circle Collision volume.");
         return NULL;
     }
 

@@ -27,7 +27,7 @@ void TXT_InitializeText(void)
 {
     if (textInitialized)
     {
-        SDL_Log("Initialization of text system can only occur once.");
+        BB_LOG("Initialization of text system can only occur once.");
         return;
     }
 
@@ -35,14 +35,14 @@ void TXT_InitializeText(void)
 
     if (TTF_Init())
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to initialize TTF Library!: %s", TTF_GetError());
+        BB_LOG_ERROR("Unable to initialize TTF Library!: %s", TTF_GetError());
         return;
     }
 
     s_SmallFont = TTF_OpenFont(DEFAULT_FONT, DEFAULT_FONT_SIZE);
     if (s_SmallFont == NULL)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
+        BB_LOG_ERROR("Unable to open TTF Font!: %s", TTF_GetError());
 
         TXT_DestroyTextSystem();
         return;
@@ -51,7 +51,7 @@ void TXT_InitializeText(void)
     s_LargeFont = TTF_OpenFont(DEFAULT_FONT, LARGE_FONT_SIZE);
     if (s_LargeFont == NULL)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open TTF Font!: %s", TTF_GetError());
+        BB_LOG_ERROR("Unable to open TTF Font!: %s", TTF_GetError());
 
         TXT_DestroyTextSystem();
         return;
@@ -62,7 +62,7 @@ void TXT_InitializeText(void)
 
 void TXT_DestroyTextSystem(void)
 {
-    SDL_Log("Destroying text system.");
+    BB_LOG("Destroying text system.");
 
     textInitialized = false;
 
@@ -104,14 +104,14 @@ static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font)
     SDL_Surface* textSurface = TTF_RenderUTF8_Solid(font, text, color);
     if (textSurface == NULL)
     {
-        SDL_Log("Could not create text surface for text (%s): %s", text, TTF_GetError());
+        BB_LOG("Could not create text surface for text (%s): %s", text, TTF_GetError());
         return NULL;
     }
 
     Texture* texture = REN_LoadTextureFromSurface(textSurface);
     if (texture == NULL)
     {
-        SDL_Log("Could not create texture from text surface: %s", TTF_GetError());
+        BB_LOG("Could not create texture from text surface: %s", TTF_GetError());
         SDL_FreeSurface(textSurface);
 
         return NULL;

@@ -7,6 +7,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "Utils.h"
+
 static SDL_Renderer* renderer;
 static int flags = IMG_INIT_JPG | IMG_INIT_PNG;
 
@@ -18,19 +20,19 @@ u8 InitializeRenderer(SDL_Window* window)
                                   SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == NULL)
     {
-        SDL_Log("Unable to create a renderer!: %s", SDL_GetError());
+        BB_LOG("Unable to create a renderer!: %s", SDL_GetError());
         return 0;
     }
 
     if ((IMG_Init(IMG_INIT_JPG) & IMG_INIT_JPG) != IMG_INIT_JPG)
     {
-        SDL_Log("Unable to initialize image library for JPG!: %s", IMG_GetError());
+        BB_LOG("Unable to initialize image library for JPG!: %s", IMG_GetError());
         return 0;
     }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG)
     {
-        SDL_Log("Unable to initialize image library for PNG!: %s", IMG_GetError());
+        BB_LOG("Unable to initialize image library for PNG!: %s", IMG_GetError());
         return 0;
     }
 
@@ -62,7 +64,7 @@ void REN_DrawTexture(const Texture* texture, const Vector2D position)
 
     if (SDL_RenderCopy(renderer, texture->Data, NULL, &dest))
     {
-        SDL_Log("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
+        BB_LOG("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
     }
 }
 
@@ -77,7 +79,7 @@ void REN_DrawTexture_Alpha(const Texture* texture, const Vector2D position, cons
 
     if (SDL_RenderCopy(renderer, texture->Data, NULL, &dest))
     {
-        SDL_Log("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
+        BB_LOG("DrawTexture: There was an error copy the texture: %s", SDL_GetError());
     }
 }
 
@@ -100,7 +102,7 @@ void REN_DrawTextureF(const Texture* texture, const VectorF2D position)
 
     if (SDL_RenderCopyF(renderer, texture->Data, NULL, &dest))
     {
-        SDL_Log("DrawTextureF: There was an error copy the texture: %s", SDL_GetError());
+        BB_LOG("DrawTextureF: There was an error copy the texture: %s", SDL_GetError());
     }
 }
 
@@ -108,21 +110,21 @@ Texture* REN_LoadTexture(const char* filePath)
 {
     if ((IMG_Init(0) & flags) != flags)
     {
-        SDL_Log("SDL Image library has not been initialized!");
+        BB_LOG("SDL Image library has not been initialized!");
         return NULL;
     }
 
     Texture* texture = malloc(sizeof(Texture));
     if (texture == NULL)
     {
-        SDL_Log("Unable to allocate memory for texture (%s).", filePath);
+        BB_LOG("Unable to allocate memory for texture (%s).", filePath);
         return NULL;
     }
 
     texture->Data = IMG_LoadTexture(renderer, filePath);
     if (texture->Data == NULL)
     {
-        SDL_Log("Unable to load image (%s): %s", filePath, IMG_GetError());
+        BB_LOG("Unable to load image (%s): %s", filePath, IMG_GetError());
         free(texture);
 
         return NULL;
@@ -130,7 +132,7 @@ Texture* REN_LoadTexture(const char* filePath)
 
     if (SDL_QueryTexture(texture->Data, NULL, NULL, &texture->Width, &texture->Height))
     {
-        SDL_Log("Unable to query texture for width and height!: %s", SDL_GetError());
+        BB_LOG("Unable to query texture for width and height!: %s", SDL_GetError());
         REN_FreeTexture(texture);
 
         return NULL;
@@ -144,14 +146,14 @@ Texture* REN_LoadTextureFromSurface(SDL_Surface* surface)
     Texture* texture = malloc(sizeof(Texture));
     if (texture == NULL)
     {
-        SDL_Log("Unable to allocate memory for texture.");
+        BB_LOG("Unable to allocate memory for texture.");
         return NULL;
     }
 
     texture->Data = SDL_CreateTextureFromSurface(renderer, surface);
     if (texture->Data == NULL)
     {
-        SDL_Log("Unable to load image: %s", IMG_GetError());
+        BB_LOG("Unable to load image: %s", IMG_GetError());
         free(texture);
 
         return NULL;

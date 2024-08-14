@@ -115,10 +115,10 @@ int UTL_GetRandom(const int lower, const int upper)
 
 void UTL_PrintVector(const Vector2D vector)
 {
-    SDL_Log("VectorF2D: X=%d, Y=%d", vector.X, vector.Y);
+    BB_LOG("VectorF2D: X=%d, Y=%d", vector.X, vector.Y);
 }
 
 void UTL_PrintVectorF(const VectorF2D vector)
 {
-    SDL_Log("VectorF2D: X=%6.2f, Y=%6.2f", vector.X, vector.Y);
+    BB_LOG("VectorF2D: X=%6.2f, Y=%6.2f", vector.X, vector.Y);
 }

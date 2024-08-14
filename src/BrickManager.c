@@ -33,7 +33,7 @@ BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D container
         brickWidth = 64;
         brickHeight = 32;
 
-        SDL_Log(
+        BB_LOG(
             "Unable to load brick width and height from texture. Using default size: w=%d, h=%d",
             brickWidth, brickHeight);
     }

@@ -8,12 +8,24 @@
 
 #include "Types.h"
 
-#pragma region Assertion Macros
+#pragma region Macros
+
+#if NDEBUG
+#define BB_LOG(message, ...)
+#else
+#define BB_LOG(message, ...) SDL_Log(message, ##__VA_ARGS__)
+#endif
+
+#if NDEBUG
+#define BB_LOG_ERROR(message, ...)
+#else
+#define BB_LOG_ERROR(message, ...) SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, message, ##__VA_ARGS__)
+#endif
 
 #define ASSERT_NOTNULL(e, name) if (e == NULL) { \
-             SDL_Log("Object (%s) was null!", name); \
-             exit(1);\
-}
+        BB_LOG_ERROR("Object (%s) was null!", name); \
+        exit(1);\
+    }
 
 #pragma endregion
 
