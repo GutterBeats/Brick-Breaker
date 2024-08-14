@@ -99,7 +99,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
 void GAM_ShutdownGameSystems(void)
 {
     REN_DestroyRenderer();
-
+    KBD_DestroyKeymap();
     TXT_DestroyTextSystem();
     AUD_DestroyAudioSystem();
 

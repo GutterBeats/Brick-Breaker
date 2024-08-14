@@ -19,13 +19,20 @@ enum KBD_KEY_STATE
     KEY_STATE_DOWN
 };
 
+typedef struct key_array
+{
+    uint8_t Count;
+
+    SDL_Scancode* Keys;
+} KeyArray;
+
 typedef struct keymap
 {
-    SDL_Scancode Left;
-    SDL_Scancode Right;
+    KeyArray* Left;
+    KeyArray* Right;
+    KeyArray* Down;
+    KeyArray* Up;
     SDL_Scancode Enter;
-    SDL_Scancode Down;
-    SDL_Scancode Up;
     SDL_Scancode Debug;
 } KeyMap;
 
@@ -37,9 +44,10 @@ typedef struct keyState
     enum KBD_KEY_STATE Down;
 } KeyState;
 
-void KBD_InitializeKeymap();
+void KBD_InitializeKeymap(void);
+void KBD_DestroyKeymap(void);
 
 void KBD_HandleEvent(const SDL_Event* event);
 
-bool KBD_IsLeftKeyDown();
-bool KBD_IsRightKeyDown();
+bool KBD_IsLeftKeyDown(void);
+bool KBD_IsRightKeyDown(void);
