@@ -10,7 +10,8 @@
 typedef enum USER_EVENT_TYPE
 {
     ENTER,
-    DEBUG
+    DEBUG,
+    PAUSE
 } USER_EVENT_TYPE;
 
 enum KBD_KEY_STATE
@@ -32,7 +33,8 @@ typedef struct keymap
     KeyArray* Right;
     KeyArray* Down;
     KeyArray* Up;
-    SDL_Scancode Enter;
+    KeyArray* Enter;
+    SDL_Scancode Pause;
     SDL_Scancode Debug;
 } KeyMap;
 

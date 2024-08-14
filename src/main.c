@@ -58,6 +58,8 @@ int main(int argc, char* argv[])
                     case DEBUG:
                         ToggleDebug();
                         break;
+                    case PAUSE:
+                        break;
                     default: break;
                 }
 
