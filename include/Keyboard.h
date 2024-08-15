@@ -24,7 +24,7 @@ typedef struct key_array
 {
     uint8_t Count;
 
-    SDL_Scancode* Keys;
+    SDL_Keycode* Keys;
 } KeyArray;
 
 typedef struct keymap
@@ -34,8 +34,8 @@ typedef struct keymap
     KeyArray* Down;
     KeyArray* Up;
     KeyArray* Enter;
-    SDL_Scancode Pause;
-    SDL_Scancode Debug;
+    SDL_Keycode Pause;
+    SDL_Keycode Debug;
 } KeyMap;
 
 typedef struct keyState

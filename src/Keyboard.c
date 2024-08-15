@@ -11,18 +11,18 @@ static KeyState s_KeyState;
 
 static KeyArray* CreateKeys(int count, ...);
 static void FreeKeyArray(KeyArray* keys);
-static void HandleRealtimeKeys(SDL_Scancode scancode, enum KBD_KEY_STATE state);
-static bool ContainsKey(const KeyArray* keys, SDL_Scancode scancode);
+static void HandleRealtimeKeys(SDL_Keycode keycode, enum KBD_KEY_STATE state);
+static bool ContainsKey(const KeyArray* keys, SDL_Keycode keycode);
 
 void KBD_InitializeKeymap()
 {
-    s_KeyMap.Left = CreateKeys(2, SDL_SCANCODE_A, SDL_SCANCODE_LEFT);
-    s_KeyMap.Right = CreateKeys(2, SDL_SCANCODE_D, SDL_SCANCODE_RIGHT);
-    s_KeyMap.Up = CreateKeys(2, SDL_SCANCODE_W, SDL_SCANCODE_UP);
-    s_KeyMap.Down = CreateKeys(2, SDL_SCANCODE_S, SDL_SCANCODE_DOWN);
-    s_KeyMap.Enter = CreateKeys(2, SDL_SCANCODE_SPACE, SDL_SCANCODE_RETURN);
-    s_KeyMap.Debug = SDL_SCANCODE_1;
-    s_KeyMap.Pause = SDL_SCANCODE_ESCAPE;
+    s_KeyMap.Left = CreateKeys(2, SDLK_a, SDLK_LEFT);
+    s_KeyMap.Right = CreateKeys(2, SDLK_d, SDLK_RIGHT);
+    s_KeyMap.Up = CreateKeys(2, SDLK_w, SDLK_UP);
+    s_KeyMap.Down = CreateKeys(2, SDLK_s, SDLK_DOWN);
+    s_KeyMap.Enter = CreateKeys(3, SDLK_SPACE, SDLK_KP_ENTER, SDLK_RETURN);
+    s_KeyMap.Debug = SDLK_1;
+    s_KeyMap.Pause = SDLK_ESCAPE;
 
     s_KeyState.Left = KEY_STATE_UP;
     s_KeyState.Right = KEY_STATE_UP;
@@ -44,10 +44,10 @@ void KBD_HandleEvent(const SDL_Event* event)
     switch (event->type)
     {
         case SDL_KEYDOWN:
-            HandleRealtimeKeys(event->key.keysym.scancode, KEY_STATE_DOWN);
+            HandleRealtimeKeys(event->key.keysym.sym, KEY_STATE_DOWN);
             break;
         case SDL_KEYUP:
-            HandleRealtimeKeys(event->key.keysym.scancode, KEY_STATE_UP);
+            HandleRealtimeKeys(event->key.keysym.sym, KEY_STATE_UP);
             break;
         default:
             break;
@@ -74,7 +74,7 @@ static KeyArray* CreateKeys(const int count, ...)
     }
 
     keys->Count = count;
-    keys->Keys = malloc(count * sizeof(SDL_Scancode));
+    keys->Keys = malloc(count * sizeof(SDL_Keycode));
 
     if (keys->Keys == NULL)
     {
@@ -89,7 +89,7 @@ static KeyArray* CreateKeys(const int count, ...)
 
     for (int i = 0; i < count; ++i)
     {
-        keys->Keys[i] = va_arg(codes, SDL_Scancode);
+        keys->Keys[i] = va_arg(codes, SDL_Keycode);
     }
 
     va_end(codes);
@@ -103,46 +103,46 @@ static void FreeKeyArray(KeyArray* keys)
     free(keys);
 }
 
-static void HandleRealtimeKeys(const SDL_Scancode scancode, const enum KBD_KEY_STATE state)
+static void HandleRealtimeKeys(const SDL_Keycode keycode, const enum KBD_KEY_STATE state)
 {
-    if (ContainsKey(s_KeyMap.Left, scancode))
+    if (ContainsKey(s_KeyMap.Left, keycode))
     {
         s_KeyState.Left = state;
     }
-    else if (ContainsKey(s_KeyMap.Right, scancode))
+    else if (ContainsKey(s_KeyMap.Right, keycode))
     {
         s_KeyState.Right = state;
     }
 
-    if (ContainsKey(s_KeyMap.Up, scancode))
+    if (ContainsKey(s_KeyMap.Up, keycode))
     {
         s_KeyState.Up = state;
     }
-    else if (ContainsKey(s_KeyMap.Down, scancode))
+    else if (ContainsKey(s_KeyMap.Down, keycode))
     {
         s_KeyState.Down = state;
     }
 
     if (state == KEY_STATE_DOWN) return;
 
-    if (ContainsKey(s_KeyMap.Enter, scancode)
-        || s_KeyMap.Debug == scancode
-        || s_KeyMap.Pause == scancode)
+    if (ContainsKey(s_KeyMap.Enter, keycode)
+        || s_KeyMap.Debug == keycode
+        || s_KeyMap.Pause == keycode)
     {
         SDL_Event user;
         user.type = SDL_USEREVENT;
-        user.user.code = ContainsKey(s_KeyMap.Enter, scancode) ? ENTER
-                                                               : s_KeyMap.Debug == scancode ? DEBUG : PAUSE;
+        user.user.code = ContainsKey(s_KeyMap.Enter, keycode) ? ENTER
+                                                               : s_KeyMap.Debug == keycode ? DEBUG : PAUSE;
 
         SDL_PushEvent(&user);
     }
 }
 
-static bool ContainsKey(const KeyArray* keys, const SDL_Scancode scancode)
+static bool ContainsKey(const KeyArray* keys, const SDL_Keycode keycode)
 {
     for (int i = 0; i < keys->Count; ++i)
     {
-        if (keys->Keys[i] == scancode)
+        if (keys->Keys[i] == keycode)
         {
             return true;
         }
