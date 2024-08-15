@@ -36,6 +36,26 @@ bool FinishTitleScreen(void);
 void TitleEnterKeyPressed(void);
 
 //----------------------------------------------------------------------------------
+// Menu Screen Functions Declaration
+//----------------------------------------------------------------------------------
+void InitMenuScreen(void);
+void UpdateMenuScreen(float deltaTime);
+void DrawMenuScreen(void);
+void UnloadMenuScreen(void);
+GameScreen FinishMenuScreen(void);
+void MenuEnterKeyPressed(void);
+
+//----------------------------------------------------------------------------------
+// Options Screen Functions Declaration
+//----------------------------------------------------------------------------------
+void InitOptionsScreen(void);
+void UpdateOptionsScreen(float deltaTime);
+void DrawOptionsScreen(void);
+void UnloadOptionsScreen(void);
+bool FinishOptionsScreen(void);
+void OptionsEnterKeyPressed(void);
+
+//----------------------------------------------------------------------------------
 // Gameplay Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitGameplayScreen(void);

@@ -82,17 +82,12 @@ void QuitGame(void)
 {
     switch (currentScreen)
     {
-        case UNKNOWN:
-            break;
-        case TITLE:
-            UnloadTitleScreen();
-            break;
-        case GAMEPLAY:
-            UnloadGameplayScreen();
-            break;
-        case GAMEOVER:
-            UnloadGameOverScreen();
-            break;
+        case UNKNOWN: break;
+        case TITLE: UnloadTitleScreen(); break;
+        case MENU: UnloadMenuScreen(); break;
+        case OPTIONS: UnloadOptionsScreen(); break;
+        case GAMEPLAY: UnloadGameplayScreen(); break;
+        case GAMEOVER: UnloadGameOverScreen(); break;
     }
 
    GAM_ShutdownGameSystems();
@@ -104,6 +99,36 @@ void UpdateGame(void)
 
     switch (currentScreen)
     {
+        case UNKNOWN: break;
+        case TITLE:
+        {
+            UpdateTitleScreen(deltaTime);
+
+            if (FinishTitleScreen())
+            {
+                ChangeToScreen(GAMEPLAY);
+            }
+
+            break;
+        }
+        case MENU:
+        {
+            UpdateMenuScreen(deltaTime);
+            ChangeToScreen(FinishMenuScreen());
+
+            break;
+        }
+        case OPTIONS:
+        {
+            UpdateOptionsScreen(deltaTime);
+
+            if (FinishOptionsScreen())
+            {
+                ChangeToScreen(MENU);
+            }
+
+            break;
+        }
         case GAMEPLAY:
         {
             UpdateGameplayScreen(deltaTime);
@@ -115,17 +140,8 @@ void UpdateGame(void)
 
             break;
         }
-        case UNKNOWN:
-            break;
-        case TITLE:
-            UpdateTitleScreen(deltaTime);
-
-            if (FinishTitleScreen())
-            {
-                ChangeToScreen(GAMEPLAY);
-            }
-            break;
         case GAMEOVER:
+        {
             UpdateGameOverScreen(deltaTime);
 
             if (FinishGameOverScreen())
@@ -133,6 +149,7 @@ void UpdateGame(void)
                 ChangeToScreen(GAMEPLAY);
             }
             break;
+        }
     }
 
     REN_BeginDrawing();
@@ -140,6 +157,8 @@ void UpdateGame(void)
     switch (currentScreen)
     {
         case UNKNOWN: break;
+        case MENU: DrawMenuScreen(); break;
+        case OPTIONS: DrawOptionsScreen(); break;
         case GAMEPLAY: DrawGameplayScreen(); break;
         case TITLE: DrawTitleScreen(); break;
         case GAMEOVER: DrawGameOverScreen(); break;
@@ -161,6 +180,8 @@ void ChangeToScreen(const GameScreen screen)
     switch (currentScreen)
     {
         case UNKNOWN:
+        case MENU: UnloadMenuScreen(); break;
+        case OPTIONS: UnloadOptionsScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
         case GAMEOVER: UnloadGameOverScreen(); break;
@@ -171,6 +192,8 @@ void ChangeToScreen(const GameScreen screen)
     {
         case UNKNOWN:
         case TITLE: InitTitleScreen(); break;
+        case MENU: InitMenuScreen(); break;
+        case OPTIONS: InitOptionsScreen(); break;
         case GAMEPLAY: InitGameplayScreen(); break;
         case GAMEOVER: InitGameOverScreen(); break;
     }
@@ -183,17 +206,12 @@ void HandleEnter(void)
 {
     switch (currentScreen)
     {
-        case UNKNOWN:
-            break;
-        case TITLE:
-            TitleEnterKeyPressed();
-            break;
-        case GAMEPLAY:
-            GameplayEnterKeyPressed();
-            break;
-        case GAMEOVER:
-            GameOverEnterKeyPressed();
-            break;
+        case UNKNOWN: break;
+        case TITLE: TitleEnterKeyPressed(); break;
+        case MENU: MenuEnterKeyPressed(); break;
+        case OPTIONS: OptionsEnterKeyPressed(); break;
+        case GAMEPLAY: GameplayEnterKeyPressed(); break;
+        case GAMEOVER: GameOverEnterKeyPressed(); break;
     }
 }
 

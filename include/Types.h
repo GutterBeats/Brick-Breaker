@@ -27,6 +27,8 @@ typedef enum GameScreen
 {
     UNKNOWN = -1,
     TITLE = 0,
+    MENU,
+    OPTIONS,
     GAMEPLAY,
     GAMEOVER
 } GameScreen;
