@@ -19,6 +19,7 @@ typedef struct game_t
 
     bool GameWon;
     bool IsRunning;
+    bool IsPaused;
     bool ShowDebug;
 } Game;
 
@@ -33,6 +34,10 @@ bool GAM_GetGameWon(void);
 void GAM_SetGameWon(bool value);
 bool GAM_GetIsGameRunning(void);
 void GAM_SetIsGameRunning(bool running);
+
+bool GAM_GetIsPaused(void);
+void GAM_SetIsPaused(const bool paused);
+
 bool GAM_GetShowDebug(void);
 void GAM_SetShowDebug(bool showDebug);
 

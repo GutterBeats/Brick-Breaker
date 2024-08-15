@@ -20,6 +20,7 @@ static void QuitGame(void);
 static void UpdateGame(void);
 static void ChangeToScreen(GameScreen screen);
 static void HandleEnter(void);
+static void HandlePause(void);
 static void ToggleDebug(void);
 
 static GameScreen currentScreen = UNKNOWN;
@@ -52,14 +53,9 @@ int main(int argc, char* argv[])
             {
                 switch (event.user.code)
                 {
-                    case ENTER:
-                        HandleEnter();
-                        break;
-                    case DEBUG:
-                        ToggleDebug();
-                        break;
-                    case PAUSE:
-                        break;
+                    case ENTER: HandleEnter(); break;
+                    case DEBUG: ToggleDebug(); break;
+                    case PAUSE: HandlePause(); break;
                     default: break;
                 }
 
@@ -219,4 +215,12 @@ void ToggleDebug(void)
 {
     GAM_SetShowDebug(
         !GAM_GetShowDebug());
+}
+
+void HandlePause(void)
+{
+    if (currentScreen != GAMEPLAY) return;
+
+    GAM_SetIsPaused(
+        !GAM_GetIsPaused());
 }

@@ -213,6 +213,16 @@ void GAM_DrawFPS(const Vector2D position)
     TXT_DrawText(buffer, position);
 }
 
+bool GAM_GetIsPaused(void)
+{
+    return game.IsPaused;
+}
+
+void GAM_SetIsPaused(const bool paused)
+{
+    game.IsPaused = paused;
+}
+
 bool GAM_GetShowDebug(void)
 {
     return game.ShowDebug;

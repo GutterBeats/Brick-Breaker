@@ -16,7 +16,7 @@
 #define DEFAULT_BALL_SPEED 450.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
-#define STUCK_FRAME_COUNT 240
+#define STUCK_FRAME_COUNT 120
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -25,6 +25,7 @@ static float windowWidth = 0;
 static float windowHeight = 0;
 
 static Texture* background;
+static Texture* pause;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
@@ -43,6 +44,7 @@ static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
 static void UnstickBall(void);
+static void DrawPauseScreen(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions
@@ -68,6 +70,9 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(const float deltaTime)
 {
+    if (shouldFinish) return;
+    if (GAM_GetIsPaused()) return;
+
     UpdatePlayerPosition(deltaTime);
     UpdateBallPosition(deltaTime);
 
@@ -75,7 +80,7 @@ void UpdateGameplayScreen(const float deltaTime)
     ball->CurrentPosition.X = UTL_FClamp(0, windowWidth - ball->Size.X / 2.f, ball->CurrentPosition.X);
     ball->CurrentPosition.Y = UTL_FClamp(0, windowHeight - ball->Size.Y / 2.f, ball->CurrentPosition.Y);
 
-    if (ball->CurrentPosition.Y + ball->Size.Y >= windowHeight)
+    if (ball->CurrentPosition.Y + ball->Size.Y > paddle->CurrentPosition.Y + paddle->Size.Y)
     {
         BallDied();
         return;
@@ -111,6 +116,8 @@ void DrawGameplayScreen(void)
     ENT_DrawEntity(ball);
     ENT_DrawEntity(paddle);
     BM_DrawBricks(brickManager);
+
+    DrawPauseScreen();
 }
 
 void UnloadGameplayScreen(void)
@@ -125,6 +132,7 @@ bool FinishGameplayScreen(void)
 {
     if (shouldFinishNextFrame)
     {
+        ball->IsEnabled = false;
         shouldFinishNextFrame = false;
         shouldFinish = true;
 
@@ -166,6 +174,7 @@ static void InitializeEntities(void)
     ASSERT_NOTNULL(brickManager, "Brick Manager")
 
     background = REN_LoadTexture(BACKGROUND_IMAGE);
+    pause = REN_LoadTexture(PAUSE_TEXTURE);
 
     paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
     paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
@@ -289,9 +298,8 @@ static void BallDied(void)
     if (!ball->IsEnabled) return;
 
     ball->IsEnabled = false;
-    --lives;
 
-    if (lives <= 0)
+    if (--lives <= 0)
     {
         GAM_SetGameWon(false);
         shouldFinishNextFrame = true;
@@ -353,4 +361,15 @@ static void UnstickBall(void)
 
         ENT_MoveEntity(ball, newDirection, GAM_GetDeltaSeconds());
     }
+}
+
+static void DrawPauseScreen(void)
+{
+    if (!GAM_GetIsPaused()) return;
+    if (pause == NULL) return;
+
+    const float x = windowWidth / 2.f - pause->Width / 2.f;
+    const float y = windowHeight / 2.f - pause->Height / 2.f;
+
+    REN_DrawTextureF(pause, UTL_MakeVectorF2D(x, y));
 }
