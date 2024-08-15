@@ -122,7 +122,9 @@ CollisionResult BM_CheckBrickCollision(BrickManager* manager, const Entity* ball
             if (current->Health <= 0)
             {
                 current->IsEnabled = false;
-                --manager->EnabledBrickCount;
+                manager->EnabledBrickCount -= 1;
+
+                BB_LOG("Brick Count: %i", manager->EnabledBrickCount);
             }
 
             return result;
