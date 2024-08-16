@@ -126,6 +126,9 @@ void UnloadGameplayScreen(void)
     ENT_DestroyEntity(ball);
     BM_DestroyManager(brickManager);
     REN_FreeTexture(background);
+
+    AUD_UnloadSoundEffect(paddleCollisionSfx);
+    AUD_UnloadSoundEffect(brickCollisionSfx);
 }
 
 bool FinishGameplayScreen(void)
