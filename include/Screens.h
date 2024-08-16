@@ -39,7 +39,6 @@ void TitleEnterKeyPressed(void);
 // Menu Screen Functions Declaration
 //----------------------------------------------------------------------------------
 void InitMenuScreen(void);
-void UpdateMenuScreen(float deltaTime);
 void DrawMenuScreen(void);
 void UnloadMenuScreen(void);
 GameScreen FinishMenuScreen(void);

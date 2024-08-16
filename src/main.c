@@ -111,9 +111,7 @@ void UpdateGame(void)
         }
         case MENU:
         {
-            UpdateMenuScreen(deltaTime);
             ChangeToScreen(FinishMenuScreen());
-
             break;
         }
         case OPTIONS:
