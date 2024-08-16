@@ -16,7 +16,6 @@
 static bool audioInitialized;
 static Mix_Music* music = NULL;
 static Mix_Chunk** soundEffects = NULL;
-static i8 currentEffectIndex = 0;
 
 void AUD_InitializeAudioSystem(void)
 {
@@ -37,7 +36,7 @@ void AUD_InitializeAudioSystem(void)
     soundEffects = calloc(MAX_SFX_COUNT, sizeof(Mix_Chunk*));
     if (soundEffects == NULL)
     {
-        BB_LOG("Could not allocated memory for the SFX buffer.");
+        BB_LOG("Could not allocate memory for the SFX buffer.");
         return;
     }
 
@@ -51,7 +50,7 @@ void AUD_DestroyAudioSystem(void)
     audioInitialized = false;
     BB_LOG("Destroying audio system.");
 
-    for (size_t i = 0; i < currentEffectIndex; ++i)
+    for (size_t i = 0; i < MAX_SFX_COUNT; ++i)
     {
         Mix_Chunk* sfx = soundEffects[i];
         if (sfx == NULL) continue;
@@ -98,6 +97,22 @@ void AUD_PlayMusic(const char* filepath)
     Mix_VolumeMusic(65);
 }
 
+void AUD_ResumeMusic(void)
+{
+    if (music == NULL) return;
+    if (!Mix_PausedMusic()) return;
+
+    Mix_ResumeMusic();
+}
+
+void AUD_PauseMusic(void)
+{
+    if (music == NULL) return;
+    if (Mix_PausedMusic()) return;
+
+    Mix_PauseMusic();
+}
+
 void AUD_PlaySoundEffect(const i8 index)
 {
     if (!audioInitialized) return;
@@ -113,16 +128,50 @@ void AUD_PlaySoundEffect(const i8 index)
 i8 AUD_LoadSoundEffect(const char* filepath)
 {
     if (!audioInitialized) return -1;
-    if (currentEffectIndex >= MAX_SFX_COUNT) return -1;
 
-    Mix_Chunk* sfx = Mix_LoadWAV(filepath);
-    if (sfx == NULL)
+    for (i8 i = 0; i < MAX_SFX_COUNT; ++i)
     {
-        BB_LOG("Unable to load SFX: %s", Mix_GetError());
-        return -1;
+        if (soundEffects[i] != NULL) continue;
+
+        Mix_Chunk* sfx = Mix_LoadWAV(filepath);
+        if (sfx == NULL)
+        {
+            BB_LOG("Unable to load SFX: %s", Mix_GetError());
+            return -1;
+        }
+
+        soundEffects[i] = sfx;
+        return i;
     }
 
-    soundEffects[currentEffectIndex] = sfx;
+    BB_LOG("Unable to load sound effect (%s). No free slots available.", filepath);
 
-    return currentEffectIndex++;
+    return -1;
+}
+
+void AUD_UnloadSoundEffect(const i8 index)
+{
+    if (index > MAX_SFX_COUNT || index < 0) return;
+
+    Mix_Chunk* sfx = soundEffects[index];
+    if (sfx == NULL) return;
+
+    Mix_FreeChunk(sfx);
+    soundEffects[index] = NULL;
+}
+
+void AUD_SetMusicVolume(const u8 volume)
+{
+    Mix_VolumeMusic(UTL_Clamp(0, MIX_MAX_VOLUME, volume));
+}
+
+void AUD_SetSFXVolume(const u8 volume)
+{
+    for (i8 i = 0; i < MAX_SFX_COUNT; ++i)
+    {
+        Mix_Chunk* sfx = soundEffects[i];
+        if (sfx == NULL) continue;
+
+        Mix_VolumeChunk(sfx, UTL_Clamp(0, MIX_MAX_VOLUME, volume));
+    }
 }
