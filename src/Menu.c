@@ -2,6 +2,7 @@
 // Created by Anthony Lesch on 8/14/24.
 //
 
+#include "Audio.h"
 #include "ButtonContainer.h"
 #include "Renderer.h"
 #include "Resources.h"
@@ -18,6 +19,9 @@
 static Texture* background;
 static ButtonContainer* buttonContainer;
 static GameScreen nextScreen;
+static i8 moveUpSfx;
+static i8 moveDownSfx;
+static i8 itemSelectedSfx;
 
 //----------------------------------------------------------------------------------
 // Menu Screen Helper Functions
@@ -39,10 +43,12 @@ void InitMenuScreen(void)
     BC_CreateButton(buttonContainer, "PLAY", &PlayButtonClicked);
     BC_CreateButton(buttonContainer, "OPTIONS", &OptionsButtonClicked);
     BC_CreateButton(buttonContainer, "EXIT", &ExitButtonClicked);
-}
 
-void UpdateMenuScreen(float deltaTime)
-{
+    moveUpSfx = AUD_LoadSoundEffect(MOVE_UP_SFX);
+    moveDownSfx = AUD_LoadSoundEffect(MOVE_DOWN_SFX);
+    itemSelectedSfx = AUD_LoadSoundEffect(ITEM_SELECTED_SFX);
+
+    AUD_PlayMusic(MENU_MUSIC);
 }
 
 void DrawMenuScreen(void)
@@ -55,6 +61,10 @@ void UnloadMenuScreen(void)
 {
     REN_FreeTexture(background);
     BC_DestroyContainer(buttonContainer);
+
+    AUD_UnloadSoundEffect(moveUpSfx);
+    AUD_UnloadSoundEffect(moveDownSfx);
+    AUD_UnloadSoundEffect(itemSelectedSfx);
 }
 
 GameScreen FinishMenuScreen(void)
@@ -64,16 +74,19 @@ GameScreen FinishMenuScreen(void)
 
 void MenuEnterKeyPressed(void)
 {
+    AUD_PlaySoundEffect(itemSelectedSfx);
     BC_ClickSelectedItem(buttonContainer);
 }
 
 void MenuUpKeyPressed(void)
 {
+    AUD_PlaySoundEffect(moveUpSfx);
     BC_ChangeSelectedIndex(buttonContainer, UP);
 }
 
 void MenuDownKeyPressed(void)
 {
+    AUD_PlaySoundEffect(moveDownSfx);
     BC_ChangeSelectedIndex(buttonContainer, DOWN);
 }
 
