@@ -39,9 +39,13 @@
 //
 #define PADDLE_COLLISION_SFX "resources/Sounds/BrickCollision.wav"
 #define BRICK_COLLISION_SFX "resources/Sounds/PaddleCollision.wav"
+#define MOVE_UP_SFX "resources/Sounds/MoveUp.wav"
+#define MOVE_DOWN_SFX "resources/Sounds/MoveDown.wav"
+#define ITEM_SELECTED_SFX "resources/Sounds/ItemSelected.wav"
 
 //
 // Music
 //
 #define MAIN_MUSIC "resources/Music/MainMusic.wav"
 #define GAMEOVER_MUSIC "resources/Music/GameOverMusic.wav"
+#define MENU_MUSIC "resources/Music/MenuMusic.wav"
