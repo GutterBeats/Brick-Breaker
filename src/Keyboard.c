@@ -26,8 +26,6 @@ void KBD_InitializeKeymap()
 
     s_KeyState.Left = KEY_STATE_UP;
     s_KeyState.Right = KEY_STATE_UP;
-    s_KeyState.Up = KEY_STATE_UP;
-    s_KeyState.Down = KEY_STATE_UP;
 }
 
 void KBD_DestroyKeymap(void)
@@ -114,16 +112,25 @@ static void HandleRealtimeKeys(const SDL_Keycode keycode, const enum KBD_KEY_STA
         s_KeyState.Right = state;
     }
 
+    if (state == KEY_STATE_DOWN) return;
+
     if (ContainsKey(s_KeyMap.Up, keycode))
     {
-        s_KeyState.Up = state;
-    }
-    else if (ContainsKey(s_KeyMap.Down, keycode))
-    {
-        s_KeyState.Down = state;
+        SDL_Event upKeyPressed = { SDL_USEREVENT };
+        upKeyPressed.user.code = UP_KEY_PRESSED;
+
+        SDL_PushEvent(&upKeyPressed);
+        return;
     }
 
-    if (state == KEY_STATE_DOWN) return;
+    if (ContainsKey(s_KeyMap.Down, keycode))
+    {
+        SDL_Event upKeyPressed = { SDL_USEREVENT };
+        upKeyPressed.user.code = DOWN_KEY_PRESSED;
+
+        SDL_PushEvent(&upKeyPressed);
+        return;
+    }
 
     if (ContainsKey(s_KeyMap.Enter, keycode)
         || s_KeyMap.Debug == keycode
@@ -132,7 +139,7 @@ static void HandleRealtimeKeys(const SDL_Keycode keycode, const enum KBD_KEY_STA
         SDL_Event user;
         user.type = SDL_USEREVENT;
         user.user.code = ContainsKey(s_KeyMap.Enter, keycode) ? ENTER
-                                                               : s_KeyMap.Debug == keycode ? DEBUG : PAUSE;
+                                                              : s_KeyMap.Debug == keycode ? DEBUG : PAUSE;
 
         SDL_PushEvent(&user);
     }

@@ -56,6 +56,8 @@ int main(int argc, char* argv[])
                     case ENTER: HandleEnter(); break;
                     case DEBUG: ToggleDebug(); break;
                     case PAUSE: HandlePause(); break;
+                    case UP_KEY_PRESSED: MenuUpKeyPressed(); break;
+                    case DOWN_KEY_PRESSED: MenuDownKeyPressed(); break;
                     default: break;
                 }
 
@@ -102,7 +104,7 @@ void UpdateGame(void)
 
             if (FinishTitleScreen())
             {
-                ChangeToScreen(GAMEPLAY);
+                ChangeToScreen(MENU);
             }
 
             break;
@@ -175,7 +177,7 @@ void ChangeToScreen(const GameScreen screen)
     // Unload current screen
     switch (currentScreen)
     {
-        case UNKNOWN:
+        case UNKNOWN: break;
         case MENU: UnloadMenuScreen(); break;
         case OPTIONS: UnloadOptionsScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
@@ -186,7 +188,7 @@ void ChangeToScreen(const GameScreen screen)
     // Init next screen
     switch (screen)
     {
-        case UNKNOWN:
+        case UNKNOWN: break;
         case TITLE: InitTitleScreen(); break;
         case MENU: InitMenuScreen(); break;
         case OPTIONS: InitOptionsScreen(); break;

@@ -11,7 +11,9 @@ typedef enum USER_EVENT_TYPE
 {
     ENTER,
     DEBUG,
-    PAUSE
+    PAUSE,
+    UP_KEY_PRESSED,
+    DOWN_KEY_PRESSED
 } USER_EVENT_TYPE;
 
 enum KBD_KEY_STATE
@@ -42,8 +44,6 @@ typedef struct keyState
 {
     enum KBD_KEY_STATE Left;
     enum KBD_KEY_STATE Right;
-    enum KBD_KEY_STATE Up;
-    enum KBD_KEY_STATE Down;
 } KeyState;
 
 void KBD_InitializeKeymap(void);

@@ -44,6 +44,8 @@ void DrawMenuScreen(void);
 void UnloadMenuScreen(void);
 GameScreen FinishMenuScreen(void);
 void MenuEnterKeyPressed(void);
+void MenuUpKeyPressed(void);
+void MenuDownKeyPressed(void);
 
 //----------------------------------------------------------------------------------
 // Options Screen Functions Declaration

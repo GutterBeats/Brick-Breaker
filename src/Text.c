@@ -5,9 +5,6 @@
 #include <SDL_ttf.h>
 
 #include "Text.h"
-
-#include <stdbool.h>
-
 #include "Renderer.h"
 #include "Resources.h"
 #include "Utils.h"
@@ -16,12 +13,14 @@
 #define LARGE_FONT_SIZE 32
 
 static void DrawTextInternal(const char* text, Vector2D position, TTF_Font* font);
-static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font);
+static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font, SDL_Color textColor);
 
 static TTF_Font* s_SmallFont;
 static TTF_Font* s_LargeFont;
 
 static bool textInitialized;
+static SDL_Color whiteColor = { 255, 255, 255 };
+static SDL_Color blackColor = { 0, 0, 0 };
 
 void TXT_InitializeText(void)
 {
@@ -77,31 +76,33 @@ void TXT_DrawText(const char* text, const Vector2D position)
 
 Texture* TXT_CreateTextureFromText(const char* text)
 {
-    return CreateTextureFromTextInternal(text, s_SmallFont);
+    return CreateTextureFromTextInternal(text, s_SmallFont, whiteColor);
+}
+
+Texture* TXT_CreateTextureFromText_Black(const char* text)
+{
+    return CreateTextureFromTextInternal(text, s_SmallFont, blackColor);
 }
 
 Texture* TXT_CreateTextureFromText_Large(const char* text)
 {
-    return CreateTextureFromTextInternal(text, s_LargeFont);
+    return CreateTextureFromTextInternal(text, s_LargeFont, whiteColor);
 }
 
 static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font* font)
 {
-    Texture* texture = CreateTextureFromTextInternal(text, font);
+    Texture* texture = CreateTextureFromTextInternal(text, font, whiteColor);
     if (texture == NULL) return;
 
     REN_DrawTexture(texture, position);
     REN_FreeTexture(texture);
 }
 
-static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font)
+static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font, SDL_Color textColor)
 {
     if (!TTF_WasInit()) return NULL;
 
-    // Set color to white
-    const SDL_Color color = { 255, 255, 255 };
-
-    SDL_Surface* textSurface = TTF_RenderUTF8_Solid(font, text, color);
+    SDL_Surface* textSurface = TTF_RenderUTF8_Solid(font, text, textColor);
     if (textSurface == NULL)
     {
         BB_LOG("Could not create text surface for text (%s): %s", text, TTF_GetError());
