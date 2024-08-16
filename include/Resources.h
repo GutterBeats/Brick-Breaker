@@ -17,6 +17,8 @@
 #define PLAYER_RED_TEXTURE "resources/Textures/paddleRed.png"
 #define BALL_BLUE_TEXTURE "resources/Textures/ballBlue.png"
 #define PAUSE_TEXTURE "resources/Textures/PauseTexture.png"
+#define BUTTON_TEXTURE "resources/Textures/buttonDefault.png"
+#define SELECTED_BUTTON_TEXTURE "resources/Textures/buttonSelected.png"
 
 //
 // Images

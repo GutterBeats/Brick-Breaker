@@ -34,6 +34,8 @@ add_executable(Brick_Breaker
         src/GameOver.c
         src/Menu.c
         src/Options.c
+        include/ButtonContainer.h
+        src/ButtonContainer.c
 )
 
 add_custom_target(CopyResources
