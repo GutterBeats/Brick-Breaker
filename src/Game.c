@@ -221,6 +221,15 @@ bool GAM_GetIsPaused(void)
 void GAM_SetIsPaused(const bool paused)
 {
     game.IsPaused = paused;
+
+    if (paused)
+    {
+        AUD_PauseMusic();
+    }
+    else
+    {
+        AUD_ResumeMusic();
+    }
 }
 
 bool GAM_GetShowDebug(void)
