@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(Brick_Breaker C)
+project(Brick_Breaker LANGUAGES C VERSION 0.5.0)
 
 set(CMAKE_C_STANDARD 11)
 
@@ -7,34 +7,21 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(Brick_Breaker
         src/main.c
-        include/Types.h
-        include/Keyboard.h
         src/Keyboard.c
-        include/Screens.h
         src/Gameplay.c
-        include/Renderer.h
         src/Renderer.c
-        include/Entity.h
-        include/BrickManager.h
         src/Title.c
         src/Ending.c
         src/Entity.c
-        include/Utils.h
         src/Utils.c
-        include/Game.h
         src/Game.c
         src/BrickManager.c
-        include/Text.h
         src/Text.c
-        include/Resources.h
-        include/Audio.h
         src/Audio.c
-        include/Collision.h
         src/Collision.c
         src/GameOver.c
         src/Menu.c
         src/Options.c
-        include/ButtonContainer.h
         src/ButtonContainer.c
 )
 
