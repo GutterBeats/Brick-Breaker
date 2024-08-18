@@ -2,10 +2,10 @@
 // Created by Anthony Lesch on 8/14/24.
 //
 
-#include "ButtonContainer.h"
-#include "Resources.h"
-#include "Text.h"
-#include "Utils.h"
+#include "../../include/ButtonContainer.h"
+#include "../../include/Resources.h"
+#include "../../include/Text.h"
+#include "../../include/Utils.h"
 
 #define BUTTON_PADDING 10
 

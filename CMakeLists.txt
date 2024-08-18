@@ -7,22 +7,21 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(Brick_Breaker
         src/main.c
-        src/Keyboard.c
-        src/Gameplay.c
-        src/Renderer.c
-        src/Title.c
-        src/Ending.c
-        src/Entity.c
-        src/Utils.c
-        src/Game.c
-        src/BrickManager.c
-        src/Text.c
-        src/Audio.c
-        src/Collision.c
-        src/GameOver.c
-        src/Menu.c
-        src/Options.c
-        src/ButtonContainer.c
+        src/Gameplay/BrickManager.c
+        src/Gameplay/Entity.c
+        src/Gameplay/Game.c
+        src/Screens/GameOver.c
+        src/Screens/Gameplay.c
+        src/Screens/Menu.c
+        src/Screens/Options.c
+        src/Screens/Title.c
+        src/Utilities/Audio.c
+        src/Utilities/ButtonContainer.c
+        src/Utilities/Collision.c
+        src/Utilities/Keyboard.c
+        src/Utilities/Renderer.c
+        src/Utilities/Text.c
+        src/Utilities/Utils.c
 )
 
 add_custom_target(CopyResources
