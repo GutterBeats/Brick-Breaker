@@ -10,11 +10,11 @@ add_executable(Brick_Breaker
         src/Gameplay/BrickManager.c
         src/Gameplay/Entity.c
         src/Gameplay/Game.c
-        src/Screens/GameOver.c
-        src/Screens/Gameplay.c
-        src/Screens/Menu.c
-        src/Screens/Options.c
-        src/Screens/Title.c
+        src/Scenes/Ending.c
+        src/Scenes/Gameplay.c
+        src/Scenes/Menu.c
+        src/Scenes/Options.c
+        src/Scenes/Title.c
         src/Utilities/Audio.c
         src/Utilities/ButtonContainer.c
         src/Utilities/Collision.c

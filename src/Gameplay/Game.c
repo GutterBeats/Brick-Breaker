@@ -93,11 +93,17 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
         .GameWon = false,
         .IsRunning = true,
         .ShowDebug = false,
+        .CurrentScene = NULL,
     };
 }
 
 void GAM_ShutdownGameSystems(void)
 {
+    if (game.CurrentScene->Destroy != NULL)
+    {
+        game.CurrentScene->Destroy();
+    }
+
     REN_DestroyRenderer();
     KBD_DestroyKeymap();
     TXT_DestroyTextSystem();
@@ -105,6 +111,18 @@ void GAM_ShutdownGameSystems(void)
 
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+void GAM_TransitionToScene(Scene* scene)
+{
+    if (game.CurrentScene != NULL
+        && game.CurrentScene->Destroy != NULL)
+    {
+        game.CurrentScene->Destroy();
+    }
+
+    scene->Initialize();
+    game.CurrentScene = scene;
 }
 
 void GAM_GetScreenDimensions(int* width, int* height)
@@ -172,9 +190,26 @@ void GAM_StartFrame(void)
     const int frameTicks = SDL_GetTicks64() - currentFrame;
     if (frameTicks < TICKS_PER_FRAME)
     {
-        //Wait remaining time
+        // Wait remaining time
         SDL_Delay(TICKS_PER_FRAME - frameTicks);
     }
+}
+
+void GAM_UpdateCurrentScene(void)
+{
+    if (game.CurrentScene->Update != NULL)
+    {
+        game.CurrentScene->Update(game.DeltaSeconds);
+    }
+
+    REN_BeginDrawing();
+
+    if (game.CurrentScene->Draw != NULL)
+    {
+        game.CurrentScene->Draw();
+    }
+
+    REN_FinishDrawing();
 }
 
 void GAM_EndFrame(void)

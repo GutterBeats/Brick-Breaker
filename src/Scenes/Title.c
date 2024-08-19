@@ -34,8 +34,22 @@ static enum title_frame currentFrame;
 // Title Screen Function Declaration
 //----------------------------------------------------------------------------------
 static Texture* LoadTitleTexture(const char* path);
+static void InitializeTitleScreen(void);
+static void UpdateTitleScreen(float deltaTime);
+static void DrawTitleScreen(void);
+static void DestroyTitleScreen(void);
 
-void InitTitleScreen(void)
+//----------------------------------------------------------------------------------
+// Title Screen Extern
+//----------------------------------------------------------------------------------
+Scene TitleScene = {
+    .Initialize = InitializeTitleScreen,
+    .Update = UpdateTitleScreen,
+    .Draw = DrawTitleScreen,
+    .Destroy = DestroyTitleScreen
+};
+
+void InitializeTitleScreen(void)
 {
     companyImage = LoadTitleTexture(COMPANY_IMAGE);
     engineImage = LoadTitleTexture(ENGINE_IMAGE);
@@ -131,15 +145,10 @@ void DrawTitleScreen(void)
     }
 }
 
-void UnloadTitleScreen(void)
+void DestroyTitleScreen(void)
 {
     REN_FreeTexture(companyImage);
     REN_FreeTexture(engineImage);
-}
-
-bool FinishTitleScreen(void)
-{
-    return shouldFinish;
 }
 
 void TitleEnterKeyPressed(void)

@@ -47,9 +47,24 @@ static void UnstickBall(void);
 static void DrawPauseScreen(void);
 
 //----------------------------------------------------------------------------------
-// Gameplay Screen Functions
+// Gameplay Scene Functions
 //----------------------------------------------------------------------------------
-void InitGameplayScreen(void)
+static void Initialize(void);
+static void Update(float deltaTime);
+static void Draw(void);
+static void Destroy(void);
+
+//----------------------------------------------------------------------------------
+// Gameplay Scene Extern
+//----------------------------------------------------------------------------------
+Scene GameplayScene = {
+    .Initialize = Initialize,
+    .Update = Update,
+    .Draw = Draw,
+    .Destroy = Destroy
+};
+
+void Initialize(void)
 {
     int width, height;
     GAM_GetScreenDimensions(&width, &height);
@@ -68,7 +83,7 @@ void InitGameplayScreen(void)
     AUD_PlayMusic(MAIN_MUSIC);
 }
 
-void UpdateGameplayScreen(const float deltaTime)
+void Update(const float deltaTime)
 {
     if (shouldFinish) return;
     if (GAM_GetIsPaused()) return;
@@ -95,7 +110,7 @@ void UpdateGameplayScreen(const float deltaTime)
     }
 }
 
-void DrawGameplayScreen(void)
+void Draw(void)
 {
     REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), BB_BACKGROUND_ALPHA);
 
@@ -120,7 +135,7 @@ void DrawGameplayScreen(void)
     DrawPauseScreen();
 }
 
-void UnloadGameplayScreen(void)
+void Destroy(void)
 {
     ENT_DestroyEntity(paddle);
     ENT_DestroyEntity(ball);
@@ -131,18 +146,13 @@ void UnloadGameplayScreen(void)
     AUD_UnloadSoundEffect(brickCollisionSfx);
 }
 
-bool FinishGameplayScreen(void)
+void FinishGameplayScreen(void)
 {
     if (shouldFinishNextFrame)
     {
         ball->IsEnabled = false;
         shouldFinishNextFrame = false;
-        shouldFinish = true;
-
-        return false;
     }
-
-    return shouldFinish;
 }
 
 void GameplayEnterKeyPressed(void)

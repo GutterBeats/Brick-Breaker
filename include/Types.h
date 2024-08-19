@@ -23,15 +23,13 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-typedef enum GameScreen
+typedef struct scene_t
 {
-    UNKNOWN = -1,
-    TITLE = 0,
-    MENU,
-    OPTIONS,
-    GAMEPLAY,
-    GAMEOVER
-} GameScreen;
+    void (*Initialize)(void);
+    void (*Update)(float deltaTime);
+    void (*Draw)(void);
+    void (*Destroy)(void);
+} Scene;
 
 typedef struct vector2D
 {
@@ -44,3 +42,12 @@ typedef struct vectorF2d
     float X;
     float Y;
 } VectorF2D;
+
+//----------------------------------------------------------------------------------
+// Scene Extern Variables
+//----------------------------------------------------------------------------------
+extern Scene TitleScene;
+extern Scene MenuScene;
+extern Scene OptionScene;
+extern Scene GameplayScene;
+extern Scene EndingScene;

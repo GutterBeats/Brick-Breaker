@@ -21,10 +21,13 @@ typedef struct game_t
     bool IsRunning;
     bool IsPaused;
     bool ShowDebug;
+
+    Scene* CurrentScene;
 } Game;
 
 void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight);
 void GAM_ShutdownGameSystems(void);
+void GAM_TransitionToScene(Scene* scene);
 
 void GAM_GetScreenDimensions(int* width, int* height);
 void GAM_UpdateScore(int points);
@@ -36,12 +39,13 @@ bool GAM_GetIsGameRunning(void);
 void GAM_SetIsGameRunning(bool running);
 
 bool GAM_GetIsPaused(void);
-void GAM_SetIsPaused(const bool paused);
+void GAM_SetIsPaused(bool paused);
 
 bool GAM_GetShowDebug(void);
 void GAM_SetShowDebug(bool showDebug);
 
 void GAM_StartFrame(void);
+void GAM_UpdateCurrentScene(void);
 void GAM_EndFrame(void);
 void GAM_SetTimeScale(float scale);
 void GAM_SetTimeScaleForSeconds(float scale, float seconds);

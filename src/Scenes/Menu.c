@@ -18,7 +18,6 @@
 //----------------------------------------------------------------------------------
 static Texture* background;
 static ButtonContainer* buttonContainer;
-static GameScreen nextScreen;
 static i8 moveUpSfx;
 static i8 moveDownSfx;
 static i8 itemSelectedSfx;
@@ -33,9 +32,21 @@ static void ExitButtonClicked(void);
 //----------------------------------------------------------------------------------
 // Menu Screen Functions Declaration
 //----------------------------------------------------------------------------------
-void InitMenuScreen(void)
+static void Initialize(void);
+static void Draw(void);
+static void Destroy(void);
+
+//----------------------------------------------------------------------------------
+// Menu Scene Extern
+//----------------------------------------------------------------------------------
+Scene MenuScene = {
+    .Initialize = Initialize,
+    .Draw = Draw,
+    .Destroy = Destroy
+};
+
+void Initialize(void)
 {
-    nextScreen = MENU;
     background = REN_LoadTexture(MENU_BACKGROUND_IMAGE);
     buttonContainer = BC_CreateContainer(
         UTL_MakeVectorF2D(BUTTON_CONTAINER_X, BUTTON_CONTAINER_Y), BUTTON_COUNT);
@@ -51,13 +62,13 @@ void InitMenuScreen(void)
     AUD_PlayMusic(MENU_MUSIC);
 }
 
-void DrawMenuScreen(void)
+void Draw(void)
 {
     REN_DrawTexture(background, UTL_GetZeroVector());
     BC_DrawButtonContainer(buttonContainer);
 }
 
-void UnloadMenuScreen(void)
+void Destroy(void)
 {
     REN_FreeTexture(background);
     BC_DestroyContainer(buttonContainer);
@@ -65,11 +76,6 @@ void UnloadMenuScreen(void)
     AUD_UnloadSoundEffect(moveUpSfx);
     AUD_UnloadSoundEffect(moveDownSfx);
     AUD_UnloadSoundEffect(itemSelectedSfx);
-}
-
-GameScreen FinishMenuScreen(void)
-{
-    return nextScreen;
 }
 
 void MenuEnterKeyPressed(void)
@@ -92,12 +98,10 @@ void MenuDownKeyPressed(void)
 
 static void PlayButtonClicked(void)
 {
-    nextScreen = GAMEPLAY;
 }
 
 static void OptionsButtonClicked(void)
 {
-    nextScreen = OPTIONS;
 }
 
 static void ExitButtonClicked(void)
