@@ -7,20 +7,32 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(Brick_Breaker
         src/main.c
+        include/BrickManager.h
         src/Gameplay/BrickManager.c
+        include/Entity.h
         src/Gameplay/Entity.c
+        include/Game.h
         src/Gameplay/Game.c
         src/Scenes/Ending.c
         src/Scenes/Gameplay.c
         src/Scenes/Menu.c
         src/Scenes/Options.c
         src/Scenes/Title.c
+        include/Audio.h
         src/Utilities/Audio.c
+        include/ButtonContainer.h
         src/Utilities/ButtonContainer.c
+        include/Collision.h
         src/Utilities/Collision.c
+        include/Keyboard.h
         src/Utilities/Keyboard.c
+        include/Renderer.h
         src/Utilities/Renderer.c
+        include/Resources.h
+        include/Text.h
         src/Utilities/Text.c
+        include/Types.h
+        include/Utils.h
         src/Utilities/Utils.c
         include/EventSystem.h
         src/Utilities/EventSystem.c
