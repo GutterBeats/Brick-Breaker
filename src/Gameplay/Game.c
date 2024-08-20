@@ -116,12 +116,17 @@ void GAM_ShutdownGameSystems(void)
     SDL_Quit();
 }
 
+// TODO: Work on actual scene transitions
 void GAM_TransitionToScene(Scene* scene)
 {
-    if (game.CurrentScene != NULL
-        && game.CurrentScene->Destroy != NULL)
+    if (game.CurrentScene != NULL)
     {
-        game.CurrentScene->Destroy();
+        if (game.CurrentScene->Destroy != NULL)
+        {
+            game.CurrentScene->Destroy();
+        }
+
+        EVT_UnbindAllUserEvents();
     }
 
     scene->Initialize();
