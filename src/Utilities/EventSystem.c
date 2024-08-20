@@ -47,6 +47,23 @@ void EVT_PollEvents(void)
     }
 }
 
+
+void EVT_UnbindAllUserEvents(void)
+{
+    for (i32 event = USER_EVENT_NONE + 1; event < USER_EVENT_COUNT; ++event)
+    {
+        EVT_UnbindUserEvent(event);
+    }
+}
+
+void EVT_UnbindUserEvent(const USER_EVENT_TYPE eventType)
+{
+    if (IS_VALID_USER_EVENT(eventType))
+    {
+        eventHandlers[eventType] = NULL;
+    }
+}
+
 void EVT_BindUserEvent(const USER_EVENT_TYPE eventType, const UserEventHandler eventHandler)
 {
     if (!IS_VALID_USER_EVENT(eventType)) return;
