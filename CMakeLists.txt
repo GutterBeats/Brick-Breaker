@@ -22,6 +22,8 @@ add_executable(Brick_Breaker
         src/Utilities/Renderer.c
         src/Utilities/Text.c
         src/Utilities/Utils.c
+        include/EventSystem.h
+        src/Utilities/EventSystem.c
 )
 
 add_custom_target(CopyResources

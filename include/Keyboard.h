@@ -9,18 +9,20 @@
 
 typedef enum USER_EVENT_TYPE
 {
-    ENTER,
+    // First index of user event. Make sure is always first.
+    USER_EVENT_NONE = -1,
+
+    ENTER = 0,
     DEBUG,
     PAUSE,
     UP_KEY_PRESSED,
-    DOWN_KEY_PRESSED
+    DOWN_KEY_PRESSED,
+
+    // Count of the user event types. Make sure this is always last.
+    USER_EVENT_COUNT
 } USER_EVENT_TYPE;
 
-enum KBD_KEY_STATE
-{
-    KEY_STATE_UP,
-    KEY_STATE_DOWN
-};
+#define IS_VALID_USER_EVENT(x) ((x > USER_EVENT_NONE) && (x < USER_EVENT_COUNT))
 
 typedef struct key_array
 {
@@ -39,12 +41,6 @@ typedef struct keymap
     SDL_Keycode Pause;
     SDL_Keycode Debug;
 } KeyMap;
-
-typedef struct keyState
-{
-    enum KBD_KEY_STATE Left;
-    enum KBD_KEY_STATE Right;
-} KeyState;
 
 void KBD_InitializeKeymap(void);
 void KBD_DestroyKeymap(void);

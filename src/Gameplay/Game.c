@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "Audio.h"
+#include "EventSystem.h"
 #include "Keyboard.h"
 #include "Renderer.h"
 #include "Text.h"
@@ -80,6 +81,7 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
 
     KBD_InitializeKeymap();
     UTL_SetRandomSeed();
+    EVT_InitializeEventSystem();
 
     lastFrame = SDL_GetTicks64();
 
@@ -108,6 +110,7 @@ void GAM_ShutdownGameSystems(void)
     KBD_DestroyKeymap();
     TXT_DestroyTextSystem();
     AUD_DestroyAudioSystem();
+    EVT_DestroyEventSystem();
 
     SDL_DestroyWindow(window);
     SDL_Quit();

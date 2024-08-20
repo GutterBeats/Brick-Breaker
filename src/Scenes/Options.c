@@ -2,37 +2,35 @@
 // Created by Anthony Lesch on 8/14/24.
 //
 
-#include <stdbool.h>
+#include "Types.h"
 
 //----------------------------------------------------------------------------------
-// Options Screen Functions Declaration
+// Option Screen Functions Declaration
 //----------------------------------------------------------------------------------
-void InitOptionsScreen(void)
+static void Initialize(void);
+static void Draw(void);
+static void Destroy(void);
+
+//----------------------------------------------------------------------------------
+// Menu Scene Extern
+//----------------------------------------------------------------------------------
+Scene OptionScene = {
+    .Initialize = Initialize,
+    .Draw = Draw,
+    .Destroy = Destroy
+};
+
+static void Initialize(void)
 {
 
 }
 
-void UpdateOptionsScreen(float deltaTime)
+static void Draw(void)
 {
 
 }
 
-void DrawOptionsScreen(void)
-{
-
-}
-
-void UnloadOptionsScreen(void)
-{
-
-}
-
-bool FinishOptionsScreen(void)
-{
-    return false;
-}
-
-void OptionsEnterKeyPressed(void)
+static void Destroy(void)
 {
 
 }

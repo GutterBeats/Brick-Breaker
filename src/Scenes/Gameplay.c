@@ -325,8 +325,8 @@ static void UnstickBall(void)
     static float lastFrameX = 0;
     const VectorF2D ballPosition = ball->CurrentPosition;
 
-    if (UTL_Between(0, ball->Size.X, ballPosition.X)
-        || UTL_Between(windowWidth - ball->Size.X, windowWidth, ballPosition.X))
+    if (UTL_BetweenF(0, ball->Size.X, ballPosition.X)
+        || UTL_BetweenF(windowWidth - ball->Size.X, windowWidth, ballPosition.X))
     {
         stuckXFrameCount++;
     }
@@ -352,7 +352,7 @@ static void UnstickBall(void)
     static int stuckYFrameCount = 0;
     static float lastFrameY = 0;
 
-    if (UTL_Between(lastFrameY - 100, lastFrameY + 100, ballPosition.Y))
+    if (UTL_BetweenF(lastFrameY - 100, lastFrameY + 100, ballPosition.Y))
     {
         stuckYFrameCount++;
     }

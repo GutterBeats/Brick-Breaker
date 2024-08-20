@@ -3,8 +3,19 @@
 //
 
 #include "Keyboard.h"
-
 #include "Utils.h"
+
+enum KBD_KEY_STATE
+{
+    KEY_STATE_UP,
+    KEY_STATE_DOWN
+};
+
+typedef struct key_state
+{
+    enum KBD_KEY_STATE Left;
+    enum KBD_KEY_STATE Right;
+} KeyState;
 
 static KeyMap s_KeyMap;
 static KeyState s_KeyState;

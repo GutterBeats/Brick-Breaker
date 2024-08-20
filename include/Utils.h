@@ -22,10 +22,14 @@
 #define BB_LOG_ERROR(message, ...) SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, message, ##__VA_ARGS__)
 #endif
 
+#if NDEBUG
+#define ASSERT_NOTNULL(e, name)
+#else
 #define ASSERT_NOTNULL(e, name) if (e == NULL) { \
         BB_LOG_ERROR("Object (%s) was null!", name); \
         exit(1);\
     }
+#endif
 
 #pragma endregion
 
@@ -84,7 +88,21 @@ static float UTL_Lerp(const float current, const float target, const float lerpS
  *
  * @return A boolean value indicating if the value is between the min and max values.
  **/
-static bool UTL_Between(const float min, const float max, const float value)
+static bool UTL_Between(const int min, const int max, const int value)
+{
+    return value >= min && value <= max;
+}
+
+/**
+ * Checks if the value is between the min and max values.
+ *
+ * @param min The minimum number.
+ * @param max The maximum number.
+ * @param value The value to check.
+ *
+ * @return A boolean value indicating if the value is between the min and max values.
+ **/
+static bool UTL_BetweenF(const float min, const float max, const float value)
 {
     return value >= min && value <= max;
 }

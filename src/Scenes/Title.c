@@ -2,6 +2,7 @@
 // Created by Anthony Lesch on 7/16/24.
 //
 
+#include "EventSystem.h"
 #include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
@@ -26,41 +27,42 @@ enum title_state
 static Texture* companyImage;
 static Texture* engineImage;
 static float currentAlpha;
-static bool shouldFinish;
 static enum title_state currentState;
 static enum title_frame currentFrame;
 
 //----------------------------------------------------------------------------------
 // Title Screen Function Declaration
 //----------------------------------------------------------------------------------
+static void Initialize(void);
+static void Update(float deltaTime);
+static void Draw(void);
+static void Destroy(void);
+static void EnterKeyPressed(void);
 static Texture* LoadTitleTexture(const char* path);
-static void InitializeTitleScreen(void);
-static void UpdateTitleScreen(float deltaTime);
-static void DrawTitleScreen(void);
-static void DestroyTitleScreen(void);
 
 //----------------------------------------------------------------------------------
 // Title Screen Extern
 //----------------------------------------------------------------------------------
 Scene TitleScene = {
-    .Initialize = InitializeTitleScreen,
-    .Update = UpdateTitleScreen,
-    .Draw = DrawTitleScreen,
-    .Destroy = DestroyTitleScreen
+    .Initialize = Initialize,
+    .Update = Update,
+    .Draw = Draw,
+    .Destroy = Destroy
 };
 
-void InitializeTitleScreen(void)
+void Initialize(void)
 {
     companyImage = LoadTitleTexture(COMPANY_IMAGE);
     engineImage = LoadTitleTexture(ENGINE_IMAGE);
 
     currentAlpha = 0.f;
-    shouldFinish = false;
     currentState = FADEIN;
     currentFrame = COMPANY;
+
+    EVT_BindUserEvent(ENTER, EnterKeyPressed);
 }
 
-void UpdateTitleScreen(const float deltaTime)
+void Update(const float deltaTime)
 {
     static float currentFrameSeconds = 0.f;
 
@@ -106,7 +108,7 @@ void UpdateTitleScreen(const float deltaTime)
                         currentFrame = ENGINE;
                         break;
                     case ENGINE:
-                        shouldFinish = true;
+                        GAM_TransitionToScene(&MenuScene);
                         break;
                 }
             }
@@ -115,7 +117,7 @@ void UpdateTitleScreen(const float deltaTime)
     }
 }
 
-void DrawTitleScreen(void)
+void Draw(void)
 {
     int screenWidth, screenHeight;
     GAM_GetScreenDimensions(&screenWidth, &screenHeight);
@@ -145,13 +147,13 @@ void DrawTitleScreen(void)
     }
 }
 
-void DestroyTitleScreen(void)
+void Destroy(void)
 {
     REN_FreeTexture(companyImage);
     REN_FreeTexture(engineImage);
 }
 
-void TitleEnterKeyPressed(void)
+static void EnterKeyPressed(void)
 {
     currentState = FADEOUT;
 }
@@ -159,11 +161,7 @@ void TitleEnterKeyPressed(void)
 static Texture* LoadTitleTexture(const char* path)
 {
     Texture* titleTexture = REN_LoadTexture(path);
-    if (titleTexture == NULL)
-    {
-        shouldFinish = true;
-        return NULL;
-    }
+    ASSERT_NOTNULL(titleTexture, "Title Texture")
 
     titleTexture->Width -= IMAGE_PADDING;
     titleTexture->Height -= IMAGE_PADDING;

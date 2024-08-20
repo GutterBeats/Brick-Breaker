@@ -4,6 +4,8 @@
 
 #include "Audio.h"
 #include "ButtonContainer.h"
+#include "EventSystem.h"
+#include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
 #include "Types.h"
@@ -25,6 +27,9 @@ static i8 itemSelectedSfx;
 //----------------------------------------------------------------------------------
 // Menu Screen Helper Functions
 //----------------------------------------------------------------------------------
+static void EnterKeyPressed(void);
+static void UpKeyPressed(void);
+static void DownKeyPressed(void);
 static void PlayButtonClicked(void);
 static void OptionsButtonClicked(void);
 static void ExitButtonClicked(void);
@@ -60,6 +65,10 @@ void Initialize(void)
     itemSelectedSfx = AUD_LoadSoundEffect(ITEM_SELECTED_SFX);
 
     AUD_PlayMusic(MENU_MUSIC);
+
+    EVT_BindUserEvent(ENTER, EnterKeyPressed);
+    EVT_BindUserEvent(UP_KEY_PRESSED, UpKeyPressed);
+    EVT_BindUserEvent(DOWN_KEY_PRESSED, DownKeyPressed);
 }
 
 void Draw(void)
@@ -78,19 +87,23 @@ void Destroy(void)
     AUD_UnloadSoundEffect(itemSelectedSfx);
 }
 
-void MenuEnterKeyPressed(void)
+void EnterKeyPressed(void)
 {
     AUD_PlaySoundEffect(itemSelectedSfx);
+
+    // HACK: Item Selected sound effect gets unloaded before it finishes playing.
+    SDL_Delay(500);
+
     BC_ClickSelectedItem(buttonContainer);
 }
 
-void MenuUpKeyPressed(void)
+void UpKeyPressed(void)
 {
     AUD_PlaySoundEffect(moveUpSfx);
     BC_ChangeSelectedIndex(buttonContainer, UP);
 }
 
-void MenuDownKeyPressed(void)
+void DownKeyPressed(void)
 {
     AUD_PlaySoundEffect(moveDownSfx);
     BC_ChangeSelectedIndex(buttonContainer, DOWN);
@@ -98,10 +111,12 @@ void MenuDownKeyPressed(void)
 
 static void PlayButtonClicked(void)
 {
+    GAM_TransitionToScene(&GameplayScene);
 }
 
 static void OptionsButtonClicked(void)
 {
+    GAM_TransitionToScene(&OptionScene);
 }
 
 static void ExitButtonClicked(void)

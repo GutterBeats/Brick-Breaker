@@ -9,7 +9,7 @@
 #include "Audio.h"
 #include "Utils.h"
 
-#define MIX_DEFAULT_CHUNK_SIZE 4096
+#define MIX_DEFAULT_CHUNK_SIZE 1024
 #define DEFAULT_FREQUENCY 48000
 #define MAX_SFX_COUNT 8
 
@@ -58,6 +58,8 @@ void AUD_DestroyAudioSystem(void)
         Mix_FreeChunk(sfx);
     }
 
+    free(soundEffects);
+
     Mix_FadeOutMusic(1000);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
@@ -94,7 +96,7 @@ void AUD_PlayMusic(const char* filepath)
         BB_LOG("Unable to fade music in!: %s", Mix_GetError());
     }
 
-    Mix_VolumeMusic(65);
+    AUD_SetMusicVolume(65);
 }
 
 void AUD_ResumeMusic(void)
