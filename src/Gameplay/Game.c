@@ -20,12 +20,14 @@ static void CalculateFPS(void);
 
 #define MAX_FPS 60
 #define TICKS_PER_FRAME 1000 / MAX_FPS
+#define MAX_SCENE_LAYERS 2
 
 static Game game;
 static SDL_Window* window;
 static float lastFrame = 0;
 static float currentFrame = 0;
 static float scaledFrameSeconds = 0.f;
+static int currentSceneIndex = 0;
 
 void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight)
 {
@@ -95,16 +97,24 @@ void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int de
         .GameWon = false,
         .IsRunning = true,
         .ShowDebug = false,
-        .CurrentScene = NULL,
     };
+
+    game.SceneLayers = calloc(MAX_SCENE_LAYERS, sizeof(Scene*));
+    ASSERT_NOTNULL(game.SceneLayers, "Scene Layers")
 }
 
 void GAM_ShutdownGameSystems(void)
 {
-    if (game.CurrentScene->Destroy != NULL)
+    for (int i = MAX_SCENE_LAYERS - 1; i >= 0; --i)
     {
-        game.CurrentScene->Destroy();
+        const Scene* scene = game.SceneLayers[i];
+        if (scene == NULL || scene->Destroy == NULL) continue;
+
+        scene->Destroy();
+        game.SceneLayers[i] = NULL;
     }
+
+    free(game.SceneLayers);
 
     REN_DestroyRenderer();
     KBD_DestroyKeymap();
@@ -116,21 +126,61 @@ void GAM_ShutdownGameSystems(void)
     SDL_Quit();
 }
 
-// TODO: Work on actual scene transitions
-void GAM_TransitionToScene(Scene* scene)
+void GAM_QuitGame(void)
 {
-    if (game.CurrentScene != NULL)
+    SDL_Event quit = { SDL_QUIT };
+    SDL_PushEvent(&quit);
+}
+
+// TODO: Work on actual scene transitions
+void GAM_TransitionToScene(Scene* newScene)
+{
+    if (game.SceneLayers != NULL)
     {
-        if (game.CurrentScene->Destroy != NULL)
+        for (int i = currentSceneIndex; i >= 0; --i)
         {
-            game.CurrentScene->Destroy();
+            const Scene* currentScene = game.SceneLayers[i];
+            if (currentScene == NULL || currentScene->Destroy == NULL) continue;
+
+            currentScene->Destroy();
+            game.SceneLayers[i] = NULL;
         }
 
         EVT_UnbindAllUserEvents();
     }
 
-    scene->Initialize();
-    game.CurrentScene = scene;
+    newScene->Initialize();
+
+    currentSceneIndex = 0;
+    game.SceneLayers[currentSceneIndex] = newScene;
+}
+
+void GAM_PushSceneLayer(Scene* layer)
+{
+    if (currentSceneIndex + 1 >= MAX_SCENE_LAYERS)
+    {
+        BB_LOG_ERROR("Unable to push layer. Max scene limit (%i) has been reached.", MAX_SCENE_LAYERS);
+        return;
+    }
+
+    layer->Initialize();
+
+    game.SceneLayers[++currentSceneIndex] = layer;
+}
+
+void GAM_PopSceneLayer(void)
+{
+    if (currentSceneIndex - 1 < 0) return;
+
+    const Scene* layer = game.SceneLayers[currentSceneIndex];
+    if (layer == NULL) return;
+
+    if (layer->Destroy != NULL)
+    {
+        layer->Destroy();
+    }
+
+    game.SceneLayers[currentSceneIndex--] = NULL;
 }
 
 void GAM_GetScreenDimensions(int* width, int* height)
@@ -205,16 +255,22 @@ void GAM_StartFrame(void)
 
 void GAM_UpdateCurrentScene(void)
 {
-    if (game.CurrentScene->Update != NULL)
+    for (int i = 0; i <= currentSceneIndex; ++i)
     {
-        game.CurrentScene->Update(game.DeltaSeconds);
+        const Scene* layer = game.SceneLayers[i];
+        if (layer == NULL || layer->Update == NULL) return;
+
+        layer->Update(game.DeltaSeconds);
     }
 
     REN_BeginDrawing();
 
-    if (game.CurrentScene->Draw != NULL)
+    for (int i = 0; i <= currentSceneIndex; ++i)
     {
-        game.CurrentScene->Draw();
+        const Scene* layer = game.SceneLayers[i];
+        if (layer == NULL || layer->Draw == NULL) return;
+
+        layer->Draw();
     }
 
     REN_FinishDrawing();

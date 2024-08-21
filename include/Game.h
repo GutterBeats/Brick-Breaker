@@ -22,12 +22,16 @@ typedef struct game_t
     bool IsPaused;
     bool ShowDebug;
 
-    Scene* CurrentScene;
+    Scene** SceneLayers;
 } Game;
 
 void GAM_InitializeGameSystems(const char* title, int desiredScreenWidth, int desiredScreenHeight);
 void GAM_ShutdownGameSystems(void);
-void GAM_TransitionToScene(Scene* scene);
+void GAM_QuitGame(void);
+void GAM_TransitionToScene(Scene* newScene);
+
+void GAM_PushSceneLayer(Scene* layer);
+void GAM_PopSceneLayer(void);
 
 void GAM_GetScreenDimensions(int* width, int* height);
 void GAM_UpdateScore(int points);
