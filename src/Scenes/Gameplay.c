@@ -6,6 +6,7 @@
 #include "BrickManager.h"
 #include "Collision.h"
 #include "Entity.h"
+#include "EventSystem.h"
 #include "Game.h"
 #include "Keyboard.h"
 #include "Resources.h"
@@ -45,6 +46,8 @@ static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
 static void UnstickBall(void);
 static void DrawPauseScreen(void);
+static void EnterKeyPressed(void);
+static void PauseKeyPressed(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Scene Functions
@@ -64,7 +67,7 @@ Scene GameplayScene = {
     .Destroy = Destroy
 };
 
-void Initialize(void)
+static void Initialize(void)
 {
     int width, height;
     GAM_GetScreenDimensions(&width, &height);
@@ -81,9 +84,12 @@ void Initialize(void)
     InitializeEntities();
 
     AUD_PlayMusic(MAIN_MUSIC);
+
+    EVT_BindUserEvent(ENTER, EnterKeyPressed);
+    EVT_BindUserEvent(PAUSE, PauseKeyPressed);
 }
 
-void Update(const float deltaTime)
+static void Update(const float deltaTime)
 {
     if (shouldFinish) return;
     if (GAM_GetIsPaused()) return;
@@ -110,7 +116,7 @@ void Update(const float deltaTime)
     }
 }
 
-void Draw(void)
+static void Draw(void)
 {
     REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), BB_BACKGROUND_ALPHA);
 
@@ -135,7 +141,7 @@ void Draw(void)
     DrawPauseScreen();
 }
 
-void Destroy(void)
+static void Destroy(void)
 {
     ENT_DestroyEntity(paddle);
     ENT_DestroyEntity(ball);
@@ -146,7 +152,7 @@ void Destroy(void)
     AUD_UnloadSoundEffect(brickCollisionSfx);
 }
 
-void FinishGameplayScreen(void)
+static void FinishGameplayScreen(void)
 {
     if (shouldFinishNextFrame)
     {
@@ -155,7 +161,7 @@ void FinishGameplayScreen(void)
     }
 }
 
-void GameplayEnterKeyPressed(void)
+static void EnterKeyPressed(void)
 {
     if (ball->IsEnabled) return;
 
@@ -165,6 +171,12 @@ void GameplayEnterKeyPressed(void)
     ball->IsEnabled = true;
 
     ENT_MoveEntity(ball, UTL_GetUpVectorF(), GAM_GetDeltaSeconds());
+}
+
+static void PauseKeyPressed(void)
+{
+    GAM_SetIsPaused(
+        !GAM_GetIsPaused());
 }
 
 static void InitializeEntities(void)
