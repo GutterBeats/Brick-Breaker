@@ -37,6 +37,8 @@ static int lives;
 static bool shouldFinish;
 static bool shouldFinishNextFrame;
 
+extern Scene PauseScene;
+
 //----------------------------------------------------------------------------------
 // Gameplay Helper Functions
 //----------------------------------------------------------------------------------
