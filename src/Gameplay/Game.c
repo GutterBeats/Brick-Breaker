@@ -132,17 +132,80 @@ void GAM_QuitGame(void)
     SDL_PushEvent(&quit);
 }
 
+void GAM_StartFrame(void)
+{
+    currentFrame = SDL_GetTicks64();
+    game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
+
+    if (scaledFrameSeconds > 0)
+    {
+        BB_LOG("Scaled for %.2f seconds", scaledFrameSeconds);
+
+        scaledFrameSeconds -= game.DeltaSeconds;
+        if (scaledFrameSeconds <= 0)
+        {
+            BB_LOG("Resetting scaled frame time.");
+            GAM_SetTimeScaleForSeconds(1.f, 0);
+        }
+    }
+
+    CalculateFPS();
+
+    const int frameTicks = SDL_GetTicks64() - currentFrame;
+    if (frameTicks < TICKS_PER_FRAME)
+    {
+        // Wait remaining time
+        SDL_Delay(TICKS_PER_FRAME - frameTicks);
+    }
+}
+
+void GAM_UpdateCurrentScene(void)
+{
+    for (int i = 0; i <= currentSceneIndex; ++i)
+    {
+        const Scene* layer = game.SceneLayers[i];
+        if (layer == NULL || layer->Update == NULL) continue;
+
+        layer->Update(game.DeltaSeconds);
+    }
+
+    REN_BeginDrawing();
+
+    for (int i = 0; i <= currentSceneIndex; ++i)
+    {
+        const Scene* layer = game.SceneLayers[i];
+        if (layer == NULL || layer->Draw == NULL) continue;
+
+        layer->Draw();
+    }
+
+    REN_FinishDrawing();
+}
+
+void GAM_EndFrame(void)
+{
+    lastFrame = currentFrame;
+}
+
 // TODO: Work on actual scene transitions
 void GAM_TransitionToScene(Scene* newScene)
 {
+    BB_LOG("Transitioning to scene %s", newScene->Name);
+
     if (game.SceneLayers != NULL)
     {
         for (int i = currentSceneIndex; i >= 0; --i)
         {
             const Scene* currentScene = game.SceneLayers[i];
-            if (currentScene == NULL || currentScene->Destroy == NULL) continue;
+            if (currentScene == NULL) continue;
 
-            currentScene->Destroy();
+            BB_LOG("Removing scene layer %s", currentScene->Name);
+
+            if (currentScene->Destroy != NULL)
+            {
+                currentScene->Destroy();
+            }
+
             game.SceneLayers[i] = NULL;
         }
 
@@ -163,6 +226,7 @@ void GAM_PushSceneLayer(Scene* layer)
         return;
     }
 
+    BB_LOG("Pushing scene layer %s", layer->Name);
     layer->Initialize();
 
     game.SceneLayers[++currentSceneIndex] = layer;
@@ -170,17 +234,29 @@ void GAM_PushSceneLayer(Scene* layer)
 
 void GAM_PopSceneLayer(void)
 {
-    if (currentSceneIndex - 1 < 0) return;
+    if (currentSceneIndex - 1 < 0)
+    {
+        BB_LOG("Can't pop scene layer. Already at the beginning.");
+        return;
+    }
 
     const Scene* layer = game.SceneLayers[currentSceneIndex];
     if (layer == NULL) return;
 
+    BB_LOG("Popping scene layer %s", layer->Name);
+
     if (layer->Destroy != NULL)
     {
+        BB_LOG("Destroying scene layer %s", layer->Name);
         layer->Destroy();
     }
 
     game.SceneLayers[currentSceneIndex--] = NULL;
+
+    const Scene* newLayer = game.SceneLayers[currentSceneIndex];
+    if (newLayer == NULL || newLayer->ReturnFromBackground == NULL) return;
+
+    newLayer->ReturnFromBackground();
 }
 
 void GAM_GetScreenDimensions(int* width, int* height)
@@ -224,61 +300,6 @@ bool GAM_GetIsGameRunning(void)
 void GAM_SetIsGameRunning(const bool running)
 {
     game.IsRunning = running;
-}
-
-void GAM_StartFrame(void)
-{
-    currentFrame = SDL_GetTicks64();
-    game.DeltaSeconds = (currentFrame - lastFrame) / 1000.f;
-
-    if (scaledFrameSeconds > 0)
-    {
-        BB_LOG("Scaled for %.2f seconds", scaledFrameSeconds);
-
-        scaledFrameSeconds -= game.DeltaSeconds;
-        if (scaledFrameSeconds <= 0)
-        {
-            BB_LOG("Resetting scaled frame time.");
-            GAM_SetTimeScaleForSeconds(1.f, 0);
-        }
-    }
-
-    CalculateFPS();
-
-    const int frameTicks = SDL_GetTicks64() - currentFrame;
-    if (frameTicks < TICKS_PER_FRAME)
-    {
-        // Wait remaining time
-        SDL_Delay(TICKS_PER_FRAME - frameTicks);
-    }
-}
-
-void GAM_UpdateCurrentScene(void)
-{
-    for (int i = 0; i <= currentSceneIndex; ++i)
-    {
-        const Scene* layer = game.SceneLayers[i];
-        if (layer == NULL || layer->Update == NULL) return;
-
-        layer->Update(game.DeltaSeconds);
-    }
-
-    REN_BeginDrawing();
-
-    for (int i = 0; i <= currentSceneIndex; ++i)
-    {
-        const Scene* layer = game.SceneLayers[i];
-        if (layer == NULL || layer->Draw == NULL) return;
-
-        layer->Draw();
-    }
-
-    REN_FinishDrawing();
-}
-
-void GAM_EndFrame(void)
-{
-    lastFrame = currentFrame;
 }
 
 void GAM_SetTimeScale(const float scale)

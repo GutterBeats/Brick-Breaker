@@ -15,6 +15,7 @@ static void Destroy(void);
 // Menu Scene Extern
 //----------------------------------------------------------------------------------
 Scene OptionScene = {
+    .Name = "OPTIONS SCENE",
     .Initialize = Initialize,
     .Draw = Draw,
     .Destroy = Destroy

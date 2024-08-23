@@ -72,7 +72,7 @@ void BC_DestroyContainer(ButtonContainer* container)
     free(container);
 }
 
-void BC_ChangeSelectedIndex(ButtonContainer* container, MovementDirection direction)
+void BC_ChangeSelectedIndex(ButtonContainer* container, const MovementDirection direction)
 {
     switch (direction)
     {
@@ -100,6 +100,8 @@ void BC_ChangeSelectedIndex(ButtonContainer* container, MovementDirection direct
 void BC_ClickSelectedItem(const ButtonContainer* container)
 {
     const Button* button = container->Buttons[container->SelectedIndex];
+    if (button == NULL || button->ClickHandler == NULL) return;
+
     button->ClickHandler();
 }
 

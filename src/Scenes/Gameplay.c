@@ -26,7 +26,6 @@ static float windowWidth = 0;
 static float windowHeight = 0;
 
 static Texture* background;
-static Texture* pause;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
@@ -47,7 +46,6 @@ static void UpdatePlayerPosition(float deltaTime);
 static void UpdateBallPosition(float deltaTime);
 static void BallDied(void);
 static void UnstickBall(void);
-static void DrawPauseScreen(void);
 static void EnterKeyPressed(void);
 static void PauseKeyPressed(void);
 
@@ -58,15 +56,18 @@ static void Initialize(void);
 static void Update(float deltaTime);
 static void Draw(void);
 static void Destroy(void);
+static void ReturnFromBackground(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Scene Extern
 //----------------------------------------------------------------------------------
 Scene GameplayScene = {
+    .Name = "GAMEPLAY SCENE",
     .Initialize = Initialize,
     .Update = Update,
     .Draw = Draw,
-    .Destroy = Destroy
+    .Destroy = Destroy,
+    .ReturnFromBackground = ReturnFromBackground
 };
 
 static void Initialize(void)
@@ -86,15 +87,12 @@ static void Initialize(void)
     InitializeEntities();
 
     AUD_PlayMusic(MAIN_MUSIC);
-
-    EVT_BindUserEvent(ENTER, EnterKeyPressed);
-    EVT_BindUserEvent(PAUSE, PauseKeyPressed);
+    ReturnFromBackground();
 }
 
 static void Update(const float deltaTime)
 {
-    if (shouldFinish) return;
-    if (GAM_GetIsPaused()) return;
+    if (shouldFinish || GAM_GetIsPaused()) return;
 
     UpdatePlayerPosition(deltaTime);
     UpdateBallPosition(deltaTime);
@@ -139,8 +137,6 @@ static void Draw(void)
     ENT_DrawEntity(ball);
     ENT_DrawEntity(paddle);
     BM_DrawBricks(brickManager);
-
-    DrawPauseScreen();
 }
 
 static void Destroy(void)
@@ -152,6 +148,12 @@ static void Destroy(void)
 
     AUD_UnloadSoundEffect(paddleCollisionSfx);
     AUD_UnloadSoundEffect(brickCollisionSfx);
+}
+
+static void ReturnFromBackground(void)
+{
+    EVT_BindUserEvent(ENTER, EnterKeyPressed);
+    EVT_BindUserEvent(PAUSE, PauseKeyPressed);
 }
 
 static void FinishGameplayScreen(void)
@@ -179,6 +181,11 @@ static void PauseKeyPressed(void)
 {
     GAM_SetIsPaused(
         !GAM_GetIsPaused());
+
+    if (GAM_GetIsPaused())
+    {
+        GAM_PushSceneLayer(&PauseScene);
+    }
 }
 
 static void InitializeEntities(void)
@@ -201,7 +208,6 @@ static void InitializeEntities(void)
     ASSERT_NOTNULL(brickManager, "Brick Manager")
 
     background = REN_LoadTexture(BACKGROUND_IMAGE);
-    pause = REN_LoadTexture(PAUSE_TEXTURE);
 
     paddle->CurrentPosition.Y -= paddle->Size.Y * 2.f;
     paddle->CurrentPosition.X = windowWidth / 2.f - paddle->Size.X / 2.f;
@@ -388,15 +394,4 @@ static void UnstickBall(void)
 
         ENT_MoveEntity(ball, newDirection, GAM_GetDeltaSeconds());
     }
-}
-
-static void DrawPauseScreen(void)
-{
-    if (!GAM_GetIsPaused()) return;
-    if (pause == NULL) return;
-
-    const float x = windowWidth / 2.f - pause->Width / 2.f;
-    const float y = windowHeight / 2.f - pause->Height / 2.f;
-
-    REN_DrawTextureF(pause, UTL_MakeVectorF2D(x, y));
 }

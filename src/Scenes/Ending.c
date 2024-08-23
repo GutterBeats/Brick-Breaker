@@ -33,6 +33,7 @@ static void Destroy(void);
 // Ending Scene Extern
 //----------------------------------------------------------------------------------
 Scene EndingScene = {
+    .Name = "ENDING SCENE",
     .Initialize = Initialize,
     .Draw = Draw,
     .Destroy = Destroy

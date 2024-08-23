@@ -12,10 +12,12 @@
 #define MIX_DEFAULT_CHUNK_SIZE 1024
 #define DEFAULT_FREQUENCY 48000
 #define MAX_SFX_COUNT 8
+#define DEFAULT_MUSIC_VOLUME 65
 
 static bool audioInitialized;
 static Mix_Music* music = NULL;
 static Mix_Chunk** soundEffects = NULL;
+static u8 musicVolume = DEFAULT_MUSIC_VOLUME;
 
 void AUD_InitializeAudioSystem(void)
 {
@@ -68,7 +70,15 @@ void AUD_DestroyAudioSystem(void)
 
 void AUD_PlayMusic(const char* filepath)
 {
-    if (!audioInitialized) return;
+    if (!audioInitialized)
+    {
+        AUD_InitializeAudioSystem();
+        if (!audioInitialized)
+        {
+            BB_LOG_ERROR("Could not initialize audio system.");
+            return;
+        }
+    }
 
     if (music != NULL)
     {
@@ -96,7 +106,7 @@ void AUD_PlayMusic(const char* filepath)
         BB_LOG("Unable to fade music in!: %s", Mix_GetError());
     }
 
-    AUD_SetMusicVolume(65);
+    AUD_SetMusicVolume(musicVolume);
 }
 
 void AUD_ResumeMusic(void)
@@ -162,9 +172,17 @@ void AUD_UnloadSoundEffect(const i8 index)
     soundEffects[index] = NULL;
 }
 
+u8 AUD_GetMusicVolume(void)
+{
+    return musicVolume;
+}
+
 void AUD_SetMusicVolume(const u8 volume)
 {
-    Mix_VolumeMusic(UTL_Clamp(0, MIX_MAX_VOLUME, volume));
+    BB_LOG("Setting volume to %i", volume);
+
+    musicVolume = UTL_Clamp(0, MIX_MAX_VOLUME, volume);
+    Mix_VolumeMusic(musicVolume);
 }
 
 void AUD_SetSFXVolume(const u8 volume)

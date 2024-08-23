@@ -25,10 +25,13 @@ typedef double f64;
 
 typedef struct scene_t
 {
+    const char* Name;
+
     void (*Initialize)(void);
     void (*Update)(float deltaTime);
     void (*Draw)(void);
     void (*Destroy)(void);
+    void (*ReturnFromBackground)(void);
 } Scene;
 
 typedef struct vector2D

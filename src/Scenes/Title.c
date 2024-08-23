@@ -18,7 +18,7 @@ enum title_frame
 
 enum title_state
 {
-    FADEIN, HOLD, FADEOUT
+    FADE_IN, HOLD, FADE_OUT
 };
 
 //----------------------------------------------------------------------------------
@@ -44,6 +44,7 @@ static Texture* LoadTitleTexture(const char* path);
 // Title Screen Extern
 //----------------------------------------------------------------------------------
 Scene TitleScene = {
+    .Name = "TITLE SCENE",
     .Initialize = Initialize,
     .Update = Update,
     .Draw = Draw,
@@ -56,7 +57,7 @@ void Initialize(void)
     engineImage = LoadTitleTexture(ENGINE_IMAGE);
 
     currentAlpha = 0.f;
-    currentState = FADEIN;
+    currentState = FADE_IN;
     currentFrame = COMPANY;
 
     EVT_BindUserEvent(ENTER, EnterKeyPressed);
@@ -68,7 +69,7 @@ void Update(const float deltaTime)
 
     switch (currentState)
     {
-        case FADEIN:
+        case FADE_IN:
         {
             currentFrameSeconds += deltaTime;
             currentAlpha = UTL_FClamp(0.f, 1.f, currentFrameSeconds / FADE_SECONDS);
@@ -88,11 +89,11 @@ void Update(const float deltaTime)
             if (currentFrameSeconds >= FADE_SECONDS)
             {
                 currentFrameSeconds = FADE_SECONDS;
-                currentState = FADEOUT;
+                currentState = FADE_OUT;
             }
             break;
         }
-        case FADEOUT:
+        case FADE_OUT:
         {
             currentFrameSeconds -= deltaTime;
             currentAlpha = UTL_FClamp(0.f, 1.f, currentFrameSeconds / FADE_SECONDS);
@@ -104,7 +105,7 @@ void Update(const float deltaTime)
                 switch (currentFrame)
                 {
                     case COMPANY:
-                        currentState = FADEIN;
+                        currentState = FADE_IN;
                         currentFrame = ENGINE;
                         break;
                     case ENGINE:
@@ -155,7 +156,7 @@ void Destroy(void)
 
 static void EnterKeyPressed(void)
 {
-    currentState = FADEOUT;
+    currentState = FADE_OUT;
 }
 
 static Texture* LoadTitleTexture(const char* path)
