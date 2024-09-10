@@ -3,6 +3,7 @@
 //
 
 #include "Audio.h"
+#include "EventSystem.h"
 #include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
@@ -23,6 +24,11 @@ static Vector2D messageTextPosition;
 static Vector2D restartMessagePosition;
 
 //----------------------------------------------------------------------------------
+// Ending Screen Helper Functions
+//----------------------------------------------------------------------------------
+static void EnterKeyPressed(void);
+
+//----------------------------------------------------------------------------------
 // Ending Screen Functions
 //----------------------------------------------------------------------------------
 static void Initialize(void);
@@ -39,7 +45,7 @@ Scene EndingScene = {
     .Destroy = Destroy
 };
 
-void Initialize(void)
+static void Initialize(void)
 {
     background = REN_LoadTexture(BACKGROUND_IMAGE);
 
@@ -57,6 +63,7 @@ void Initialize(void)
     restartMessagePosition = UTL_MakeVector2D(windowWidth / 2.f - restart->Width / 2.f, messageTextPosition.Y + message->Height + TEXT_PADDING);
 
     AUD_PlayMusic(GAMEOVER_MUSIC);
+    EVT_BindUserEvent(ENTER, EnterKeyPressed);
 }
 
 void Draw(void)
@@ -73,4 +80,9 @@ void Destroy(void)
     REN_FreeTexture(gameOver);
     REN_FreeTexture(message);
     REN_FreeTexture(restart);
+}
+
+static void EnterKeyPressed(void)
+{
+    GAM_TransitionToScene(&GameplayScene);
 }

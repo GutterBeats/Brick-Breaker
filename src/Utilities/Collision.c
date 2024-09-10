@@ -38,7 +38,7 @@ CollisionResult COL_HasCollisionBoxCircle(const CollisionVolume* box, const Coll
     const VectorF2D clamped = UTL_MakeVectorF2D(UTL_FClamp(-halfBox.X, halfBox.X, difference.X),
                                                 UTL_FClamp(-halfBox.Y, halfBox.Y, difference.Y));
 
-    // add clamped value to AABB_center and we get the value of box closest to circle
+    // add clamped value to AABB_center, and we get the value of box closest to circle
     const VectorF2D closest = UTL_AddVectorF2D(clamped, boxCenter);
 
     // retrieve vector between center circle and closest point AABB and check if length <= radius

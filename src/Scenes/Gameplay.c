@@ -26,6 +26,8 @@ static float windowWidth = 0;
 static float windowHeight = 0;
 
 static Texture* background;
+static Texture* lifeTexture;
+static Texture* scoreTexture;
 static Entity* paddle;
 static Entity* ball;
 static BrickManager* brickManager;
@@ -48,6 +50,8 @@ static void BallDied(void);
 static void UnstickBall(void);
 static void EnterKeyPressed(void);
 static void PauseKeyPressed(void);
+static void DrawScoreAndLives(void);
+static void TryFinishGameplayScreen(void);
 
 //----------------------------------------------------------------------------------
 // Gameplay Scene Functions
@@ -88,6 +92,9 @@ static void Initialize(void)
 
     AUD_PlayMusic(MAIN_MUSIC);
     ReturnFromBackground();
+
+    GAM_UpdateScore(
+        -GAM_GetScore());
 }
 
 static void Update(const float deltaTime)
@@ -120,23 +127,13 @@ static void Draw(void)
 {
     REN_DrawTexture_Alpha(background, UTL_GetZeroVector(), BB_BACKGROUND_ALPHA);
 
-    char buffer[12];
-    sprintf(buffer, "Score: %d", GAM_GetScore());
-
-    const Vector2D position = UTL_MakeVector2D(brickManager->Position.X, 5);
-
-    TXT_DrawText(buffer, position);
-
-    char lifeBuffer[12];
-    sprintf(lifeBuffer, "Lives: %i", lives);
-
-    const Vector2D lifePosition = UTL_MakeVector2D(brickManager->Position.X + brickManager->Size.X - 133, 5);
-
-    TXT_DrawText(lifeBuffer, lifePosition);
+    DrawScoreAndLives();
 
     ENT_DrawEntity(ball);
     ENT_DrawEntity(paddle);
     BM_DrawBricks(brickManager);
+
+    TryFinishGameplayScreen();
 }
 
 static void Destroy(void)
@@ -145,6 +142,11 @@ static void Destroy(void)
     ENT_DestroyEntity(ball);
     BM_DestroyManager(brickManager);
     REN_FreeTexture(background);
+    REN_FreeTexture(lifeTexture);
+    REN_FreeTexture(scoreTexture);
+
+    lifeTexture = NULL;
+    scoreTexture = NULL;
 
     AUD_UnloadSoundEffect(paddleCollisionSfx);
     AUD_UnloadSoundEffect(brickCollisionSfx);
@@ -156,13 +158,21 @@ static void ReturnFromBackground(void)
     EVT_BindUserEvent(PAUSE, PauseKeyPressed);
 }
 
-static void FinishGameplayScreen(void)
+static void TryFinishGameplayScreen(void)
 {
+    if (lives > 0) return;
+
+    BB_LOG("Finishing Gameplay");
+
     if (shouldFinishNextFrame)
     {
         ball->IsEnabled = false;
         shouldFinishNextFrame = false;
+
+        return;
     }
+
+    GAM_TransitionToScene(&EndingScene);
 }
 
 static void EnterKeyPressed(void)
@@ -242,7 +252,6 @@ static void UpdateBallPosition(const float deltaTime)
     VectorF2D currentDirection = ENT_GetDirection(ball);
 
     const CollisionResult paddleResult = COL_HasCollisionBoxCircle(paddle->CollisionVolume, ball->CollisionVolume);
-    const CollisionResult brickResult = BM_CheckBrickCollision(brickManager, ball);
 
     if (paddleResult.Collided)
     {
@@ -268,7 +277,7 @@ static void UpdateBallPosition(const float deltaTime)
 
         const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
         const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
-        const float percentage = distance / (paddle->Size.X / 2.f);
+        const float percentage = UTL_FClamp(0.001, 100.f, distance / (paddle->Size.X / 2.f));
 
         const VectorF2D vector = ball->CurrentPosition.X > centerPaddle ? UTL_GetRightVectorF() : UTL_GetLeftVectorF();
 
@@ -283,6 +292,8 @@ static void UpdateBallPosition(const float deltaTime)
 
         AUD_PlaySoundEffect(paddleCollisionSfx);
     }
+
+    const CollisionResult brickResult = BM_CheckBrickCollision(brickManager, ball);
 
     if (brickResult.Collided)
     {
@@ -394,4 +405,39 @@ static void UnstickBall(void)
 
         ENT_MoveEntity(ball, newDirection, GAM_GetDeltaSeconds());
     }
+}
+
+static void DrawScoreAndLives(void)
+{
+    static int frameScore = -1;
+    static int frameLives = -1;
+    static char buffer[12];
+
+    if (frameScore != GAM_GetScore())
+    {
+        frameScore = GAM_GetScore();
+        REN_FreeTexture(scoreTexture);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "Score: %d", frameScore);
+
+        scoreTexture = TXT_CreateTextureFromText(buffer);
+    }
+
+    REN_DrawTexture(scoreTexture,
+        UTL_MakeVector2D(brickManager->Position.X, 5));
+
+    if (frameLives != lives)
+    {
+        frameLives = lives;
+        REN_FreeTexture(lifeTexture);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "Lives: %i", lives);
+
+        lifeTexture = TXT_CreateTextureFromText(buffer);
+    }
+
+    REN_DrawTexture(lifeTexture,
+        UTL_MakeVector2D(brickManager->Position.X + brickManager->Size.X - 133, 5));
 }
