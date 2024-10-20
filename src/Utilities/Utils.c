@@ -2,12 +2,12 @@
 // Created by Anthony Lesch on 7/17/24.
 //
 
+#include <math.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "Utils.h"
-
-#include <stdbool.h>
 
 #ifndef MAX_RAND_COUNT
   #define MAX_RAND_COUNT 20
