@@ -2,12 +2,12 @@
 // Created by Anthony Lesch on 7/16/24.
 //
 
-#include "../../include/Renderer.h"
+#include "Renderer.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "../../include/Utils.h"
+#include "Utilities.h"
 
 static SDL_Renderer* renderer;
 static int flags = IMG_INIT_JPG | IMG_INIT_PNG;

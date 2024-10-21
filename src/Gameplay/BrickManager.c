@@ -8,7 +8,7 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define MIN_ROW_COUNT 3
 #define MAX_ROW_COUNT 10

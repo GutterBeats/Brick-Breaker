@@ -7,7 +7,7 @@
 #include "Text.h"
 #include "Renderer.h"
 #include "Resources.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define DEFAULT_FONT_SIZE 16
 #define LARGE_FONT_SIZE 32

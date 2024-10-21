@@ -32,8 +32,8 @@ add_executable(Brick_Breaker
         include/Text.h
         src/Utilities/Text.c
         include/Types.h
-        include/Utils.h
-        src/Utilities/Utils.c
+        include/Utilities.h
+        src/Utilities/Utilities.c
         include/EventSystem.h
         src/Utilities/EventSystem.c
         src/Scenes/Pause.c

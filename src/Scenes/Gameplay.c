@@ -11,7 +11,7 @@
 #include "Keyboard.h"
 #include "Resources.h"
 #include "Text.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define DEFAULT_PLAYER_SPEED 350.f
 #define DEFAULT_BALL_SPEED 450.f

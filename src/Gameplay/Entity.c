@@ -6,7 +6,7 @@
 #include "Collision.h"
 #include "Game.h"
 #include "Renderer.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 Entity* ENT_CreateEntity(const VectorF2D startPosition, const char* texturePath)
 {

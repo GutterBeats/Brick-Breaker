@@ -8,7 +8,7 @@
 #include "Keyboard.h"
 #include "Renderer.h"
 #include "Text.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #if __APPLE__
 #define MENU_BAR_HEIGHT 80

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "Utils.h"
+#include "Utilities.h"
 
 #ifndef MAX_RAND_COUNT
   #define MAX_RAND_COUNT 20

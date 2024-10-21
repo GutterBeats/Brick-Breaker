@@ -8,7 +8,7 @@
 #include "Renderer.h"
 #include "Resources.h"
 #include "Text.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define TEXT_PADDING 15
 

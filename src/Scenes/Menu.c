@@ -9,7 +9,7 @@
 #include "Renderer.h"
 #include "Resources.h"
 #include "Types.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define BUTTON_COUNT 3
 #define BUTTON_CONTAINER_X 205

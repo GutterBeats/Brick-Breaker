@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #include "Audio.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define MIX_DEFAULT_CHUNK_SIZE 1024
 #define DEFAULT_FREQUENCY 48000

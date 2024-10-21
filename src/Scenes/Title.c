@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "Resources.h"
-#include "Utils.h"
+#include "Utilities.h"
 
 #define FADE_SECONDS 1.5f
 #define IMAGE_PADDING 50
