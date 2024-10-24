@@ -51,6 +51,5 @@ typedef struct vectorF2d
 //----------------------------------------------------------------------------------
 extern Scene TitleScene;
 extern Scene MenuScene;
-extern Scene OptionScene;
 extern Scene GameplayScene;
 extern Scene EndingScene;

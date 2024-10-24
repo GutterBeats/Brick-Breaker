@@ -2,6 +2,8 @@
 // Created by Anthony Lesch on 7/20/24.
 //
 
+#include <stdio.h>
+
 #include "Game.h"
 #include "Audio.h"
 #include "EventSystem.h"
@@ -19,7 +21,7 @@
 static void CalculateFPS(void);
 
 #define MAX_FPS 60
-#define TICKS_PER_FRAME 1000 / MAX_FPS
+#define TICKS_PER_FRAME (1000 / MAX_FPS)
 #define MAX_SCENE_LAYERS 2
 
 static Game game;

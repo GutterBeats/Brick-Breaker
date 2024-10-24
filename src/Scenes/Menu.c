@@ -11,7 +11,7 @@
 #include "Types.h"
 #include "Utilities.h"
 
-#define BUTTON_COUNT 3
+#define BUTTON_COUNT 2
 #define BUTTON_CONTAINER_X 205
 #define BUTTON_CONTAINER_Y 351
 
@@ -31,7 +31,6 @@ static void EnterKeyPressed(void);
 static void UpKeyPressed(void);
 static void DownKeyPressed(void);
 static void PlayButtonClicked(void);
-static void OptionsButtonClicked(void);
 static void ExitButtonClicked(void);
 
 //----------------------------------------------------------------------------------
@@ -58,7 +57,6 @@ void Initialize(void)
         UTL_MakeVectorF2D(BUTTON_CONTAINER_X, BUTTON_CONTAINER_Y), BUTTON_COUNT);
 
     BC_CreateButton(buttonContainer, "PLAY", &PlayButtonClicked);
-    BC_CreateButton(buttonContainer, "OPTIONS", &OptionsButtonClicked);
     BC_CreateButton(buttonContainer, "EXIT", &ExitButtonClicked);
 
     moveUpSfx = AUD_LoadSoundEffect(MOVE_UP_SFX);
@@ -113,11 +111,6 @@ void DownKeyPressed(void)
 static void PlayButtonClicked(void)
 {
     GAM_TransitionToScene(&GameplayScene);
-}
-
-static void OptionsButtonClicked(void)
-{
-    GAM_TransitionToScene(&OptionScene);
 }
 
 static void ExitButtonClicked(void)

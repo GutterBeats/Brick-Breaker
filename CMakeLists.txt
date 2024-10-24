@@ -16,7 +16,6 @@ add_executable(Brick_Breaker
         src/Scenes/Ending.c
         src/Scenes/Gameplay.c
         src/Scenes/Menu.c
-        src/Scenes/Options.c
         src/Scenes/Title.c
         include/Audio.h
         src/Utilities/Audio.c
