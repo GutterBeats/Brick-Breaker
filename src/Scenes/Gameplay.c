@@ -13,8 +13,8 @@
 #include "Text.h"
 #include "Utilities.h"
 
-#define DEFAULT_PLAYER_SPEED 350.f
-#define DEFAULT_BALL_SPEED 450.f
+#define DEFAULT_PLAYER_SPEED 550.f
+#define DEFAULT_BALL_SPEED 650.f
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
 #define STUCK_FRAME_COUNT 120
