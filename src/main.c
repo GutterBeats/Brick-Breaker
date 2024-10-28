@@ -5,7 +5,6 @@
 //
 // ReSharper disable CppParameterNeverUsed
 
-#include <SDL.h>
 #include <SDL_main.h>
 
 #include "EventSystem.h"

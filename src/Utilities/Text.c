@@ -98,7 +98,7 @@ static void DrawTextInternal(const char* text, const Vector2D position, TTF_Font
     REN_FreeTexture(texture);
 }
 
-static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font, SDL_Color textColor)
+static Texture* CreateTextureFromTextInternal(const char* text, TTF_Font* font, const SDL_Color textColor)
 {
     if (!TTF_WasInit()) return NULL;
 

@@ -36,9 +36,9 @@ Vector2D UTL_ScaleVector2D(const Vector2D vector, const int factor)
     };
 }
 
-Vector2D UTL_NormalizeVector2D(Vector2D vector)
+Vector2D UTL_NormalizeVector2D(const Vector2D vector)
 {
-    const int magnitude = sqrt(vector.X * vector.X + vector.Y * vector.Y);
+    const int magnitude = (int)sqrt(vector.X * vector.X + vector.Y * vector.Y);
     if (magnitude == 0) return vector;
 
     return UTL_MakeVector2D(vector.X / magnitude, vector.Y / magnitude);

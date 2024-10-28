@@ -4,6 +4,8 @@
 
 #include "BrickManager.h"
 
+#include <string.h>
+
 #include "Collision.h"
 #include "Game.h"
 #include "Renderer.h"
@@ -67,15 +69,13 @@ BrickManager* BM_CreateBricks(VectorF2D startPosition, const VectorF2D container
         for (int c = 0; c < cols; ++c)
         {
             Entity* brick = CreateBrick(
-                    startPosition.X + (brickWidth + padding) * c,
-                    startPosition.Y + (brickHeight + padding) * r,
+                    startPosition.X + ((float)brickWidth + padding) * (float)c,
+                    startPosition.Y + ((float)brickHeight + padding) * (float)r,
                     rowHealth);
 
             if (brick == NULL)
             {
                 BM_DestroyManager(manager);
-                free(brick);
-
                 return NULL;
             }
 

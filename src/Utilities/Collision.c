@@ -3,6 +3,9 @@
 //
 
 #include "Collision.h"
+
+#include <stdlib.h>
+
 #include "Utilities.h"
 
 CollisionVolume* COL_MakeCollisionVolume(const VectorF2D position, const VectorF2D size)

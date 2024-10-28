@@ -5,7 +5,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <SDL.h>
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definitions

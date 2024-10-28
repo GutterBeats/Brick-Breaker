@@ -58,9 +58,9 @@ static void Initialize(void)
     message = TXT_CreateTextureFromText(text);
     restart = TXT_CreateTextureFromText("Press the spacebar to play again!");
 
-    gameOverTextPosition = UTL_MakeVector2D(windowWidth / 2.f - gameOver->Width / 2.f, windowHeight / 5.f);
-    messageTextPosition = UTL_MakeVector2D(windowWidth / 2.f - message->Width / 2.f, gameOverTextPosition.Y + gameOver->Height + TEXT_PADDING);
-    restartMessagePosition = UTL_MakeVector2D(windowWidth / 2.f - restart->Width / 2.f, messageTextPosition.Y + message->Height + TEXT_PADDING);
+    gameOverTextPosition = UTL_MakeVector2D(windowWidth / 2 - gameOver->Width / 2, windowHeight / 5);
+    messageTextPosition = UTL_MakeVector2D(windowWidth / 2 - message->Width / 2, gameOverTextPosition.Y + gameOver->Height + TEXT_PADDING);
+    restartMessagePosition = UTL_MakeVector2D(windowWidth / 2 - restart->Width / 2, messageTextPosition.Y + message->Height + TEXT_PADDING);
 
     AUD_PlayMusic(GAMEOVER_MUSIC);
     EVT_BindUserEvent(ENTER, EnterKeyPressed);

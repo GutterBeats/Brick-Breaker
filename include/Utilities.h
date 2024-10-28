@@ -5,6 +5,8 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <SDL_log.h>
 
 #include "Types.h"
 
@@ -63,20 +65,6 @@ static int UTL_Clamp(const int min, const int max, const int value)
 {
     return value > max ? max
                        : value < min ? min : value;
-}
-
-/**
- * Utility function to lerp between two values.
- *
- * @param current The current value.
- * @param target The value to lerp to.
- * @param lerpSpeed The interpolation speed.
- *
- * @return A float value between a and b.
- */
-static float UTL_Lerp(const float current, const float target, const float lerpSpeed)
-{
-    return current + (target - current) * UTL_FClamp(0, 1, lerpSpeed);
 }
 
 /**
