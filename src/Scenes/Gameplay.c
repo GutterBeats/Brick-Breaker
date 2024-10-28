@@ -18,6 +18,8 @@
 #define DEFAULT_MAX_LIVES 3
 #define DEFAULT_BALL_DAMAGE 30
 #define STUCK_FRAME_COUNT 120
+#define TEXT_TOP_PADDING 5
+#define TEXT_SIDE_PADDING 10
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -425,7 +427,7 @@ static void DrawScoreAndLives(void)
     }
 
     REN_DrawTexture(scoreTexture,
-        UTL_MakeVector2D(brickManager->Position.X, 5));
+        UTL_MakeVector2D(TEXT_SIDE_PADDING, TEXT_TOP_PADDING));
 
     if (frameLives != lives)
     {
@@ -439,5 +441,5 @@ static void DrawScoreAndLives(void)
     }
 
     REN_DrawTexture(lifeTexture,
-        UTL_MakeVector2D(brickManager->Position.X + brickManager->Size.X - 133, 5));
+        UTL_MakeVector2D((int)windowWidth - lifeTexture->Width - TEXT_SIDE_PADDING, TEXT_TOP_PADDING));
 }
