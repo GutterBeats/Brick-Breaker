@@ -266,12 +266,13 @@ static void UpdateBallPosition(const float deltaTime)
             case DOWN:
                 ball->CurrentPosition.Y -= paddleResult.Difference.Y + 2;
                 currentDirection.Y *= -1;
+                break;
             case LEFT:
                 ball->CurrentPosition.X += paddleResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             case RIGHT:
-                ball->CurrentPosition.X += paddleResult.Difference.X + 2;
+                ball->CurrentPosition.X -= paddleResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -279,7 +280,7 @@ static void UpdateBallPosition(const float deltaTime)
 
         const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
         const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
-        const float percentage = UTL_FClamp(0.001, 100.f, distance / (paddle->Size.X / 2.f));
+        const float percentage = UTL_FClamp(0.001f, 100.f, distance / (paddle->Size.X / 2.f));
 
         const VectorF2D vector = ball->CurrentPosition.X > centerPaddle ? UTL_GetRightVectorF() : UTL_GetLeftVectorF();
 
@@ -302,18 +303,18 @@ static void UpdateBallPosition(const float deltaTime)
         switch (brickResult.Direction)
         {
             case UP:
-                ball->CurrentPosition.Y -= brickResult.Difference.Y + 2;
+                ball->CurrentPosition.Y -= brickResult.Difference.Y + ball->Size.Y / 2.f;
                 currentDirection.Y *= -1;
                 break;
             case DOWN:
-                ball->CurrentPosition.Y += brickResult.Difference.Y + 2;
+                ball->CurrentPosition.Y += brickResult.Difference.Y + ball->Size.Y / 2.f;
                 currentDirection.Y *= -1;
             case LEFT:
-                ball->CurrentPosition.X += brickResult.Difference.X + 2;
+                ball->CurrentPosition.X += brickResult.Difference.X + ball->Size.X / 2.f;
                 currentDirection.X *= -1;
                 break;
             case RIGHT:
-                ball->CurrentPosition.X -= brickResult.Difference.X + 2;
+                ball->CurrentPosition.X -= brickResult.Difference.X + ball->Size.X / 2.f;
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -398,7 +399,8 @@ static void UnstickBall(void)
     if (stuckYFrameCount >= STUCK_FRAME_COUNT)
     {
         stuckYFrameCount = 0;
-        VectorF2D newDirection = stuckYFrameCount > windowHeight / 2.f ? UTL_GetDownVectorF() : UTL_GetUpVectorF();
+        VectorF2D newDirection = ballPosition.Y > windowHeight / 2.f ? UTL_GetDownVectorF() : UTL_GetUpVectorF();
+
         if (UTL_GetRandom(0, 1))
         {
             newDirection = UTL_AddVectorF2D(newDirection, UTL_GetRightVectorF());
