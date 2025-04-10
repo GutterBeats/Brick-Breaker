@@ -12,7 +12,7 @@
 #define MIX_DEFAULT_CHUNK_SIZE 1024
 #define DEFAULT_FREQUENCY 48000
 #define MAX_SFX_COUNT 8
-#define DEFAULT_MUSIC_VOLUME 65
+#define DEFAULT_MUSIC_VOLUME 25
 
 static bool audioInitialized;
 static Mix_Music* music = NULL;
