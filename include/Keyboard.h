@@ -15,6 +15,7 @@ typedef enum USER_EVENT_TYPE
     ENTER = 0,
     DEBUG,
     PAUSE,
+    CLOSE,
     UP_KEY_PRESSED,
     DOWN_KEY_PRESSED,
 
@@ -40,6 +41,7 @@ typedef struct keymap
     KeyArray* Enter;
     SDL_Keycode Pause;
     SDL_Keycode Debug;
+    SDL_Keycode Close;
 } KeyMap;
 
 void KBD_InitializeKeymap(void);
