@@ -10,10 +10,11 @@
 
 typedef enum collision_direction
 {
+    NONE = -1,
     DOWN,
     RIGHT,
     UP,
-    LEFT
+    LEFT,
 } CollisionDirection;
 
 typedef struct collision_volume

@@ -20,6 +20,7 @@
 #define STUCK_FRAME_COUNT 120
 #define TEXT_TOP_PADDING 5
 #define TEXT_SIDE_PADDING 10
+#define PHYSICS_STEPS 30
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Variables
@@ -252,27 +253,46 @@ static void UpdateBallPosition(const float deltaTime)
     if (!ball->IsEnabled) return;
 
     VectorF2D currentDirection = ENT_GetDirection(ball);
+    CollisionDirection lastCollisionDirection = NONE;
 
-    const CollisionResult paddleResult = COL_HasCollisionBoxCircle(paddle->CollisionVolume, ball->CollisionVolume);
-
-    if (paddleResult.Collided)
+    for (int i = 0; i < PHYSICS_STEPS; ++i)
     {
+        const CollisionResult paddleResult = COL_HasCollisionBoxCircle(paddle->CollisionVolume, ball->CollisionVolume);
+        if (!paddleResult.Collided) continue;
+
         switch (paddleResult.Direction)
         {
             case UP:
-                ball->CurrentPosition.Y += paddleResult.Difference.Y + 2;
-                currentDirection.Y *= -1;
+                ball->CurrentPosition.Y += paddleResult.Difference.Y;
                 break;
             case DOWN:
-                ball->CurrentPosition.Y -= paddleResult.Difference.Y + 2;
+                ball->CurrentPosition.Y -= paddleResult.Difference.Y;
+                break;
+            case LEFT:
+                ball->CurrentPosition.X += paddleResult.Difference.X;
+                break;
+            case RIGHT:
+                ball->CurrentPosition.X -= paddleResult.Difference.X;
+                break;
+            default:
+                break;
+        }
+
+        lastCollisionDirection = paddleResult.Direction;
+        ball->CollisionVolume->Position.X = ball->CurrentPosition.X;
+        ball->CollisionVolume->Position.Y = ball->CurrentPosition.Y;
+    }
+
+    if (lastCollisionDirection != NONE)
+    {
+        switch (lastCollisionDirection)
+        {
+            case UP:
+            case DOWN:
                 currentDirection.Y *= -1;
                 break;
             case LEFT:
-                ball->CurrentPosition.X += paddleResult.Difference.X + 2;
-                currentDirection.X *= -1;
-                break;
             case RIGHT:
-                ball->CurrentPosition.X -= paddleResult.Difference.X + 2;
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -280,7 +300,7 @@ static void UpdateBallPosition(const float deltaTime)
 
         const float centerPaddle = paddle->CurrentPosition.X + paddle->Size.X / 2.f;
         const float distance = ball->CurrentPosition.X + ball->Size.X / 2.f - centerPaddle;
-        const float percentage = UTL_FClamp(0.001f, 100.f, distance / (paddle->Size.X / 2.f));
+        const float percentage = UTL_FClamp(0.001f, 100.f, SDL_fabsf(distance / (paddle->Size.X / 2.f)));
 
         const VectorF2D vector = ball->CurrentPosition.X > centerPaddle ? UTL_GetRightVectorF() : UTL_GetLeftVectorF();
 
@@ -296,25 +316,46 @@ static void UpdateBallPosition(const float deltaTime)
         AUD_PlaySoundEffect(paddleCollisionSfx);
     }
 
-    const CollisionResult brickResult = BM_CheckBrickCollision(brickManager, ball);
+    lastCollisionDirection = NONE;
 
-    if (brickResult.Collided)
+    for (int i = 0; i < PHYSICS_STEPS; ++i)
     {
+        const CollisionResult brickResult = BM_CheckBrickCollision(brickManager, ball);
+        if (!brickResult.Collided) continue;
+
         switch (brickResult.Direction)
         {
             case UP:
-                ball->CurrentPosition.Y -= brickResult.Difference.Y + ball->Size.Y / 2.f;
-                currentDirection.Y *= -1;
+                ball->CurrentPosition.Y -= brickResult.Difference.Y;
                 break;
             case DOWN:
-                ball->CurrentPosition.Y += brickResult.Difference.Y + ball->Size.Y / 2.f;
-                currentDirection.Y *= -1;
+                ball->CurrentPosition.Y += brickResult.Difference.Y;
+                break;
             case LEFT:
-                ball->CurrentPosition.X += brickResult.Difference.X + ball->Size.X / 2.f;
-                currentDirection.X *= -1;
+                ball->CurrentPosition.X += brickResult.Difference.X;
                 break;
             case RIGHT:
-                ball->CurrentPosition.X -= brickResult.Difference.X + ball->Size.X / 2.f;
+                ball->CurrentPosition.X -= brickResult.Difference.X;
+                break;
+            default:
+                break;
+        }
+
+        lastCollisionDirection = brickResult.Direction;
+        ball->CollisionVolume->Position.X = ball->CurrentPosition.X;
+        ball->CollisionVolume->Position.Y = ball->CurrentPosition.Y;
+    }
+
+    if (lastCollisionDirection != NONE)
+    {
+        switch (lastCollisionDirection)
+        {
+            case UP:
+            case DOWN:
+                currentDirection.Y *= -1;
+                break;
+            case LEFT:
+            case RIGHT:
                 currentDirection.X *= -1;
                 break;
             default: break;
@@ -335,7 +376,6 @@ static void UpdateBallPosition(const float deltaTime)
     if (ballPosition.Y <= 0)
     {
         currentDirection.Y *= -1;
-
         ENT_MoveEntity(ball, currentDirection, deltaTime);
     }
 }
