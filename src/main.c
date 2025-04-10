@@ -18,14 +18,13 @@ int main(int argc, char* argv[])
     static const Vector2D fpsPosition = { 5, 5 };
 
     GAM_InitializeGameSystems("Brick Breaker", WINDOW_WIDTH, WINDOW_HEIGHT);
+
     GAM_TransitionToScene(&TitleScene);
 
     while (GAM_GetIsGameRunning())
     {
         GAM_StartFrame();
-
         EVT_PollEvents();
-
         GAM_UpdateCurrentScene();
 
         if (GAM_GetShowDebug())

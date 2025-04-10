@@ -19,8 +19,10 @@
 #endif
 
 static void CalculateFPS(void);
+static void HandleDebug(void);
+static void CloseGame(void);
 
-#define MAX_FPS 60
+#define MAX_FPS 250
 #define TICKS_PER_FRAME (1000 / MAX_FPS)
 #define MAX_SCENE_LAYERS 2
 
@@ -212,6 +214,8 @@ void GAM_TransitionToScene(Scene* newScene)
         }
 
         EVT_UnbindAllUserEvents();
+        EVT_BindUserEvent(DEBUG, HandleDebug);
+        EVT_BindUserEvent(CLOSE, CloseGame);
     }
 
     newScene->Initialize();
@@ -385,4 +389,15 @@ static void CalculateFPS(void)
     game.FPS = 1000.f / (average * 1000.f);
 
     BB_LOG("FPS: %6.2f", game.FPS);
+}
+
+static void HandleDebug()
+{
+    game.ShowDebug = !game.ShowDebug;
+}
+
+static void CloseGame()
+{
+    SDL_Event quit = { SDL_QUIT };
+    SDL_PushEvent(&quit);
 }
